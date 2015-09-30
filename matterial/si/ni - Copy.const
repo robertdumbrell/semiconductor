@@ -1,0 +1,26 @@
+
+
+[default]
+model: Couderc2014
+
+[Couderc2014]
+; Revaluation of sproul account for ni accounting for band bap narrowing
+; Band gap model was Schenk1998
+; Same work as  Altermatt2003a but over wide temp range
+; claims validity for 50 K to 400 K
+model: ni_temp_eg
+A: 1.541e15
+power: 1.712
+eg_model: E0_Passler;
+
+
+[Sproul1991]
+; Revaluation of sproul account for ni accounting for band bap narrowing
+; Band gap model was Schenk1998
+; Same work as  Altermatt2003a but over wide temp range
+; claims validity for 50 K to 400 K
+model: ni_temp
+A: 1.640e15
+power: 1.706
+eg: 1.12 ; eV
+

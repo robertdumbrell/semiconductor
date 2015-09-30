@@ -1,0 +1,167 @@
+; The energy level is measured from mid gap
+
+#[Fei]
+; Interstitial iron. 
+# Taken from Iron detection in crystalline silicon by carrier lifetime
+# measurements for arbitrary injection and doping 2004
+#Et=  -.18 ;.38 eV above Ev
+#sigma_n = 5e-14 ;s
+#sigma_p = 7e-17 ;s
+
+#[FeB]
+# Taken from Iron detection in crystalline silicon by carrier lifetime
+# measurements for arbitrary injection and doping 2004
+#Et=  .33 ;.23 eV below Ec
+#sigma_n = 3e-14 ;s
+#sigma_p = 2e-15 ;s
+
+[none]
+Et = 0
+sigma_n = 0
+sigma_p = 0
+
+
+[Au_a]
+; Taken from Qscell6
+; Au (sub. acceptor), dominant in n-Si
+;K. Graff, 'Metal impurities in silicon-device fabrication', 2nd Ed (Springer, 2000)
+Et = 0.01230116
+sigma_n = 1.4E-16
+sigma_p = 7.6E-15
+
+[Au_d]
+; Taken from Qscell6 
+; Au (sub. donor) dominant in p-Si for Na>1E14
+; Dubois et al. J. Appl. Phys 100,12502 (2006) for sigma p, and Graff (2000) for sigma n.
+Et = -0.21469884
+sigma_n = 1.9E-15
+sigma_p = 2.7E-15
+
+[Co_a]
+; Taken from Qscell6 
+; Co (sub. acceptor), dominant in n-Si
+; Diez et al., J.Appl. Phys. 101,033710, 2007.
+Et = 0.18230116
+sigma_n = 3.0E-15
+sigma_p = 2.0E-14
+
+[Co_d]
+; Taken from Qscell6 
+; Co (sub. donor), dominant in p-Si
+; Diez et al., J.Appl. Phys. 101,033710, 2007.
+Et = -0.15179884
+sigma_n = 1.6E-14
+sigma_p = 1.0E-15
+
+[Cr_d]
+; Taken from Qscell6 
+; Cr (int. donor) dominant in n-Si
+; Scmidt et al., J.Appl. Phys. 102, 123701, 2007, and Habenicht et al. J. Appl. Phys.  108, 043909 (2010)
+Et = 0.32230116
+sigma_n = 2.0E-14
+sigma_p = 4.0E-15
+
+[CrB_d]
+; Taken from Qscell6 
+; CrB (donor) dominant in p-Si
+; Habenicht et al. J. Appl. Phys.  108, 043909 (2010)
+Et = -0.29269884
+sigma_n = 2.0E-14
+sigma_p = 1.0E-14
+
+[Fei_d]
+; Taken from Qscell6 
+;Fe (int. donor), dominant in n-Si, and p-Si silicon under illumination
+; Istratov et al. Appl. Phys. A: Mater. Sci. Process. vol 69 p. 13 (1999),  and Macdonald et al. J. Appl. Phys. 103, 073710 (2008).
+Et = -0.18234484
+sigma_n = 1.3E-14
+sigma_p = 7.0E-17
+
+[FeB_a]
+; Taken from Qscell6 
+; FeB (acceptor), dominant in p-Si in the dark	
+; Macdonald et al., Appl. Phys. Lett. 89, 142107(2006)
+Et = 0.30230116
+sigma_n = 5.0E-15
+sigma_p = 3.0E-15
+
+[FeGa_d]
+; Taken from Qscell6 
+; FeGa (donor), dominant in Gallium doped p-Si in the dark	
+; Schmidt et al., Appl. Phys. Lett. 97, 113712(2005)
+Et = -0.36169884
+sigma_n = 4.0E-14
+sigma_p = 2.0E-14
+
+[Mo_d]
+; Taken from Qscell6 
+; Mo (int. donor)
+; Paudyal et al. J. Appl. Phys. 107, 054511 (2010).
+Et = -0.18769884
+sigma_n = 2.0E-15
+sigma_p = 1.8E-16
+
+[Ni_ntype]
+; Taken from Qscell6 
+; Nickel, dominant in n-Si	
+; S.Rein, Lifetime Spectroscopy, Springer, Berlin, 2005.
+Et = -0.37169884
+sigma_n = 4.0E-12
+sigma_p = 1.0E-15
+
+[Ni_ptype]
+; Taken from Qscell6 
+; Nickel, dominant in p-Si
+; S.Rein, Lifetime Spectroscopy, Springer, Berlin, 2005.
+Et = 0.16230116
+sigma_n = 5.6E-17
+sigma_p = 8.0E-17
+
+[Ti_d]
+; Taken from Qscell6 
+; Ti (int. donor) dominant in n-type Si
+; Wang et al. Phys. Rev. B vol 30 p. 5896 (1984)
+Et = 0.29230116
+sigma_n = 3.1E-14
+sigma_p = 1.4E-15
+
+[Ti_dd]
+; Taken from Qscell6 
+; Ti (int. double donor) dominant in p-Si for Na>1E15
+; Paudyal et al. J. Appl. Phys. 124510 (2009)
+Et = -0.30269884
+sigma_n = 1.5E-15
+sigma_p = 3.7E-17
+
+[V_dd]
+; Taken from Qscell6 
+; V (int. double donor)	
+; L. Tilly et al. Phys. Rev. B vol 44 p. 12809 (1991), and J. P. Kalejs et al. Proc. 23rd IEEE PVSC, Louisville p. 184 (1993)
+Et = -0.20229884
+sigma_n = 5.0E-14
+sigma_p = 3.0E-18
+
+[W_d]
+; Taken from Qscell6 
+; W (int. donor)
+; Diez et al. Proc. 20th Europ. PVSEC, Barcelona (2005), hole cross section from Graff used to convert Diez's k into cross sections - uncertain
+Et = -0.22179884
+sigma_n = 4.8E-15
+sigma_p = 5.0E-16
+
+[Zn_a]
+; Taken from Qscell6 
+; Zn (sub. acceptor)	
+; Sah et al. IEEE Trans. Elec. Dev. Vol 28 p. 304 (1981)
+Et = -0.23569884
+sigma_n = 2.0E-15
+sigma_p = 4.6E-15
+
+[Zn_aa]
+; Taken from Qscell6 
+; Zn (sub. double acceptor)
+; Sah et al. IEEE Trans. Elec. Dev. Vol 28 p. 304 (1981)
+Et = 0.10230116
+sigma_n = 1.7E-19
+sigma_p = 5.5E-15
+

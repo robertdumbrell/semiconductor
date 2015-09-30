@@ -1,0 +1,28 @@
+
+
+[default]
+constants= Altermatt2005
+
+[Altermatt2005]
+; There was a misprint in the paper corrected in Altermatt2011
+model = Roosbroeck_with_screening
+blow = 4.73e-15
+bmax = 1.
+rmax = 0.2
+smax = 1.5e18
+wmax = 4e18
+rmin = 0.0
+smin = 1e7
+wmin = 1e9
+b2 = 0.54
+r1 = 320.
+s1 = 550.
+w1 =  365.
+b4 = 1.25
+r2 =   2.5
+s2 =  3.
+w2 = 3.54
+
+[PC1D]
+model = Roosbroeck
+B = 9.5e-15

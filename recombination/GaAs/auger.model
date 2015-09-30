@@ -1,0 +1,11 @@
+# all values should be in cm^6/s
+
+
+[default]
+constants= PC1D
+
+[PC1D]
+model= auger
+ced = 1.6e-29
+chd = 4.64e-29
+cc = 6.2e-29
