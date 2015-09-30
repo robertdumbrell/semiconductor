@@ -243,7 +243,8 @@ class Simulated_PL_emission(SpontaneousRadiativeMeission):
         # ni
         # Escape
 
-        self.change_temp_Green2008()
+        self.optics.change_temp_Green2008(temp)
+        self.Esc.optics = self.optics
         self.ni.update_ni()
         self.update_escape()
 
@@ -269,7 +270,7 @@ class Simulated_PL_emission(SpontaneousRadiativeMeission):
 
         if self.np.shape == self.x.shape:
 
-            print self.rsp.shape, self.escapeprob.shape, self.ni.ni, self.np.shape, '\n\n'
+#            print self.rsp.shape, self.escapeprob.shape, self.ni.ni, self.np.shape, '\n\n'
             self.Spectral_PL = numpy.trapz((self.rsp * self.escapeprob).T
                                            * self.np / self.ni.ni**2,
                                            self.x,

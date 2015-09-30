@@ -11,6 +11,7 @@ class OpticalProperties():
     A class containg the optical constants of silicon
     These are temperature dependence.
     """
+    Temp = 300
 
     def __init__(self,  matterial='Si', alpha_version='Schinke2014', n_version='Green2008'):
         print 'Does not currently take matterial inputs'
@@ -80,7 +81,7 @@ class OpticalProperties():
 
         Folder = os.path.dirname(os.path.realpath(__file__))
         File = r'\Silicon_Green08'
-        data = genfromtxt(
+        data = np.genfromtxt(
             Folder + File, names=True, delimiter='\t', filling_values=0)
 
         wavelength = data['Wavelength'] * 1000

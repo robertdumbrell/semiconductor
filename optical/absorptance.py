@@ -13,7 +13,7 @@ class EscapeProbability():
     Detection = 'front'
     Reflection_front = 0.1
     Reflection_rear = 0.1
-
+    
     def __init__(self, matterial='Si',
                  optical_constants=None, x=None):
         """
