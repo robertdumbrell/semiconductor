@@ -9,7 +9,8 @@ import ConfigParser
 sys.path.append(
     os.path.abspath(os.path.join(os.getcwd(), os.pardir, os.pardir)))
 import semiconductor.defults
-
+import semiconductor.matterial.ni as niclass
+from semiconductor.helper.helper import HelperFunctions
 
 class Helper():
 
@@ -22,9 +23,9 @@ class Helper():
         for model in self.AvailableModels():
         # ax.plot(np.inf,np.inf,'k-',label = 'Auger')
             self.change_model(model)
-            tau = self.tau()
+            tau = self.tau(self.min_car_den, 1e16, 0)
             if tau is not None:
-                ax.plot(self.Deltan, tau * 1e6, label=model)
+                ax.plot(self.min_car_den, tau * 1e6, label=model)
 
         ax.legend(loc=0)
         ax.loglog()
@@ -33,187 +34,167 @@ class Helper():
 
         # Helper routiens
 
-    def AvailableModels(self):
-        a = self.Models.sections()
-        a.remove('default')
-        return a
 
 
-class Radiative(Helper):
+class Intrinsic():
 
-    Deltan = np.logspace(12, 19)
-    Doping = 1e16
-    Ne_0 = 1e3
-    Nh_0 = 1e16
-    ni = 9.65e9
-    T = 300
+    def __init__(self, matterial='Si', rad_model_author=None, aug_model_author=None, **kwargs):
 
-    def __init__(self, matterial='Si', model_author=None):
+        self.Radiative = Radiative(matterial, rad_model_author, **kwargs)
+
+        self.Auger = Auger(matterial, aug_model_author, **kwargs)
+
+    def intrisic_carrier_lifetime(self, min_car_den, Na, Nd):
+
+        return 1. / (1. / self.Radiative.tau(min_car_den, Na, Nd) + 1. / self.Auger.tau(min_car_den, Na, Nd))
+
+
+class Radiative(HelperFunctions):
+    model_file = 'radiative.model'
+
+    def __init__(self, matterial='Si', model_author=None, temp=300., ni=9.65e9):
         self.Models = ConfigParser.ConfigParser()
         self.matterial = matterial
 
         constants_file = os.path.join(
             os.path.dirname(os.path.realpath(__file__)),
             matterial,
-            'radiative.model')
+            self.model_file)
 
         self.Models.read(constants_file)
 
         self.change_model(model_author)
+        
+        'sets the temp for the thing'
+        self.temp = temp
 
-    def change_model(self, model_author=None):
+        'This is ni not the effective ni'
+        self.ni = ni
 
-        if model_author is None:
-            self.model_author = self.Models.get('default', 'constants')
-        else:
-            # Need a check to make sure craNhcan't be passed
-            self.model_author = model_author
-        # print self.constants
-        self.model = self.Models.get(self.model_author, 'model')
-        self.model_values = self.Models._sections[self.model_author]
 
-    def tau(self):
-        return getattr(self, self.model)()
+    def tau(self, min_car_den, Na, Nd):
+        self.Nh_0, self.Ne_0 = self.check_doping(Na, Nd)
+        doping = np.max(Na, Nd)
+        return getattr(self, self.model)(min_car_den, doping)
 
-    def itau(self):
-        return getattr(self, self.model)()
+    def itau(self, min_car_den, Na, Nd):
+        return 1. / self.tau(min_car_den, Na, Nd)
 
-    def Roosbroeck(self, B=None):
+    def Roosbroeck(self,  min_car_den, doping, B=None):
         if B is None:
             B = self.Models.getfloat(self.model_author, 'B')
 
-        Nh = self.Nh_0 + self.Deltan
-        Ne = self.Ne_0 + self.Deltan
+        Nh = self.Nh_0 + min_car_den
+        Ne = self.Ne_0 + min_car_den
 
         R = B * (Ne * Nh - self.Ne_0 * self.Nh_0)
-        return self.Deltan / R
+        return min_car_den / R
 
-    def Roosbroeck_with_screening(self):
+    def Roosbroeck_with_screening(self, min_car_den, doping):
         """ 
         This is the roosbroeck model that accounts for many things
-        It needs temperature, deltan, doping and blow to be defined
-
+        It needs temperature, min_car_den, doping and blow to be defined
         """
 
-        # self.Models.items(self.model_author)
-
-
-        Blow = self.Models.getfloat(self.model_author, 'blow')
-        bmax = self.Models.getfloat(self.model_author, 'bmax')
-        rmax = self.Models.getfloat(self.model_author, 'rmax')
-        smax = self.Models.getfloat(self.model_author, 'smax')
-        wmax = self.Models.getfloat(self.model_author, 'wmax')
-        rmin = self.Models.getfloat(self.model_author, 'rmin')
-        smin = self.Models.getfloat(self.model_author, 'smin')
-        wmin = self.Models.getfloat(self.model_author, 'wmin')
-        b2 = self.Models.getfloat(self.model_author, 'b2')
-        r1 = self.Models.getfloat(self.model_author, 'r1')
-        s1 = self.Models.getfloat(self.model_author, 's1')
-        w1 = self.Models.getfloat(self.model_author, 'w1')
-        b4 = self.Models.getfloat(self.model_author, 'b4')
-        r2 = self.Models.getfloat(self.model_author, 'r2')
-        s2 = self.Models.getfloat(self.model_author, 's2')
-        w2 = self.Models.getfloat(self.model_author, 'w2')
-
-        bmin = rmax + (rmin - rmax) / (1. + (self.T / r1)**r2)
-        b1 = (smax + (smin - smax) / (1. + (self.T / s1)**s2)) * 2
-        b3 = (wmax + (wmin - wmax) / (1. + (self.T / w1)**w2)) * 2
+        bmin = self.vals['rmax'] + (self.vals['rmin'] - self.vals['rmax']) / (
+            1. + (self.temp / self.vals['r1'])**self.vals['r2'])
+        b1 = (self.vals['smax'] + (self.vals['smin'] - self.vals['smax']) / (
+            1. + (self.temp / self.vals['s1'])**self.vals['s2'])) * 2
+        b3 = (self.vals['wmax'] + (self.vals['wmin'] - self.vals['wmax']) / (1. + (self.temp / self.vals['w1'])**self.vals['w2'])) * 2
 
         # print bmin
-        B = Blow * (bmin + (bmax - bmin) / (
-            1 + ((2 * self.Deltan + self.Doping) / b1
-                 )**b2 + ((2 * self.Deltan + self.Doping) / b3)**b4))
+        B = self.vals['blow'] * (bmin + (self.vals['bmax'] - bmin) / (
+            1. + ((2. * min_car_den + doping) / b1
+                 )**self.vals['b2'] + ((2. * min_car_den + doping) / b3)**self.vals['b4']))
 
-        return self.Roosbroeck(B)
+        return self.Roosbroeck(min_car_den, doping, B)
 
 
-class Auger(Helper):
-    # needs to be dealt with
-    Deltan = np.logspace(12, 19)
-    Doping = 1e16
-    Ne_0 = 1e3
-    Nh_0 = 1e16
-    ni = 9.65e9
+class Auger(HelperFunctions):
+    model_file = 'auger.model'
 
-    def __init__(self, matterial, model_author=None):
+    def __init__(self, matterial, model_author=None, temp=300, ni=9.65e9):
+
         self.Models = ConfigParser.ConfigParser()
         self.matterial = matterial
 
         constants_file = os.path.join(
             os.path.dirname(os.path.realpath(__file__)),
             matterial,
-            'auger.model')
+            self.model_file)
 
         self.Models.read(constants_file)
 
         self.change_model(model_author)
+        self.temp = temp
+        self.ni = ni
 
-    def change_model(self, model_author=None):
+    # def change_model(self, model_author=None):
 
-        if model_author is None:
-            self.model_author = self.Models.get('default', 'constants')
-        else:
-            # Need a check to make sure craNhcan't be passed
-            self.model_author = model_author
-        # print self.constants
-        self.model = self.Models.get(self.model_author, 'model')
-        self.model_values = self.Models._sections[self.model_author]
+    #     if model_author is None:
+    #         self.model_author = self.Models.get('default', 'constants')
+    #     else:
+    #         # Need a check to make sure craNhcan't be passed
+    #         self.model_author = model_author
+    #     # print self.constants
+    #     self.model = self.Models.get(self.model_author, 'model')
+    #     self.model_values = self.Models._sections[self.model_author]
 
-    def tau(self):
-        return getattr(self, self.model)()
+    def tau(self, min_car_den, Na, Nd):
 
-    def itau_aug(self):
-        return 1 / self.tau()
+        self.Nh_0, self.Ne_0 = self.check_doping(Na, Nd)
+        doping = np.max(Na, Nd)
+        return getattr(self, self.model)(min_car_den, doping)
 
-    def auger_dopants(self):
+    def itau_aug(self, min_car_den, Na, Nd):
+        return 1 / self.tau(min_car_den, Na, Nd)
+
+    def auger_dopants(self, min_car_den, doping=None):
         '''This is the classic auger model that only depends on doping
 
         The model requires the inputs
         C1, C2, and C3.
 
-        It also requires the doping and the dark carrier concentrations
+        It also requires the dark carrier concentrations
         I'm not sure where C1 is being used... need to check this
         '''
         Ce = self.Models.getfloat(self.model_author, 'cn')
         Ch = self.Models.getfloat(self.model_author, 'cp')
 
-        Nh = self.Nh_0 + self.Deltan
-        Ne = self.Ne_0 + self.Deltan
+        Nh = self.Nh_0 + min_car_den
+        Ne = self.Ne_0 + min_car_den
 
         R = Ce * Ne**2 * Nh + Ch * Ne * Nh**2
 
-        return self.Deltan / R
+        return min_car_den / R
 
-    def auger(self):
+    def auger(self, min_car_den, doping=None):
         '''This is the classic auger model that has the impact of many carriers
 
         The model requires the inputs
         C1, C2, and C3.
 
-        It also requires the doping and the dark carrier concentrations
+        It also requires the  number of dark carrier concentrations
         I'm not sure where C1 is being used... need to check this
         '''
-        Ccc = self.Models.getfloat(self.model_author, 'ccc')
-        Chd = self.Models.getfloat(self.model_author, 'chd')
-        Ced = self.Models.getfloat(self.model_author, 'ced')
 
-        Nh = self.Nh_0 + self.Deltan
-        Ne = self.Ne_0 + self.Deltan
+        Nh = self.Nh_0 + min_car_den
+        Ne = self.Ne_0 + min_car_den
 
-        Ce = Ced * self.Ne_0 / \
-            (self.Ne_0 + Nh) + Ccc / 2 * Nh / (Nh + self.Ne_0)
-        Ch = Chd * self.Nh_0 / \
-            (self.Nh_0 + Ne) + Ccc / 2 * Ne / (Ne + self.Nh_0)
+        Ce = self.vals['ced'] * self.Ne_0 / \
+            (self.Ne_0 + Nh) + self.vals['ccc'] / 2 * Nh / (Nh + self.Ne_0)
+        Ch = self.vals['chd'] * self.Nh_0 / \
+            (self.Nh_0 + Ne) + self.vals['ccc'] / 2 * Ne / (Ne + self.Nh_0)
 
         R = (Ce * Ne + Ch * Nh) * (Ne * Nh - self.ni**2)
 
-        return self.Deltan / R
+        return min_car_den / R
 
-    def auger_part(self):
+    def auger_part(self, *args):
         """ A dummy class for models with incomplete parameters"""
         pass
 
-    def coulomb_enhanced_auger(self):
+    def coulomb_enhanced_auger(self, min_car_den, doping):
         '''The coulomb enhanced auger model, as proposed by Kerr2002
 
         The model requires the inputs
@@ -223,42 +204,36 @@ class Auger(Helper):
 
         There may be an older form from schmit. 
         '''
-        K_n = self.Models.getfloat(self.model_author, 'k_n')
-        K_Nh = self.Models.getfloat(self.model_author, 'k_p')
-        K_Delta = self.Models.getfloat(self.model_author, 'k_delta')
-        Delta = self.Models.getfloat(self.model_author, 'delta')
-        L_eeh = self.Models.getfloat(self.model_author, 'l_eeh')
-        N_eeh = self.Models.getfloat(self.model_author, 'n_eeh')
-        K_eeh = self.Models.getfloat(self.model_author, 'k_eeh')
-        P_ehh = self.Models.getfloat(self.model_author, 'p_ehh')
-        L_ehh = self.Models.getfloat(self.model_author, 'l_ehh')
-        K_ehh = self.Models.getfloat(self.model_author, 'k_ehh')
         # then need to get doping and delta n
-        # p, n, Nh_0, Ne_0 = self.n_and_p(self.Deltan)
-        print 'Have not impimented doping and deltan yet or ni'
-        # Deltan = 1e14
-        Nh_0, Ne_0 = self.Doping, self.ni**2 / self.Doping
-        Nh = Nh_0 + self.Deltan
-        Ne = Ne_0 + self.Deltan
+        # p, n, Nh_0, Ne_0 = self.n_and_p(self.min_car_den)
+
+        Nh_0, Ne_0 = doping, self.ni**2 / doping
+        Nh = Nh_0 + min_car_den
+        Ne = Ne_0 + min_car_den
         # ni = 1e10
 
-        g_eeh = 1 + L_eeh * (1 - np.tanh(
-            (Ne_0 / K_eeh)**(N_eeh)))
-        g_ehh = 1 + L_ehh * (1 - np.tanh(
-            (Nh_0 / K_ehh)**(P_ehh)))
+        g_eeh = 1 + self.vals['l_eeh'] * (1 - np.tanh(
+            (Ne_0 / self.vals['k_eeh'])**(self.vals['n_eeh'])))
+        g_ehh = 1 + self.vals['l_ehh'] * (1 - np.tanh(
+            (Nh_0 / self.vals['k_ehh'])**(self.vals['p_ehh'])))
 
         # Then the lifetime is provided by this
-        return self.Deltan / (Ne * Nh - self.ni**2) /\
-            (K_n * g_eeh * Ne_0 +
-             K_Nh * g_ehh *
+        return min_car_den / (Ne * Nh - self.ni**2) /\
+            (self.vals['k_n'] * g_eeh * Ne_0 +
+             self.vals['k_p'] * g_ehh *
              Nh_0 +
-             K_Delta *
-             self.Deltan**Delta
+             self.vals['k_delta'] *
+             min_car_den**self.vals['delta']
              )
 
+if __name__ == "__main__":
+    # a = IntrinsicCarrierDensity()
+    # a._PlotAll()
+    # plt.show()
+    a = Intrinsic('Si')
+    deltan = np.logspace(12, 17)
+    # print a.Radiative.ni, a.Auger.ni
 
-a = Radiative('Si')
-print  dict(a.Models.items(a.model_author))['model']
-# print a._PlotAll()
-# print a.tau()
-plt.show()
+    print plt.plot(deltan, a.intrisic_carrier_lifetime(deltan, 1e16, 0) * 1e6)
+    plt.loglog()
+    plt.show()

@@ -2,7 +2,7 @@
 
 
 [default]
-constants= Richter2012
+model = Richter2012
 
 [Kerr2002]
 # Incorrect delta value

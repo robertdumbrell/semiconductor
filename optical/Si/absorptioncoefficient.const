@@ -1,0 +1,75 @@
+[default]
+model: Rajkanan1979
+
+[Rajkanan1979]
+
+model: Rajkanan ;put in meV
+Egi1 = 1.1557   ;indirect energyies
+Egi2 = 2.5  ;indirect energyies
+Egd = 3.2   ;direct abdngap
+Ep1 = 18.27  ; Phonon energy meV
+Ep2 = 57.73  ; Phonon energy meV
+C1 = 5.5      ; Constant for Bandgap 1
+C2 = 4         ; Constant for Bandgap 2
+Ap1 = 3.231e2   ; Phonon 1 probability
+Ap2 = 7.237e3   ; Phonon 2 probability
+Ad = 1.052e6    ; Direct band bap prob
+beta = 7.021e-4 ; Bandgap with Temp coef
+gamma = 1108    ; Bandgap with Temp coef
+
+
+[Bucher1993]
+; Ap1, and Ap2 for phonon emission and absorption
+model: Bucher ;very similar to Rajkanan, except for the direct band gap
+Egi1 = 1.1557 ;indirect energyies
+Egi2 = 2.25 ;indirect energyies
+Egd = 3.2   ;direct abdngap
+Ep1 = 18.27 ; Phonon energy meV
+Ep2 = 57.73 ; Phonon energy meV
+C1 = 5.5    ; Constant for Bandgap 1
+C2 = 4      ; Constant for Bandgap 2
+Ap1 = 253   ; Phonon 1 probability
+Ap2 = 3312  ; Phonon 2 probability
+Ad = 2.3e7  ; Direct band bap prob
+beta = 7.021e-4 ;Bandgap with Temp coef
+gamma = 1108    ; Bandgap with Temp coef
+power = 1.5     ; power of direct band gap
+
+[Macfarlane1958]
+; This is the first entry, Eg guessed
+; tkane from Corkish1993
+model = MacFarlane
+Egi = 1.555
+Epta = 18.3
+Epto = 57.8
+Apta = .504
+Apto = 18.08
+
+
+[Corkish1993]
+; The cork uses a different model, as he includes excitons
+; This is not working
+model: Corkish ;put in meV
+Egi = 1.15448
+Ep1 = 18.4
+Ep2 = 56.2
+Ep3 = 58
+Epp1 = 72.6
+Epp2 = 78.5
+Epp3 = 83.7
+Epp4 = 106.9
+Epp5 = 113
+Epp6 = 118.6
+Epp7 = 122.4
+Eppp1 = 182
+Ap1 = 0.504
+Ap2 = 2.14
+Ap3 = 15.3
+App1 = 0.060
+App2 = 0.070
+App3 = 0.132
+App4 = 0.040
+App5 = 0.077
+App6 = 0.308
+App7 = 0.610
+Appp1 = 0.031

@@ -5,9 +5,21 @@ import os
 import scipy.constants as Const
 import ConfigParser
 
-class BandGap():
-    Eg = 1.12
-    temp = 300
+# TODO:
+# Need to make bandgap class, that includes that impact of BNG
+
+sys.path.append(
+    os.path.abspath(os.path.join(os.getcwd(), os.pardir, os.pardir)))
+
+from semiconductor.helper.helper import HelperFunctions
+
+
+
+
+class IntrinsicBandGap(HelperFunctions):
+    # Eg = 1.12
+    # temp = 300
+    model_file = 'bandgap.models'
 
     def __init__(self, matterial='Si', model_author=None):
         self.Models = ConfigParser.ConfigParser()
@@ -16,26 +28,12 @@ class BandGap():
         constants_file = os.path.join(
             os.path.dirname(os.path.realpath(__file__)),
             matterial,
-            'bandgap.const')
+            self.model_file)
 
         self.Models.read(constants_file)
 
         self.change_model(model_author)
 
-    def change_model(self, model_author=None):
-
-        if model_author is None:
-            self.model_author = self.Models.get('default', 'model')
-        else:
-            # Need a check to make sure craNhcan't be passed
-            self.model_author = model_author
-        # print self.model_author
-        self.model = self.Models.get(self.model_author, 'model')
-
-        self.vals = dict(self.Models.items(self.model_author))
-        # List.remove('model')
-        del self.vals['model']
-        self.vals = {k: float(v) for k, v in self.vals.iteritems()}
 
     # def E0(self, temp=False, E0=False):
     #     """
@@ -71,18 +69,21 @@ class BandGap():
     #     return E * Const.e
 
     def update_Eg(self, temp=None):
+
         if temp is None:
             temp = self.temp
         self.Eg = getattr(self, self.model)(self.vals, temp)
-        
+
         return self.Eg
 
     def Eg_Passler(self, vals, temp):
         """
         taken from Couderc2014
+        depent on temperature
         """
 
-        gamma = (1. - 3. * vals['delta']**2) / (np.exp(vals['theta'] / temp) - 1)
+        gamma = (1. - 3. * vals['delta']**2) / \
+            (np.exp(vals['theta'] / temp) - 1)
         xi = 2. * temp / vals['theta']
 
         # Values for each sum component
@@ -97,3 +98,51 @@ class BandGap():
         return E * Const.e
 
 
+class BandGapNarrowing(HelperFunctions):
+    model_file = 'bandgapnarrowing.models'
+    def __init__(self, matterial='Si', model_author=None):
+        self.Models = ConfigParser.ConfigParser()
+        self.matterial = matterial
+
+        constants_file = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            matterial,
+            self.model_file)
+
+        self.Models.read(constants_file)
+
+        self.change_model(model_author) 
+
+    def update_BGN(self, doping, min_car_den = None):
+
+        # if temp is None:
+        #     temp = self.temp
+        self.BGN = getattr(self, self.model)(self.vals, doping)
+
+        return self.BGN
+
+    def apparent_BNG(self, vals, doping):
+        '''
+        It states that the 'apparent BGN' 
+        where N is the net dopant concentration. 
+        '''
+        DEg = np.zeros(doping.shape)
+
+        index = doping > vals['n_onset']
+        DEg[index] = (vals['de_slope'] * np.log(doping[index] / vals['n_onset']))
+
+        return DEg
+
+
+if __name__ == "__main__":
+    # a = IntrinsicCarrierDensity()
+    # a._PlotAll()
+    # plt.show()
+    a = BandGapNarrowing('Si')
+    # deltan = np.logspace(12, 17)
+    # print a.Radiative.ni, a.Auger.ni
+    doping = np.logspace(12,20,100)
+    a.plot_all_models('update_BGN', doping=doping)
+    # print plt.plot(doping, a.update_BGN(doping))
+    plt.semilogx()
+    plt.show()

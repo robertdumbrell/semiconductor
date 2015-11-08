@@ -6,7 +6,7 @@ import scipy.constants as Const
 
 sys.path.append('./silicon')
 
-import semiconductor.optical.silicon.opticalproperties as opticalproperties
+import semiconductor.optical.Si.opticalproperties as opticalproperties
 
 
 class EscapeProbability():

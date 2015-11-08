@@ -5,7 +5,7 @@ import os
 import scipy.constants as Const
 
 sys.path.append('../matterial')
-sys.path.append('./silicon')
+sys.path.append('./Si')
 
 import semiconductor.matterial.ni as ni
 import semiconductor.optical.silicon.opticalproperties as opticalproperties

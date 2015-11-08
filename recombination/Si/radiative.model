@@ -1,7 +1,7 @@
 
 
 [default]
-constants= Altermatt2005
+model = Altermatt2005
 
 [Altermatt2005]
 ; There was a misprint in the paper corrected in Altermatt2011

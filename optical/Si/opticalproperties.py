@@ -3,6 +3,7 @@ import numpy as np
 import sys
 import os
 import scipy.constants as Const
+from glob import glob
 
 
 class OpticalProperties():
@@ -18,6 +19,15 @@ class OpticalProperties():
         self.alpha_version = alpha_version
         self.n_version = n_version
         self.initalise_optical_constants()
+        self.matterial = matterial
+
+    def available_models(self, matterial = None):
+
+        if matterial is None:
+            matterial = self.matterial
+        Files = [i.replace(os.path.join(os.path.dirname(__file__), matterial+'_'),'') for i in glob(os.path.join(os.path.dirname(__file__), matterial+'_*'))]
+
+        return Files
 
     # something else
     def initalise_optical_constants(self):
@@ -32,6 +42,20 @@ class OpticalProperties():
         return np.interp(wavelength,
                          self.wavelength_emission,
                          self.alpha_BB)
+
+    def _check_wavelength(self, wavelength):
+        if wavelength is None:
+            wavelength = self.wavelength_emission
+        return wavelength
+
+    def wavelength_to_energy(self, wavelength=None, ev=True):
+        wavelength = self._check_wavelength(wavelength)
+
+        E = Const.c / wavelength * Const.h * 1e9
+        if ev:
+            E /= Const.e
+            # print E
+        return E
 
     def wavelength_to_refactiveindex(self, wavelength):
         return np.interp(wavelength,
@@ -59,6 +83,12 @@ class OpticalProperties():
         self.wavelength_emission, self.alpha_BB = data[
             'Wavelength'], data['alpha']
 
+
+        try:
+            self.U = data['U']
+
+        except:
+            pass
         # GEtting n
         data = getattr(self, 'optical_' + n_version)()
         # adjust n to the same wavelength as, what ever alpha is at, and then
@@ -80,7 +110,7 @@ class OpticalProperties():
         self.load_optical_properties()
 
         Folder = os.path.dirname(os.path.realpath(__file__))
-        File = r'\Silicon_Green08'
+        File = r'\Si_Green08'
         data = np.genfromtxt(
             Folder + File, names=True, delimiter='\t', filling_values=0)
 
@@ -106,7 +136,7 @@ class OpticalProperties():
         wavelegnth and alpha from photoluminesence
         """
         # Only has alpha
-        self.Alpha_FileName = '\Silicon_Daub'
+        self.Alpha_FileName = '\Si_Daub1995'
         data = np.genfromtxt(self.Folder
                              + self.Alpha_FileName, names=True)
         return data
@@ -116,7 +146,7 @@ class OpticalProperties():
         combined sets of alpha, n and temperature coeffiecnts. Uses Konges krange to correct k
         """
         # HAs alpha, n, k
-        self.Alpha_FileName = '\Silicon_Green08'
+        self.Alpha_FileName = '\Si_Green2008'
         data = np.genfromtxt(self.Folder
                              + self.Alpha_FileName, delimiter="\t", names=True)
         data['Wavelength'] *= 1000
@@ -127,7 +157,7 @@ class OpticalProperties():
         combined sets of alpha, n and temperature coeffiecnts
         """
         # HAs alpha, n, k
-        self.Alpha_FileName = '\Silicon_Green95'
+        self.Alpha_FileName = '\Si_Green1995'
         data = np.genfromtxt(self.Folder
                              + self.Alpha_FileName, delimiter="\t", names=True)
         return data
@@ -140,7 +170,7 @@ class OpticalProperties():
         Planning follow up paper with comparson to EQE measurements.
         """
         # Only has alpha
-        self.Alpha_FileName = '\Silicon_Schinke2014'
+        self.Alpha_FileName = '\Si_Schinke2014'
         data = np.genfromtxt(self.Folder
                              + self.Alpha_FileName, delimiter="\t", names=True)
         return data
@@ -152,7 +182,7 @@ class OpticalProperties():
         Combines  R&T, ellipometry, EQE and PL measurements at 295K
         """
         # Only has alpha
-        self.Alpha_FileName = '\Silicon_Schinke2015'
+        self.Alpha_FileName = '\Si_Schinke2015'
         data = np.genfromtxt(self.Folder
                              + self.Alpha_FileName, delimiter="\t", names=True)
         return data
