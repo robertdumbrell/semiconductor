@@ -17,8 +17,12 @@ from semiconductor.helper.helper import HelperFunctions
 
 
 class IntrinsicBandGap(HelperFunctions):
-    # Eg = 1.12
-    # temp = 300
+    '''
+    The intrinsic bandgap as a function of temperature
+        it changes as a result of:
+             different effective carrier mass (band strucutre)
+    '''         
+
     model_file = 'bandgap.models'
 
     def __init__(self, matterial='Si', model_author=None):
@@ -99,6 +103,16 @@ class IntrinsicBandGap(HelperFunctions):
 
 
 class BandGapNarrowing(HelperFunctions):
+    '''
+    Bang gap narrowing accounts for a reduction in bandgap that 
+    occurs as a result from no thermal effects. These include:
+        doping. It is dopant dependent
+        excess carrier density (non thermal distribution)
+    Note: I currently believed that the impact of dopants 
+        is much larger than the impact of the carrier distribution
+    '''     
+
+
     model_file = 'bandgapnarrowing.models'
     def __init__(self, matterial='Si', model_author=None):
         self.Models = ConfigParser.ConfigParser()

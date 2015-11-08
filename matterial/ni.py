@@ -16,6 +16,11 @@ from semiconductor.helper.helper import HelperFunctions
 
 
 class IntrinsicCarrierDensity(HelperFunctions):
+    '''
+    The intrinisc carrier density is the number of carriers 
+    that exist the a matterial at thermal equlibrium.
+    It is impacted by the band gap (and bandgap narrowing)
+    '''
 
     # ni = 1e10
     temp = 300.
@@ -58,8 +63,7 @@ class IntrinsicCarrierDensity(HelperFunctions):
     def ni_temp_eg(self, vals, temp):
         """
          This form comes from Bludau, Onton, and
-         Heinke3 and Macfarlane et a1.31 as cited by Green,3 is
-         given by
+         Heinke3 and Macfarlane et a1.31 as cited by Green,3 
         """
         Eg = BandGap(self.matterial, vals['eg_model']).update_Eg(temp=temp)
 
