@@ -12,29 +12,6 @@ import semiconductor.defults
 import semiconductor.matterial.ni as niclass
 from semiconductor.helper.helper import HelperFunctions
 
-class Helper():
-
-    def tau():
-        pass
-
-    def _PlotAll(self):
-        fig, ax = plt.subplots(1)
-        # ax = plt.add_subplot(111)
-        for model in self.AvailableModels():
-        # ax.plot(np.inf,np.inf,'k-',label = 'Auger')
-            self.change_model(model)
-            tau = self.tau(self.min_car_den, 1e16, 0)
-            if tau is not None:
-                ax.plot(self.min_car_den, tau * 1e6, label=model)
-
-        ax.legend(loc=0)
-        ax.loglog()
-        ax.set_xlabel('$\Delta$ n (cm$^{-3}$)')
-        ax.set_ylabel('Lifetime (us)')
-
-        # Helper routiens
-
-
 
 class Intrinsic():
 
@@ -45,7 +22,6 @@ class Intrinsic():
         self.Auger = Auger(matterial, aug_model_author, **kwargs)
 
     def intrisic_carrier_lifetime(self, min_car_den, Na, Nd):
-
         return 1. / (1. / self.Radiative.tau(min_car_den, Na, Nd) + 1. / self.Auger.tau(min_car_den, Na, Nd))
 
 
@@ -64,13 +40,12 @@ class Radiative(HelperFunctions):
         self.Models.read(constants_file)
 
         self.change_model(model_author)
-        
+
         'sets the temp for the thing'
         self.temp = temp
 
         'This is ni not the effective ni'
         self.ni = ni
-
 
     def tau(self, min_car_den, Na, Nd):
         self.Nh_0, self.Ne_0 = self.check_doping(Na, Nd)
@@ -100,12 +75,13 @@ class Radiative(HelperFunctions):
             1. + (self.temp / self.vals['r1'])**self.vals['r2'])
         b1 = (self.vals['smax'] + (self.vals['smin'] - self.vals['smax']) / (
             1. + (self.temp / self.vals['s1'])**self.vals['s2'])) * 2
-        b3 = (self.vals['wmax'] + (self.vals['wmin'] - self.vals['wmax']) / (1. + (self.temp / self.vals['w1'])**self.vals['w2'])) * 2
+        b3 = (self.vals['wmax'] + (self.vals['wmin'] - self.vals['wmax']
+                                   ) / (1. + (self.temp / self.vals['w1'])**self.vals['w2'])) * 2
 
         # print bmin
         B = self.vals['blow'] * (bmin + (self.vals['bmax'] - bmin) / (
             1. + ((2. * min_car_den + doping) / b1
-                 )**self.vals['b2'] + ((2. * min_car_den + doping) / b3)**self.vals['b4']))
+                  )**self.vals['b2'] + ((2. * min_car_den + doping) / b3)**self.vals['b4']))
 
         return self.Roosbroeck(min_car_den, doping, B)
 
@@ -129,16 +105,6 @@ class Auger(HelperFunctions):
         self.temp = temp
         self.ni = ni
 
-    # def change_model(self, model_author=None):
-
-    #     if model_author is None:
-    #         self.model_author = self.Models.get('default', 'constants')
-    #     else:
-    #         # Need a check to make sure craNhcan't be passed
-    #         self.model_author = model_author
-    #     # print self.constants
-    #     self.model = self.Models.get(self.model_author, 'model')
-    #     self.model_values = self.Models._sections[self.model_author]
 
     def tau(self, min_car_den, Na, Nd):
 

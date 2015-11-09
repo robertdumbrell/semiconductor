@@ -5,10 +5,11 @@ import sys
 import os
 import scipy.constants as Const
 import ConfigParser
-from bandgap import IntrinsicBandGap as BandGap
+from bandgap import BandGap
 
 # TODO:
 # Need to make bandgap class, that includes that impact of BNG
+# this nees to be fixed as BGN has been added in the other section
 
 sys.path.append(
     os.path.abspath(os.path.join(os.getcwd(), os.pardir, os.pardir)))
@@ -16,6 +17,7 @@ from semiconductor.helper.helper import HelperFunctions
 
 
 class IntrinsicCarrierDensity(HelperFunctions):
+
     '''
     The intrinisc carrier density is the number of carriers 
     that exist the a matterial at thermal equlibrium.
@@ -25,7 +27,8 @@ class IntrinsicCarrierDensity(HelperFunctions):
     # ni = 1e10
     temp = 300.
     model_file = 'ni.models'
-    def __init__(self, matterial='Si', model_author=None, temp = 300.):
+
+    def __init__(self, matterial='Si', model_author=None, temp=300.):
         self.Models = ConfigParser.ConfigParser()
         self.matterial = matterial
 
@@ -38,7 +41,6 @@ class IntrinsicCarrierDensity(HelperFunctions):
 
         self.change_model(model_author)
         self.temp = temp
-
 
     def update_ni(self, temp=None):
         if temp is None:
@@ -60,12 +62,12 @@ class IntrinsicCarrierDensity(HelperFunctions):
 
         return ni
 
-    def ni_temp_eg(self, vals, temp):
+    def ni_temp_eg(self, vals, temp, doping, min_car_den=None):
         """
          This form comes from Bludau, Onton, and
          Heinke3 and Macfarlane et a1.31 as cited by Green,3 
         """
-        Eg = BandGap(self.matterial, vals['eg_model']).update_Eg(temp=temp)
+        Eg = BandGap(self.matterial, vals['eg_model'], None).update_Eg(temp=temp, doping, min_car_den, 'dopant')
 
         # print vals, Eg
         ni = vals['a'] * temp**vals['power'] * \
@@ -73,9 +75,10 @@ class IntrinsicCarrierDensity(HelperFunctions):
 
         return ni
 
+
 if __name__ == "__main__":
     a = IntrinsicCarrierDensity()
-    temp = np.linspace(0,600)
+    temp = np.linspace(0, 600)
     a.plot_all_models('update_ni', temp=temp)
     plt.semilogy()
     plt.show()

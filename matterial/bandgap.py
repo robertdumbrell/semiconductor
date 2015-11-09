@@ -14,18 +14,51 @@ sys.path.append(
 from semiconductor.helper.helper import HelperFunctions
 
 
+class BandGap():
+
+    '''
+    A simple class to combine the intrinsic band gap and
+    band gap narrowing classes for easy access
+    '''
+
+    def __init__(self, matterial='Si', Egi_model=None, BNG_model=None, dopant=None):
+
+        self.Egi = IntrinsicBandGap(matterial, model=Egi_model)
+        self.BGN = BandGapNarrowing(matterial, model=BNG_model)
+        self.dopant = dopant
+
+    def plot_all_models(self):
+        print 'See IntrinsicBandGap class and BGN class for models'
+
+    def caculate_Eg(self, temp, doping, min_car_den=None, dopant=None):
+        '''
+        Calculates the band gap 
+        '''
+
+        if dopant is None:
+            dopant = self.dopant
+
+        # just prints a warning if the model is for the incorrect dopants
+        dopant_model_list = self.BGN.available_models('dopant', dopant)
+        if self.BGN.model not in dopant_model_list:
+            print 'You have the incorrect model for your dopant'
+
+        Eg = self.Egi.update_Eg(
+            temp) - self.BGN.update_BGN(doping, min_car_den)
+        return Eg
 
 
 class IntrinsicBandGap(HelperFunctions):
+
     '''
-    The intrinsic bandgap as a function of temperature
+    The intrinsic band-gap as a function of temperature
         it changes as a result of:
              different effective carrier mass (band strucutre)
-    '''         
+    '''
 
     model_file = 'bandgap.models'
 
-    def __init__(self, matterial='Si', model_author=None):
+    def __init__(self, matterial='Si', model=None):
         self.Models = ConfigParser.ConfigParser()
         self.matterial = matterial
 
@@ -36,8 +69,7 @@ class IntrinsicBandGap(HelperFunctions):
 
         self.Models.read(constants_file)
 
-        self.change_model(model_author)
-
+        self.change_model(model)
 
     # def E0(self, temp=False, E0=False):
     #     """
@@ -103,6 +135,7 @@ class IntrinsicBandGap(HelperFunctions):
 
 
 class BandGapNarrowing(HelperFunctions):
+
     '''
     Bang gap narrowing accounts for a reduction in bandgap that 
     occurs as a result from no thermal effects. These include:
@@ -110,11 +143,11 @@ class BandGapNarrowing(HelperFunctions):
         excess carrier density (non thermal distribution)
     Note: I currently believed that the impact of dopants 
         is much larger than the impact of the carrier distribution
-    '''     
-
+    '''
 
     model_file = 'bandgapnarrowing.models'
-    def __init__(self, matterial='Si', model_author=None):
+
+    def __init__(self, matterial='Si', model=None):
         self.Models = ConfigParser.ConfigParser()
         self.matterial = matterial
 
@@ -125,38 +158,64 @@ class BandGapNarrowing(HelperFunctions):
 
         self.Models.read(constants_file)
 
-        self.change_model(model_author) 
+        self.change_model(model)
 
-    def update_BGN(self, doping, min_car_den = None):
+    def update_BGN(self, doping, min_car_den=None):
 
         # if temp is None:
         #     temp = self.temp
-        self.BGN = getattr(self, self.model)(self.vals, doping)
+        self.BGN = getattr(self, self.model)(self.vals, doping, min_car_den)
 
         return self.BGN
 
-    def apparent_BNG(self, vals, doping):
+    def apparent_BNG(self, vals, doping, *args):
         '''
-        It states that the 'apparent BGN' 
+        It returns the 'apparent BGN'. This estimates the real bandgap narrowing, 
+        but uses boltzman stats
         where N is the net dopant concentration. 
         '''
-        DEg = np.zeros(doping.shape)
+
+        if type(doping).__module__ != np.__name__:
+            doping = np.array(doping)
+
+        BGN = np.zeros(np.array(doping).shape)
 
         index = doping > vals['n_onset']
-        DEg[index] = (vals['de_slope'] * np.log(doping[index] / vals['n_onset']))
+        BGN[index] = (
+            vals['de_slope'] * np.log(doping[index] / vals['n_onset']))
 
-        return DEg
+        return BGN
 
+    def BNG(self, vals, doping):
+        '''
+        It returns the BGN when applied for carriers with fermi distribution.
+        This estimates the real bandgap narrowing, 
+        but uses boltzman stats
+        where N is the net dopant concentration. 
+        '''
+        # BGN = np.zeros(doping.shape)
+
+        BGN = vals['de_slope']\
+            * np.power(np.log(doping / vals['n_onset']), vals['b'])\
+            + vals['de_offset']
+
+        # ensures no negitive values
+        BGN[BGN < 0] = 0
+
+        return BGN
 
 if __name__ == "__main__":
     # a = IntrinsicCarrierDensity()
     # a._PlotAll()
     # plt.show()
-    a = BandGapNarrowing('Si')
+    a = BandGap('Si')
+    # a.print_model_notes()
     # deltan = np.logspace(12, 17)
     # print a.Radiative.ni, a.Auger.ni
-    doping = np.logspace(12,20,100)
-    a.plot_all_models('update_BGN', doping=doping)
+    doping = np.logspace(12, 20, 100)
+    # a.plot_all_models('update_BGN', xvalues=doping, doping=doping)
+
+    a.caculate_Eg(300., 1e16, 1e16, 'boron')
     # print plt.plot(doping, a.update_BGN(doping))
     plt.semilogx()
     plt.show()

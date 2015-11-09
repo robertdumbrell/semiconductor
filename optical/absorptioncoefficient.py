@@ -7,12 +7,17 @@ import sys
 
 import Si.opticalproperties as opticalproperties
 
+#constaints the stuff for tabulated data
 OP = opticalproperties.OpticalProperties()
 
+sys.path.append(
+    os.path.abspath(os.path.join(os.getcwd(), os.pardir, os.pardir)))
+from semiconductor.helper.helper import HelperFunctions
 
-class absorptioncoefficient():
 
-    ''' This purpose of this it to provide acess if the absorption
+class absorptioncoefficient(HelperFunctions):
+
+    ''' This purpose of this it to provide access if the absorption
         coefficient have a model'''
     beta = 0
     gamma = 0
@@ -30,23 +35,6 @@ class absorptioncoefficient():
 
         self.change_model(model_author)
 
-    def change_model(self, model_author=None):
-        '''
-        change the model being used
-        '''
-
-        if model_author is None:
-            self.model_author = self.Models.get('default', 'model')
-        else:
-            # Need a check to make sure craNhcan't be passed
-            self.model_author = model_author
-        # print self.model_author
-        self.model = self.Models.get(self.model_author, 'model')
-
-        self.vals = dict(self.Models.items(self.model_author))
-        # List.remove('model')
-        del self.vals['model']
-        self.vals = {k: float(v) for k, v in self.vals.iteritems()}
 
     def update_absorptioncoefficients(self, f=None, Input=None):
         '''
@@ -241,7 +229,6 @@ if __name__ == "__main__":
     a = absorptioncoefficient()
     W = np.linspace(300, 1200, 100)
     a.f = a._wavelength2frequency(W)
-
 
     plt.plot(W, a.update_absorptioncoefficients())
     a.change_model('Bucher1993')
