@@ -67,7 +67,7 @@ class IntrinsicCarrierDensity(HelperFunctions):
          This form comes from Bludau, Onton, and
          Heinke3 and Macfarlane et a1.31 as cited by Green,3 
         """
-        Eg = BandGap(self.matterial, vals['eg_model'], None).update_Eg(temp=temp, doping, min_car_den, 'dopant')
+        Eg = BandGap(self.matterial, vals['eg_model'], None).update_Eg(temp, doping, min_car_den, 'dopant')
 
         # print vals, Eg
         ni = vals['a'] * temp**vals['power'] * \

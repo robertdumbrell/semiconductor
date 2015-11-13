@@ -89,7 +89,7 @@ class Radiative(HelperFunctions):
 class Auger(HelperFunctions):
     model_file = 'auger.model'
 
-    def __init__(self, matterial, model_author=None, temp=300, ni=9.65e9):
+    def __init__(self, matterial ='Si', model_author=None, temp=300, ni=9.65e9):
 
         self.Models = ConfigParser.ConfigParser()
         self.matterial = matterial

@@ -145,7 +145,7 @@ class EscapeProbability():
         this paramterisation was also used by 
         R. Brendel, M. Hirsch, R. Plieninger, and J.H. Werner, IEEE Trans. Electron Devices 43, 1104 (1996).
 
-        Please remember this is a 9 variable fit... it should always give a good fit
+        Please remember this is a 9 variable fit. it should always give a good fit
         """
 
         # caculated from law of diffraction considering angle of entry

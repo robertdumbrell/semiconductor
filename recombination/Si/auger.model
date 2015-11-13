@@ -1,6 +1,5 @@
 # all values should be in cm^6/s
 
-
 [default]
 model = Richter2012
 
@@ -17,7 +16,11 @@ K_eeh= 2e16
 P_ehh= .29
 L_ehh= 44
 K_ehh= 2e16
+notes: Reinterpretation of data, introduced new parameterisation 
 
+[Altermatt1997]
+model = auger_part
+notes: missing
 
 [Richter2012]
 model= coulomb_enhanced_auger
@@ -31,7 +34,7 @@ K_eeh= 3.3e17
 P_ehh= .63
 L_ehh= 7.5
 K_ehh= 7e17
-
+notes: Based on lifetime measurements (photoluminescence and photoconductance)
 
 [SchroderTextbook]
 model= auger
@@ -39,37 +42,36 @@ ccc= 1.8e-30
 chd= 6e-31
 ced= 3e-33
 
-
 [PC1D]
 model= auger
 ccc = 1.66e-30 ;carrier-carrier constant
 chd = 2.2e-31 ;hole dopant constant
 ced = 9.9e-32 ;electron dopant constant
 
-
 [Dziewior1977]
-# Done with photoluminescence 
 model = auger_dopants
 cn = 2.8e-31  ;for doping 6e18-1e20
 cp = .99e-31  ;for doping 5e18 - 1e20
+notes: Based on photoluminescence measurements
 
-[Beck1977]
-# Done with photoluminescence
+[Beck1973]
 model = auger_dopants
 cn = 1.7e-31 ;for doping 2e18-2e19
 cp = 1.2e-31 ;for doping 2e18-3e19
+notes : Based on photoluminescence measurements
 
 [DelAlamo1984]
-# Done with photoluminescence
 model = auger_part
 cn = 1.8e-31 ;for doping 6e18-6e19
+notes: Not implemented
 
 [Wang1984]
 # Done with transient photoconductance
 model = auger_part
 cn = 2.22e-31 ;for doping 2.5e19-8e19
+notes: Not implemented, Based on transient photoconductance measurements
 
 [Wieder1980]
-# Done with diffusion layer in lateral transistors
 model = auger_part
 cn = 1.6e-31 ;for doping 5e18-2e120
+notes: Not implemented, Based on measurements of diffusions in lateral transistors

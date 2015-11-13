@@ -186,6 +186,9 @@ class BandGapNarrowing(HelperFunctions):
 
         return BGN
 
+    def BNG_dummpy(self):
+        pass
+
     def BNG(self, vals, doping):
         '''
         It returns the BGN when applied for carriers with fermi distribution.

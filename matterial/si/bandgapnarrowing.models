@@ -7,7 +7,6 @@ model: Yan2014fer
 
 [DelAlamo1985]
 ; model incorporates degeneracy as well as BGN, which is why it determines the 'apparent BGN', ∆Eg,app, and not the actual BGN, ∆Eg. This ; ; The apparent means uses Boltzmann statistics rather than Fermi–Dirac. 
-; Done for phorphous
 model = apparent_BNG
 de_slope = 0.0187
 N_onset = 7e17
@@ -16,7 +15,6 @@ assumed_ni = 1.5e10 ; The assumed assumed_ni
 
 [Cuevas1996]
 ; Updated values of alamo
-; Done for phorphous
 model = apparent_BNG
 de_slope = 0.014
 N_onset = 1.4e17
@@ -26,7 +24,6 @@ assumed_ni = 1e10 ; the assumed assumed_ni
 
 [Yan2013bz]
 ; Updated values of alamo
-; Done for phorphous
 model = apparent_BNG
 de_slope = 0.01296
 N_onset = 1e17
@@ -36,13 +33,17 @@ notes: For phorphous, apparent BGN for use with BZ carrier  stats
 
 [Yan2014bz]
 ; Updated values of alamo
-; Done for boron
 model = apparent_BNG
 de_slope = 0.01543
 N_onset = 1e17
 dopant = boron
 assumed_ni = 9.65e9 ; the assumed assumed_ni
 notes: For Boron, apparent BGN for use with BZ carrier stats
+
+[Schenk1988fer]
+model = BNG_dummpy
+dopant = phosphorous
+notes: Not implemented
 
 [Schenk1988_reparamitisation_Yan2013]
 model = BNG
