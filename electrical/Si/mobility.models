@@ -1,0 +1,44 @@
+
+[default]
+model = dorkel1981
+
+[http://ecee.colorado.edu_boron]
+model = CaugheyThomas
+mu_min = 44.9
+mu_max = 470.5
+Nr = 2.23e17
+alpha = 0.719
+notes: this is for the minoirty carriers at 300K for Si doped with boron
+
+[http://ecee.colorado.edu_phorophous]
+model = CaugheyThomas
+mu_min = 68.5
+mu_max = 1414
+Nr = 9.2e16
+alpha = 0.711
+notes: this is for the minoirty carriers at 300K for Si doped with phorophous
+
+[http://ecee.colorado.edu_arsenic]
+model = CaugheyThomas
+mu_min = 52.2
+mu_max = 1417
+Nr = 9.68e16
+alpha = 0.68
+notes: this is for the minoirty carriers at 300K for Si doped with arsenic
+
+[dorkel1981]
+# electron properties
+model = dorkel
+Ae = 4.61e17
+Be = 1.52e15
+alphae = 2.2
+muL0e = 1430
+# hole properties
+Ah = 1e17
+Bh = 6.25e14
+alphah = 2.2
+muL0h = 495 
+#General values
+temp0 = 300
+DOI: 10.1016/0038-1101(81)90097-6 
+notes: mobility accounting for each component. Depends on dopents, carrier type and concentration. Claims that the calculated mobility deviates by an average of 5% from experimental values. Note At the time of Dorkel and Leturcq's work, most experimental work had been done at 300 K.
