@@ -43,6 +43,8 @@ class BandGap():
         if self.BGN.model not in dopant_model_list:
             print 'You have the incorrect model for your dopant'
 
+
+        # print 'The band gaps are:', self.Egi.update_Eg(temp), self.BGN.update_BGN(doping, min_car_den) 
         Eg = self.Egi.update_Eg(
             temp) - self.BGN.update_BGN(doping, min_car_den)
         return Eg
@@ -116,6 +118,8 @@ class IntrinsicBandGap(HelperFunctions):
         """
         taken from Couderc2014
         depent on temperature
+
+        returns Eg in eV
         """
 
         gamma = (1. - 3. * vals['delta']**2) / \
@@ -131,7 +135,7 @@ class IntrinsicBandGap(HelperFunctions):
         E = vals['e0'] - vals['alpha'] * vals['theta'] * \
             (gamma + 3. * vals['delta']**2 / 2 *
              ((1. + No2 + No3 + No4 + No5)**(1. / 6.) - 1))
-        return E * Const.e
+        return E 
 
 
 class BandGapNarrowing(HelperFunctions):
@@ -189,7 +193,7 @@ class BandGapNarrowing(HelperFunctions):
     def BNG_dummpy(self):
         pass
 
-    def BNG(self, vals, doping):
+    def BNG(self, vals, doping, *args):
         '''
         It returns the BGN when applied for carriers with fermi distribution.
         This estimates the real bandgap narrowing, 
@@ -203,7 +207,8 @@ class BandGapNarrowing(HelperFunctions):
             + vals['de_offset']
 
         # ensures no negitive values
-        BGN[BGN < 0] = 0
+        if BGN.size > 1 :
+            BGN[BGN < 0] = 0
 
         return BGN
 
