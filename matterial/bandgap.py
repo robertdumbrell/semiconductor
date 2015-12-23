@@ -5,8 +5,6 @@ import os
 import scipy.constants as Const
 import ConfigParser
 
-# TODO:
-# Need to make bandgap class, that includes that impact of BNG
 
 sys.path.append(
     os.path.abspath(os.path.join(os.getcwd(), os.pardir, os.pardir)))

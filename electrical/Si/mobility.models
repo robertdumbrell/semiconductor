@@ -2,28 +2,31 @@
 [default]
 model = dorkel1981
 
-[http://ecee.colorado.edu_boron]
+[CaugheyThomas_boron]
 model = CaugheyThomas
 mu_min = 44.9
 mu_max = 470.5
 Nr = 2.23e17
 alpha = 0.719
+link: http://ecee.colorado.edu_boron
 notes: this is for the minoirty carriers at 300K for Si doped with boron
 
-[http://ecee.colorado.edu_phorophous]
+[CaugheyThomas_phorophous]
 model = CaugheyThomas
 mu_min = 68.5
 mu_max = 1414
 Nr = 9.2e16
 alpha = 0.711
+link: http://ecee.colorado.edu_phorophous
 notes: this is for the minoirty carriers at 300K for Si doped with phorophous
 
-[http://ecee.colorado.edu_arsenic]
+[CaugheyThomas_arsenic]
 model = CaugheyThomas
 mu_min = 52.2
 mu_max = 1417
 Nr = 9.68e16
 alpha = 0.68
+link: http://ecee.colorado.edu_arsenic
 notes: this is for the minoirty carriers at 300K for Si doped with arsenic
 
 [dorkel1981]

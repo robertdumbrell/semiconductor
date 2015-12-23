@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"is",
+				"is_positive"
+			],
+			[
+				"print",
+				"print_model_notes	function"
+			],
+			[
 				"Check",
 				"Check_Doping	function"
 			],
@@ -367,7 +375,15 @@
 			"file": "matterial/bandgap.py",
 			"settings":
 			{
-				"buffer_size": 6256,
+				"buffer_size": 6346,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "recombination/SRH.py",
+			"settings":
+			{
+				"buffer_size": 4607,
 				"line_ending": "Windows"
 			}
 		},
@@ -383,7 +399,7 @@
 			"file": "matterial/ni.py",
 			"settings":
 			{
-				"buffer_size": 2326,
+				"buffer_size": 2503,
 				"line_ending": "Windows"
 			}
 		},
@@ -391,7 +407,7 @@
 			"file": "electrical/mobility.py",
 			"settings":
 			{
-				"buffer_size": 4246,
+				"buffer_size": 11614,
 				"line_ending": "Windows"
 			}
 		},
@@ -399,31 +415,31 @@
 			"file": "electrical/klassen_test.py",
 			"settings":
 			{
-				"buffer_size": 9180,
+				"buffer_size": 10839,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "/C/Users/mattias/Dropbox/CommonCode/Mobility_class.py",
+			"file": "optical/emission.py",
 			"settings":
 			{
-				"buffer_size": 8846,
+				"buffer_size": 13666,
 				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "electrical/Si/Klassen_1e14_temp-450.dat",
+			"settings":
+			{
+				"buffer_size": 3860,
+				"line_ending": "Windows"
 			}
 		},
 		{
 			"file": "electrical/Si/mobility.models",
 			"settings":
 			{
-				"buffer_size": 1111,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "/C/Users/mattias/Dropbox/CommonCode/analysis/EQE/QE.py",
-			"settings":
-			{
-				"buffer_size": 11430,
+				"buffer_size": 1196,
 				"line_ending": "Windows"
 			}
 		},
@@ -444,26 +460,18 @@
 			}
 		},
 		{
-			"file": "/C/Users/mattias/Dropbox/CommonCode/Recombination_v2_01.py",
-			"settings":
-			{
-				"buffer_size": 19437,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "/C/Users/mattias/Dropbox/CommonCode/CarrierDensityWithDepth/HardwareSpecs.py",
-			"settings":
-			{
-				"buffer_size": 4378,
-				"line_ending": "Windows"
-			}
-		},
-		{
 			"file": "recombination/Si/SRH.defects",
 			"settings":
 			{
 				"buffer_size": 3990,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/C/Users/z3186867/Dropbox/Writing/PHD/PhD_Thesis_Markdown/maths/absorptance.py",
+			"settings":
+			{
+				"buffer_size": 1488,
 				"line_ending": "Windows"
 			}
 		},
@@ -476,7 +484,7 @@
 			}
 		}
 	],
-	"build_system": "Packages/Python/Python.sublime-build",
+	"build_system": "Packages/Pandown/Pandown HTML.sublime-build",
 	"build_system_choices":
 	[
 		[
@@ -729,6 +737,202 @@
 			[
 				"Packages/LaTeX-Plus/support/LaTex-Plus.sublime-build",
 				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/Markdown Preview/Markdown.sublime-build",
+					""
+				],
+				[
+					"Packages/Pandown/Pandown HTML.sublime-build",
+					""
+				],
+				[
+					"Packages/Pandown/Pandown HTML.sublime-build",
+					"Pandown: PDF"
+				],
+				[
+					"Packages/Pandown/Pandown HTML.sublime-build",
+					"Pandown: Plain Text"
+				],
+				[
+					"Packages/Pandown/Pandown HTML.sublime-build",
+					"Pandown: LaTeX"
+				],
+				[
+					"Packages/Pandown/Pandown HTML.sublime-build",
+					"Pandown: Word Document"
+				],
+				[
+					"Packages/Pandown/Pandown HTML.sublime-build",
+					"Pandown: Rich Text (RTF)"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					""
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Run"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: Native Haskell"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: JSON"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: Plain Text"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: Markdown"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: reStructuredText"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: XHTML 1"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: HTML 5"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: LaTeX"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: LaTeX - PDF"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: LaTeX Beamer Slideshow"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: LaTeX Beamer Slideshow - PDF"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: ConTeXt"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: Groff Man"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: MediaWiki Markup"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: Textile"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: Emacs Org-Mode"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: GNU Texinfo"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: DocBook XML"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: OpenDocument XML"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: OpenOffice Document"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: Word Document"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: EPUB Book"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: EPUB3"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: FictionBooks 2"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: AsciiDoc"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: Slidy HTML/JS Slideshow"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: Slideous HTML/JS Slideshow"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: DZSlides HTML5/JS Slideshow"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: S5 HTML/JS Slideshow"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: Rich Text (RTF)"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: Markdown with Literate Haskell"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: reStructuredText with Literate Haskell"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: LaTeX with Literate Haskell"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: Beamer with Literate Haskell"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: XHTML 1 with Literate Haskell"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: HTML5 with Literate Haskell"
+				],
+				[
+					"Packages/Pandown/Pandown Markdown.sublime-build",
+					"Pandown: Reveal.js Slideshow"
+				],
+				[
+					"Packages/User/Markdown2.sublime-build",
+					""
+				]
+			],
+			[
+				"Packages/Pandown/Pandown HTML.sublime-build",
+				"Pandown: Word Document"
 			]
 		],
 		[
@@ -1420,7 +1624,7 @@
 			]
 		]
 	],
-	"build_varint": "",
+	"build_varint": "Pandown: Word Document",
 	"command_palette":
 	{
 		"height": 392.0,
@@ -1670,13 +1874,20 @@
 	},
 	"expanded_folders":
 	[
-		"/C/Users/mattias/Dropbox/CommonCode/semiconductor",
-		"/C/Users/mattias/Dropbox/CommonCode/semiconductor/electrical",
-		"/C/Users/mattias/Dropbox/CommonCode/semiconductor/electrical/Si",
-		"/C/Users/mattias/Dropbox/CommonCode/semiconductor/helper"
+		"/C/Users/z3186867/Dropbox/CommonCode/semiconductor"
 	],
 	"file_history":
 	[
+		"/C/Users/z3186867/AppData/Roaming/Sublime Text 3/Packages/User/Pandown.sublime-settings",
+		"/C/Users/z3186867/Dropbox/Writing/PHD/PhD_Thesis_Markdown/maths/pandoc-config.json",
+		"/C/Users/z3186867/Dropbox/CommonCode/semiconductor/electrical/Si/Klassen_1e14_dopants.dat",
+		"/C/Users/z3186867/Dropbox/CommonCode/ui/pvapp/hardware/daq.py",
+		"/C/Users/z3186867/Dropbox/CommonCode/test_semiconductor.py",
+		"/C/Users/z3186867/Dropbox/CommonCode/semiconductor/test.py",
+		"/C/Users/mattias/Dropbox/CommonCode/CarrierDensityWithDepth/HardwareSpecs.py",
+		"/C/Users/mattias/Dropbox/CommonCode/Recombination_v2_01.py",
+		"/C/Users/mattias/Dropbox/CommonCode/analysis/EQE/QE.py",
+		"/C/Users/mattias/Dropbox/CommonCode/Mobility_class.py",
 		"/C/Users/mattias/Dropbox/CommonCode/semiconductor/electrical/Si/Klassen_1e14_carriers.dat",
 		"/C/Users/mattias/Dropbox/CommonCode/semiconductor/electrical/Si/Klassen_1e14_dopants.dat",
 		"/C/Python27/lib/site-packages/matplotlib/axes.py",
@@ -1776,7 +1987,6 @@
 		"/C/Users/mattias/Dropbox/Writing/PHD/PhD_Thesis_Markdown/Revisions/201507XX_SpectralResponseOfPhotoluminescence_V4_TT.md",
 		"/C/Users/mattias/Dropbox/Writing/PHD/PhD_Thesis_Markdown/chapters/SpectralResponseOfPhotoluminescence_V5.html",
 		"/C/Users/mattias/Dropbox/Writing/PHD/PhD_Thesis_Markdown/Revisions/20150806_BackgroundV3.1_HCJ_accept.md",
-		"/C/Users/mattias/Dropbox/CommonCode/CarrierDensityWithDepth/HardwareSpecs.py",
 		"/C/Users/mattias/Dropbox/CommonCode/CarrierDensityWithDepth/TextureEffectOnReabs2.py",
 		"/C/Users/mattias/Dropbox/Writing/PHD/PhD_Thesis_Markdown/Images/Equiptment/PLiExperimental/MakePlot.py",
 		"/C/Users/mattias/Dropbox/CommonCode/CarrierDensityWithDepth/Test_Models.py",
@@ -1795,16 +2005,7 @@
 		"/C/Users/mattias/Dropbox/Writing/PHD/PhD_Thesis_Markdown/chapters/Symbols_table.md",
 		"/C/Users/mattias/AppData/Local/Temp/Expt2_Coherent_Multipoint_Averager.doc",
 		"/C/Users/mattias/Dropbox/Writing/PHD/PhD_Thesis_Markdown/chapters/BackgroundV3.md",
-		"/C/Users/mattias/Dropbox/Writing/PHD/PhD_Thesis_Markdown/To_Latex.md",
-		"/C/Users/mattias/Dropbox/Writing/PHD/PhD_Thesis_Markdown/Revisions/20150730_Absorptivity_V4_HJ_reject.md",
-		"/C/Users/mattias/Dropbox/Writing/PHD/PhD_Thesis_Markdown/Revisions/20150730_Absorptivity_V4_HJ_accept.md",
-		"/C/Users/mattias/Dropbox/Writing/PHD/PhD_Thesis_Markdown/chapters/Absorptivity_V3.md",
-		"/C/Users/mattias/Dropbox/Writing/PHD/PhD_Thesis_Markdown/Revisions/20150730_ExternalQuantumEfficiencyV2_HJ_accept.md",
-		"/C/Users/mattias/Dropbox/Writing/PHD/PhD_Thesis_Markdown/Revisions/20150730_ExternalQuantumEfficiencyV2_HJ_reject.md",
-		"/C/Users/mattias/Dropbox/Writing/PHD/PhD_Thesis_Markdown/Revisions/20150730_ExternalQuantumEfficiencyV2_accept.md",
-		"/C/Users/mattias/Dropbox/Writing/PHD/PhD_Thesis_Markdown/Revisions/20150730_ExternalQuantumEfficiencyV2_reject.md",
-		"/D/PHD revisions/20050728_ExternalQuantumEfficiency_HJ_reject.md",
-		"/D/PHD revisions/20050728_ExternalQuantumEfficiency_HJ_accpeted.md"
+		"/C/Users/mattias/Dropbox/Writing/PHD/PhD_Thesis_Markdown/To_Latex.md"
 	],
 	"find":
 	{
@@ -1823,6 +2024,29 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"Temp",
+			"PBH",
+			"PBH\\",
+			"Temp",
+			"Nsceff",
+			"uc(",
+			"self.uc",
+			"uc",
+			"PCW",
+			"self.un",
+			"un",
+			"alpha",
+			"theta",
+			"lat",
+			"umax",
+			"300",
+			"update_carriers",
+			"N_d",
+			"N_a",
+			"Type",
+			"umax",
+			"dopant_model_list",
+			"threading",
 			"–",
 			"self.Optical",
 			"alpha",
@@ -1927,30 +2151,7 @@
 			" external quantum efficiency ",
 			"voltage",
 			"EQE~Jsc*",
-			"EQE~Jsc ",
-			"Planck",
-			"Plank",
-			"Planck",
-			"Plank",
-			"plank",
-			"n_0",
-			" J~sc~ ",
-			" V~oc~ ",
-			" IQE~Jsc~ ",
-			" EQE~Jsc~ ",
-			"MakeBPFile",
-			"MakePLIFile",
-			"MakeBPFile",
-			"filter",
-			"filtering",
-			"/Experimental_setup/",
-			"\\Experimental_setup\\",
-			"fiber",
-			"heating",
-			"countlessimport numpy as np",
-			"countless",
-			"calibrat",
-			"spectral"
+			"EQE~Jsc "
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -2096,7 +2297,7 @@
 	"groups":
 	[
 		{
-			"selected": 6,
+			"selected": 13,
 			"sheets":
 			[
 				{
@@ -2127,7 +2328,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 8,
+					"stack_index": 12,
 					"type": "text"
 				},
 				{
@@ -2136,32 +2337,64 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6256,
+						"buffer_size": 6346,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1992,
-								1960
+								113,
+								113
 							]
 						],
 						"settings":
 						{
+							"WordCountSyntax": "python",
 							"syntax": "Packages/Python/Python.tmLanguage",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 512.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 9,
 					"type": "text"
 				},
 				{
 					"buffer": 2,
+					"file": "recombination/SRH.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4607,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								144,
+								109
+							]
+						],
+						"settings":
+						{
+							"WordCountSyntax": "python",
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": -0.0,
+						"translation.y": 117.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
 					"file": "matterial/si/bandgapnarrowing.models",
 					"semi_transient": false,
 					"settings":
@@ -2185,164 +2418,16 @@
 						"translation.y": 168.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "matterial/ni.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2326,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								279,
-								279
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
+					"stack_index": 10,
 					"type": "text"
 				},
 				{
 					"buffer": 4,
-					"file": "electrical/mobility.py",
+					"file": "matterial/ni.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4246,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3916,
-								3916
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1123.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "electrical/klassen_test.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 9180,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								9180,
-								9180
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 446.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "/C/Users/mattias/Dropbox/CommonCode/Mobility_class.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 8846,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								5010,
-								4889
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1730.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 7,
-					"file": "electrical/Si/mobility.models",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1111,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								630,
-								630
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 8,
-					"file": "/C/Users/mattias/Dropbox/CommonCode/analysis/EQE/QE.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 11430,
+						"buffer_size": 2503,
 						"regions":
 						{
 						},
@@ -2363,11 +2448,164 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
+					"stack_index": 11,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "electrical/mobility.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 11614,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								9365,
+								9369
+							]
+						],
+						"settings":
+						{
+							"WordCountSyntax": "python",
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1590.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "electrical/klassen_test.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 10839,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4556,
+								4551
+							]
+						],
+						"settings":
+						{
+							"WordCountShouldRun": false,
+							"WordCountSyntax": "python",
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1239.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "optical/emission.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 13666,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2477,
+								2589
+							]
+						],
+						"settings":
+						{
+							"WordCountShouldRun": false,
+							"WordCountSyntax": "python",
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 60.0,
+						"translation.y": 495.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "electrical/Si/Klassen_1e14_temp-450.dat",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3860,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								38,
+								38
+							]
+						],
+						"settings":
+						{
+							"WordCountSyntax": "plain text",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
 					"buffer": 9,
+					"file": "electrical/Si/mobility.models",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1196,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								167,
+								167
+							]
+						],
+						"settings":
+						{
+							"WordCountSyntax": "plain text",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 10,
 					"file": "optical/absorptance.py",
 					"semi_transient": false,
 					"settings":
@@ -2393,11 +2631,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 10,
+					"stack_index": 13,
 					"type": "text"
 				},
 				{
-					"buffer": 10,
+					"buffer": 11,
 					"file": "recombination/GaAs/auger.model",
 					"semi_transient": false,
 					"settings":
@@ -2421,71 +2659,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 11,
-					"type": "text"
-				},
-				{
-					"buffer": 11,
-					"file": "/C/Users/mattias/Dropbox/CommonCode/Recombination_v2_01.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 19437,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 69.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 13,
-					"type": "text"
-				},
-				{
-					"buffer": 12,
-					"file": "/C/Users/mattias/Dropbox/CommonCode/CarrierDensityWithDepth/HardwareSpecs.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4378,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
 					"stack_index": 14,
 					"type": "text"
 				},
 				{
-					"buffer": 13,
+					"buffer": 12,
 					"file": "recombination/Si/SRH.defects",
 					"semi_transient": false,
 					"settings":
@@ -2503,13 +2681,44 @@
 						],
 						"settings":
 						{
+							"WordCountSyntax": "plain text",
 							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 969.0,
+						"translation.y": 98.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 12,
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 13,
+					"file": "/C/Users/z3186867/Dropbox/Writing/PHD/PhD_Thesis_Markdown/maths/absorptance.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1488,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								882,
+								815
+							]
+						],
+						"settings":
+						{
+							"WordCountShouldRun": false,
+							"WordCountSyntax": "python",
+							"syntax": "Packages/Python/Python.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
@@ -2525,20 +2734,23 @@
 						"selection":
 						[
 							[
-								0,
-								0
+								2111,
+								2089
 							]
 						],
 						"settings":
 						{
+							"WordCountSyntax": "python",
 							"auto_name": "",
-							"syntax": "Packages/Python/Python.tmLanguage"
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 63.0,
+						"translation.y": 234.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 9,
+					"stack_index": 6,
 					"type": "text"
 				}
 			]

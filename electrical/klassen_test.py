@@ -14,6 +14,7 @@ import numpy as np
 import time
 import matplotlib.pylab as plt
 import os
+from scipy.optimize import minimize
 # import glob
 # import os
 # import scipy.optimize
@@ -36,19 +37,20 @@ class Mobility_Klassen():
     "A unified mobility model for device simulation-II. Temperature dependence of carrier mobility and lifetime,"
     Solid. State. Electron., vol. 35, no. 7, pp. 961-967, Jul. 1992.
 
+    additional comments taken from https://www.pvlighthouse.com.au/calculators/Mobility%20calculator/Mobility%20calculator.aspx
+
     This is the Klaassen's mobility model, for which the calculations  with two exceptions: 
         (i) r5 is set to -0.8552 rather than -0.01552 (see Table 2 of [1]), 
         (ii) Eq. A3 of [1] is adjusted such that PCWe is determined with Ne,sc rather than (Z^3 Ni) 
          and PCWh is determined with Nh,sc rather than (Z^3 Ni);
 
     these changes give a better fit to the solid calculated lines in Figures 6 and 7 of [1], which better fits the experimental data. 
-    These modifications are also contained in Sentaurus's version of Klaassen's model [5].
+    These modifications are also contained in Sentaurus's version of Klaassen's model .
     Klaassen's mobility model fits reasonably with experimental data over an estimated temperature range of 100 - 450 K.
     Its accuracy is greatest at 300 K (see [1,2]).
     """
 
     # these are the values for phosphorous and boron respectively.
-
     umax = np.array([1414, 470.5])
     umin = np.array([68.5, 44.9])
     theta = np.array([2.285, 2.247])
@@ -64,7 +66,7 @@ class Mobility_Klassen():
 
     fCW, fBH = 2.459, 3.828
 
-    T = 300
+    Temp = 300.
     mr = np.array([1., 1.258])
     # other values of mr?
     # mr = [1./1.258,1.258]  #value taken from
@@ -81,17 +83,25 @@ class Mobility_Klassen():
     # change to hle and electron for clarity
     type_dic = {'hole': 1, 'electron': 0}
 
+    # check that G doesn't get large
+    min_G_check = {'temp': -1, 'P': 300, 'val': 1000}
+
     def update_carriers(self, deltan):
 
         # finding the majority carriers
         self.p0 = self.return_dopant('hole') - self.return_dopant('electron')
-        if self.p0.all() > 0:
+        # print self.return_dopant('hole')- self.return_dopant('electron')
+
+        if np.all(self.p0 > 0):
             self.n0 = self.ni**2 / self.p0
             # print 'p-type'
-        else:
+        elif np.all(self.p0 < 0):
             # print 'n-type'
             self.n0 = -self.p0
             self.p0 = self.ni**2 / self.p0
+        else:
+            print 'how can there be no net dopants?'
+            print self.p0
 
         self.p = deltan + self.p0
         self.n = deltan + self.n0
@@ -114,15 +124,12 @@ class Mobility_Klassen():
 
     def uLS(self, Type):
         i = self.type_dic[Type]
-        return self.umax[i] * (300. / self.T)**self.theta[i]
+        return self.umax[i] * (300. / self.Temp)**self.theta[i]
 
     def uDCS(self, Type):
-
+        """
+        I think this is mu i"""
         i = self.type_dic[Type]
-        print 'here'
-        # print  self.Nsc(Type) ,'\n', self.Nsceff(Type) ,'\n', (
-        #     self.Nref[i] / self.Nsc(Type))**(self.alpha[i]), (
-        #     self.uc(Type) * self.carrier_sum() / self.Nsceff(Type))
 
         return self.un(Type) * self.Nsc(Type) / self.Nsceff(Type) * (
             self.Nref[i] / self.Nsc(Type))**(self.alpha[i]) + (
@@ -135,10 +142,12 @@ class Mobility_Klassen():
         # Done
         i = self.type_dic[Type]
 
-        return self.umax[i] * self.umax[i] / (self.umax[i] - self.umin[i])
+        return self.umax[i] * self.umax[i] / (self.umax[i] - self.umin[i]) * (self.Temp / 300.)**(3. * self.alpha[i] - 1.5)
 
     def Nsc(self, Type):
-
+        """
+        This is Z**2 N_i 
+        """
         # checked
         carrier = self.return_carrer(Type, opposite=True)
 
@@ -181,7 +190,7 @@ class Mobility_Klassen():
 
         i = self.type_dic[Type]
 
-        return self.umin[i] * self.umax[i] / (self.umax[i] - self.umin[i])
+        return self.umin[i] * self.umax[i] / (self.umax[i] - self.umin[i]) * (300. / self.Temp)**0.5
 
     def return_carrer(self, Type, opposite=True):
 
@@ -197,8 +206,8 @@ class Mobility_Klassen():
             carrier = self.n
         return carrier
 
-    def return_dopant(self, Type, opposite=True):
-
+    def return_dopant(self, Type):
+        # print Type
         if Type == 'hole':
             dopant = self.N_a
         elif Type == 'electron':
@@ -209,18 +218,65 @@ class Mobility_Klassen():
 
         return self.p + self.n
 
+    def find_min_G(self):
+        '''
+        As mentioned in 1992:
+        UNIFIED MOBILITY MODEL FOR DEVICE SIMULATION--II. TEMPERATURE DEPENDENCE OF
+        CARRIER MOBILITY AND LIFETIME
+
+        The function of G should not increase again at low values of P. This prevents that
+        '''
+
+        def test_G(P, Type):
+
+            a = 1.
+            b = - self.s1 / \
+                (self.s2 + (self.Temp / 300. / self.mr)
+                 ** self.s4 * P)**self.s3
+            c = self.s5 / \
+                ((300. / self.Temp / self.mr)**self.s7 * P)**self.s6
+
+            b = b[self.type_dic[Type]]
+            c = c[self.type_dic[Type]]
+
+            return (a + b + c)
+
+        # print type(test_G(1))
+        # print minimize(test_G,0.5)
+        # print minimize(test_G, 0.5, args=('electron',))
+        temp = minimize(test_G, 0.5, args=('electron',))['x'][0]
+        temp2 = minimize(test_G, 0.5, args=('hole',))['x'][0]
+
+        self.min_G_check['P'] = [temp, temp2]
+
+        self.min_G_check['G'] = [
+                            test_G(self.min_G_check['P'], 'electron'),
+                            test_G(self.min_G_check['P'], 'hole')
+                                ]
+
+        self.min_G_check['temp'] = self.Temp
+
+
     def G(self, Type):
         """
         Accounts for minority impurity scattering
         """
 
+        if self.min_G_check['temp'] != self.Temp:
+            self.find_min_G()
+
+        P = self.P(Type)
         i = self.type_dic[Type]
+
+
+        P[self.min_G_check['P'][i] > P] = self.min_G_check['P'][i]
+
         a = 1.
         b = - self.s1 / \
-            (self.s2 + (self.T / 300. / self.mr[i])
-             ** self.s4 * self.P(Type))**self.s3
+            (self.s2 + (self.Temp / 300. / self.mr[i])
+             ** self.s4 * P)**self.s3
         c = self.s5 / \
-            ((300. / self.T / self.mr[i])**self.s7 * self.P(Type))**self.s6
+            ((300. / self.Temp / self.mr[i])**self.s7 * P)**self.s6
         return a + b + c
 
     def P(self, Type):
@@ -228,15 +284,19 @@ class Mobility_Klassen():
         return 1. / (self.fCW / self.PCW(Type) + self.fBH / self.PBH(Type))
 
     def PCW(self, Type):
-        # Done
+        """
+        Eq. A3 of [1] is adjusted such that PCWe is determined with Ne,sc rather than (Z^3 Ni) 
+        and PCWh is determined with Nh,sc rather than (Z^3 Ni)
+        """
+
         return 3.97e13 * (
-            1. / (self.Nsc(Type)) * ((self.T / 300.)**(3.)))**(2. / 3.)
+            1. / (self.Nsc(Type)) * ((self.Temp / 300.)**(3.)))**(2. / 3.)
 
     def PBH(self, Type):
         # Done
         i = self.type_dic[Type]
         return 1.36e20 / self.carrier_sum() * (
-            self.mr[i] * (self.T / 300.0)**2.0)
+            self.mr[i] * (self.Temp / 300.0)**2.0)
 
     def F(self, Type):
         """
@@ -263,16 +323,16 @@ class Mobility_Si():
 def Check_Doping():
     plt.figure('Doping Check')
     Mob = Mobility_Klassen()
+    Mob.N_a = np.array([0])
+    Mob.N_d = np.logspace(12, 20)
+
     Mob.N_d = np.array([0])
     Mob.N_a = np.logspace(12, 20)
+
     deltan = np.array([1e14])
 
     plt.plot(Mob.N_a, Mob.mobility_electron(deltan), label='electron type')
     plt.plot(Mob.N_a, Mob.mobility_hole(deltan), label='hole type')
-
-    plt.semilogx()
-    plt.legend(loc=0)
-    plt.grid(True)
 
     # Compare against data from PVlighthouse
 
@@ -281,8 +341,14 @@ def Check_Doping():
 
     data = np.genfromtxt(os.path.join(folder, fname), names=True)
 
-    plt.plot(data['Ndop'], data['ue'], 'r--')
-    plt.plot(data['Ndop'], data['uh'], 'r--')
+    plt.plot(data['Ndop'], data['ue'], '--',
+             label='electron - PV-lighthouse')
+    plt.plot(data['Ndop'], data['uh'], '--',
+             label='hole - PV-lighthouse')
+
+    plt.semilogx()
+    plt.legend(loc=0)
+    plt.grid(True)
 
 
 def Check_Carriers():
@@ -301,18 +367,85 @@ def Check_Carriers():
     plt.legend(loc=0)
     plt.grid(True)
 
-    folder = r'C:\Users\mattias\Dropbox\CommonCode\semiconductor\electrical\Si'
+    folder = os.path.join(os.getcwd(), 'Si')
     fname = 'Klassen_1e14_dopants.dat'
     data = np.genfromtxt(os.path.join(folder, fname), names=True)
-    print data.dtype.names
+    # print data.dtype.names
     plt.plot(data['deltan'], data['ue'], '--',
              label='electron - PV-lighthouse')
     plt.plot(data['deltan'], data['uh'], '--', label='hole - PV-lighthouse')
+    plt.legend(loc=0)
     # plt.show()
 
 
-if __name__ == '__main__':
+def check_G():
+    plt.figure('Carrier Check')
+    Mob = Mobility_Klassen()
 
-    Check_Doping()
+    for temp in [300,400,500,600]:
+        Mob.Temp = temp
+        Mob.N_d = np.array([0])
+        Mob.N_a = np.array([1e14])
+
+        deltan = np.logspace(10, 20)
+        Mob.update_carriers(np.logspace(12, 20))
+
+        plt.plot(Mob.P('electron'), Mob.G('electron'), label='electron mobility')
+        plt.plot(Mob.P('hole'), Mob.G('hole'), label='hole mobility')
+        plt.plot(Mob.min_G_check['P'], Mob.min_G_check[
+                 'G'], 'ro', label='hole mobility')
+
+        plt.loglog()
+        plt.legend(loc=0)
+        plt.grid(True)
+
+    # folder = os.path.join(os.getcwd(), 'Si')
+    # fname = 'Klassen_1e14_dopants.dat'
+    # data = np.genfromtxt(os.path.join(folder, fname), names=True)
+    # print data.dtype.names
+    # plt.plot(data['deltan'], data['ue'], '--',
+             # label='electron - PV-lighthouse')
+    # plt.plot(data['deltan'], data['uh'], '--', label='hole - PV-lighthouse')
+    plt.legend(loc=0)
+
+
+def check_temp():
+    plt.figure('Temp Check')
+    Mob = Mobility_Klassen()
+
+    for Temp in [500.]:
+        Mob.Temp = Temp
+        Mob.N_d = np.array([0.])
+        Mob.N_a = np.array([1e18])
+
+        deltan = np.logspace(10, 20)
+
+        plt.plot(deltan, Mob.mobility_electron(
+            deltan), label='electron mobility')
+        plt.plot(deltan, Mob.mobility_hole(deltan), label='hole mobility')
+
+        plt.semilogx()
+        plt.legend(loc=0)
+        plt.grid(True)
+
+        folder = os.path.join(os.getcwd(), 'Si')
+        fname = 'Klassen_1e14_temp-450.dat'
+        data = np.genfromtxt(os.path.join(folder, fname), names=True)
+
+        plt.plot(data['deltan'], data['ue'], '--',
+                 label='electron - PV-lighthouse')
+        plt.plot(
+            data['deltan'], data['uh'], '--', label='hole - PV-lighthouse')
+        plt.legend(loc=0)
+
+        # Mob.mobility_electron(deltan)
+        # plt.plot(Mob.P('hole'),Mob.G('hole'))
+        # plt.loglog()
+
+
+if __name__ == '__main__':
+    # check_G()
+    # Check_Doping()
     Check_Carriers()
+    check_temp()
     plt.show()
