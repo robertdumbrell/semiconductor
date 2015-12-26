@@ -2,6 +2,12 @@
 import matplotlib.pylab as plt
 
 
+"""
+To do:
+
+    Need to fix the check_doping function
+"""
+
 class HelperFunctions():
 
     def change_model(self, model_author=None):
@@ -79,13 +85,15 @@ class HelperFunctions():
         '''
         checks that Na*Nd is at least bigger than ni^2
         then increases it
+
+        This is rubish
         '''
 
-        if Na * Nd < self.ni**2:
-            if Na > Nd:
-                Nd = self.ni**2 / Na
-            else:
-                Nd = self.ni**2 / Na
+        # if np.any(Na * Nd) < self.ni**2:
+            # if Na > Nd:
+                # Nd = self.ni**2 / Na
+            # else:
+                # Nd = self.ni**2 / Na
         return Na, Nd
 
     def print_model_notes(self, model=None):
