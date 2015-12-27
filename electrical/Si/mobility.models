@@ -42,3 +42,34 @@ muL0h = 495
 temp0 = 300
 DOI: 10.1016/0038-1101(81)90097-6 
 notes: mobility accounting for each component. Depends on dopents, carrier type and concentration. Claims that the calculated mobility deviates by an average of 5% from experimental values. Note At the time of Dorkel and Leturcq's work, most experimental work had been done at 300 K.
+
+
+[klaassen1992]
+model = unified_mobility
+umax = 1414, 470.5
+umin = 68.5, 44.9
+theta = 2.285, 2.247
+# Nref        = array([9.68e16, 2.23e17]) #sentarous - arsnic
+Nref = 9.2e16, 2.23e17
+alpha = .711, .719
+c = 0.21, 0.5
+Nref2 = 4e20, 7.2e20
+fCW = 2.459
+fBH = 3.828
+mr = 1., 1.258
+# other values of mr?
+# mr = [1./1.258,1.258]  #value taken from
+# users.cecs.anu.edu.au/~u5096045/QSSModel52.xls is m1/m2
+s1 = .89233 
+s2 = .41372
+s3 = .19778
+s4 = .28227
+s5 = .005978
+s6 = 1.80618
+s7 = 0.72169
+r1 = .7643
+r2 = 2.2999
+r3 = 6.5502
+r4 = 2.367
+r5 = -0.8552
+r6 = .6478

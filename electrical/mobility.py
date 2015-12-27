@@ -76,9 +76,14 @@ if __name__ == "__main__":
     a.change_model('dorkel1981')
     
     print dn.shape, a.hole_mobility(dn, Nd, 0, maj_car_den = 1e16, temp=300).shape
-    plt.plot(dn, a.hole_mobility(dn, Nd, 0, maj_car_den = 1e16 +dn, temp=300), '--')
+    plt.plot(dn, a.hole_mobility(dn, Nd, 0, maj_car_den = 1e16 + dn, temp=300), '--')
     plt.plot(dn, a.electron_mobility(dn, Nd, 0, maj_car_den = 1e16 +dn, temp=300), '--')
     plt.ylim(bottom = 0)
+
+    # a.change_model('klaassen1992')
+    # # (self, vals, p0, n0, dn, temp, carrier)
+    # plt.plot(dn, a.hole_mobility(dn, Nd, 0, N_d = 1e16, N_a = 0, temp=300), '--')
+    # plt.plot(dn, a.electron_mobility(dn, Nd, 0, N_d = 1e16, N_a = 0, temp=300), '--')
 
     plt.semilogx()
     plt.show()
