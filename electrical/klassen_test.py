@@ -336,7 +336,7 @@ def Check_Doping():
 
     # Compare against data from PVlighthouse
 
-    folder = r'C:\Users\mattias\Dropbox\CommonCode\semiconductor\electrical\Si'
+    folder = os.path.join(os.getcwd(), 'Si')
     fname = 'Klassen_1e14_carriers.dat'
 
     data = np.genfromtxt(os.path.join(folder, fname), names=True)
@@ -377,6 +377,16 @@ def Check_Carriers():
     plt.legend(loc=0)
     # plt.show()
 
+    plt.figure('components')
+    print Mob.uLS('electron'), Mob.uLS('hole')
+    print Mob.un('electron'), Mob.un('hole')
+    print Mob.uc('electron'), Mob.uc('hole')
+    plt.plot(deltan, Mob.Nsc('electron'))
+    plt.plot(deltan, Mob.Nsc('hole'))
+    plt.plot(deltan, Mob.Nsceff('electron'))
+    plt.plot(deltan, Mob.Nsceff('hole'))
+
+    plt.loglog()
 
 def check_G():
     plt.figure('Carrier Check')
@@ -413,10 +423,10 @@ def check_temp():
     plt.figure('Temp Check')
     Mob = Mobility_Klassen()
 
-    for Temp in [500.]:
+    for Temp in [450.]:
         Mob.Temp = Temp
         Mob.N_d = np.array([0.])
-        Mob.N_a = np.array([1e18])
+        Mob.N_a = np.array([1e14])
 
         deltan = np.logspace(10, 20)
 
@@ -447,5 +457,5 @@ if __name__ == '__main__':
     # check_G()
     # Check_Doping()
     Check_Carriers()
-    check_temp()
+    # check_temp()
     plt.show()
