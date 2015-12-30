@@ -15,7 +15,7 @@ def add_mobilities(self, mobility_list):
     return 1. / imobility
 
 
-def CaugheyThomas(vals,  impurity, min_car_den, **kwargs):
+def CaugheyThomas(vals,  Na, Nd, min_car_den, **kwargs):
     '''
     emperical form for one temperature taken from:
     D. M. Caughey and R. E. Thomas, Proc. U.E.E., pp. 2192,
@@ -30,13 +30,13 @@ def CaugheyThomas(vals,  impurity, min_car_den, **kwargs):
         mobility (cm^2 V^-1 s^-1)
 
     '''
-
+    impurity = Na, Nd
     mu = vals['mu_min'] + (vals['mu_max'] - vals['mu_min']
                            ) / (1. + (impurity / vals['nr'])**vals['alpha'])
     return mu
 
 
-def dorkel(vals, impurity, min_car_den, maj_car_den, temp, carrier, **kwargs):
+def dorkel(vals, Na, Nd, min_car_den, maj_car_den, temp, carrier, **kwargs):
     '''
     not consistent with PVlihthouse at high injection
 
@@ -49,6 +49,8 @@ def dorkel(vals, impurity, min_car_den, maj_car_den, temp, carrier, **kwargs):
          electron mobility (cm^2 V^-1 s^-1)
          hole mobility (cm^2 V^-1 s^-1)
     '''
+
+    impurity = Na, Nd
 
     # this relatves the carrier to the extension in the variable name
     if carrier == 'electron':
@@ -118,7 +120,7 @@ def carrier_scattering_mobility(vals, min_car_den, maj_car_den, temp):
 
 
 
-def unified_mobility(vals, impurity, dn, N_a, N_d, temp, carrier, ni):
+def unified_mobility(vals, Na, Nd, dn, temp, carrier, ni):
 
     """
     Thaken from: 
@@ -157,16 +159,11 @@ def unified_mobility(vals, impurity, dn, N_a, N_d, temp, carrier, ni):
         print 'incorrect input for carrier input'
 
 
-    # impurity not used
-
-    vals = vals
-    Na = N_a
-    Nd = N_d
-    ni = ni
-    temp = temp
+    # Things to fix up
+    # ni = ni
 
     # the only thing ni is used for, this can be factored out so these values are passed to this function
-    p, n = num_of_carrer(dn, N_d, N_a, ni)
+    p, n = num_of_carrer(dn, Nd, Na, ni)
 
 
 
@@ -181,7 +178,7 @@ def uDCS(carrier, vals, p, n, Na, Nd, temp):
 
     return un(carrier, vals, temp) * Nsc(carrier, vals, p, n, Na, Nd) / Nsceff(carrier, vals, p, n, Na, Nd, temp) * (
         vals['nref_'+carrier] / Nsc(carrier, vals,  p, n, Na, Nd))**(vals['alpha_'+carrier]) + (
-        uc(carrier, vals) * carrier_sum / Nsceff(carrier, vals, p, n, Na, Nd, temp))
+        uc(carrier, vals, temp) * carrier_sum / Nsceff(carrier, vals, p, n, Na, Nd, temp))
 
 def un(carrier, vals, temp):
     """
@@ -194,11 +191,11 @@ def un(carrier, vals, temp):
 def Nsc(carrier, vals,  p, n, Na, Nd):
 
     # checked
-    carrier = return_carrer(carrier, p, n, opposite=True)
+    car_den = return_carrer(carrier, p, n, opposite=True)
 
     return return_dopant('e', Na, Nd) * Z('e', vals, Na, Nd) + (
         return_dopant('h', Na, Nd) * Z('h', vals, Na, Nd) +
-        carrier)
+        car_den)
 
 def Nsceff(carrier, vals, p, n, Na, Nd, temp):
 
@@ -215,6 +212,9 @@ def Nsceff(carrier, vals, p, n, Na, Nd, temp):
         N_d = G(carrier, vals, p,n, Na, Nd, temp)
         N_d *= return_dopant('e', Na, Nd) * Z('e', vals, Na, Nd)
         N_a = return_dopant('h', Na, Nd) * Z('h', vals, Na, Nd)
+
+    else:
+        print 'Something has gone wrong in the code'
 
     # plt.figure('test')
     # print ' starting:'
@@ -283,13 +283,14 @@ def F(carrier, vals, p,n, Na, Nd, temp):
         vals['r5'] * vals['mr_'+carrier] / vals['mr_'+switch[carrier]])
 
 
-def uc(carrier, vals):
+def uc(carrier, vals, temp):
     """
     excess carrier scattering
     """
     # Done
 
-    return vals['umin_'+carrier] * vals['umax_'+carrier] / (vals['umax_'+carrier] - vals['umin_'+carrier])
+    return vals['umin_'+carrier] * vals['umax_'+carrier] / (
+        vals['umax_'+carrier] - vals['umin_'+carrier]) * (300. / temp)**0.5
 
 
 
@@ -315,7 +316,7 @@ def num_of_carrer(deltan, Nd, Na, ni):
 
     p = deltan + p0
     n = deltan + n0
-    print deltan, p0, n0
+    
     return p, n
 
 

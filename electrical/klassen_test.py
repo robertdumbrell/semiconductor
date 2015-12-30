@@ -456,6 +456,6 @@ def check_temp():
 if __name__ == '__main__':
     # check_G()
     # Check_Doping()
-    Check_Carriers()
-    # check_temp()
+    # Check_Carriers()
+    check_temp()
     plt.show()

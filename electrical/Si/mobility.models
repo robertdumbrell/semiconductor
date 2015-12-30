@@ -1,6 +1,6 @@
 
 [default]
-model = dorkel1981
+model = klaassen1992
 
 [CaugheyThomas_boron]
 model = CaugheyThomas
@@ -58,12 +58,12 @@ theta_h = 2.247
 # Nref        = array([9.68e16, 2.23e17]) #sentarous - arsnic
 Nref_e = 9.2e16
 Nref_h = 2.23e17
+Nref2_e = 4e20
+Nref2_h = 7.2e20
 alpha_e = .711
 alpha_h = .719
 c_e = 0.21
 c_h =  0.5
-Nref2_e = 4e20
-Nref2_h = 7.2e20
 fCW = 2.459
 fBH = 3.828
 mr_e = 1.
@@ -84,3 +84,9 @@ r3 = 6.5502
 r4 = 2.367
 r5 = -0.8552
 r6 = .6478
+notes: A very good model. This include the changes made by
+		sentarous
+
+[Schindler2014]
+model = unified_mobility
+notes: something

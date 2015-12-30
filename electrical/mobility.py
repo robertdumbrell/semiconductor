@@ -34,18 +34,17 @@ class Mobility(HelperFunctions):
     def electron_mobility(self, min_car_den, Na, Nd, **kwargs):
 
         self.Nh_0, self.Ne_0 = self.check_doping(Na, Nd)
-        impurity = Na + Nd
+
 
         return getattr(model, self.model)(
-            self.vals, impurity, min_car_den,  ni=self.ni, carrier='electron', **kwargs)
+            self.vals, Na, Nd, min_car_den,  ni=self.ni, carrier='electron', **kwargs)
 
     def hole_mobility(self, min_car_den, Na, Nd, **kwargs):
 
         self.Nh_0, self.Ne_0 = self.check_doping(Na, Nd)
-        impurity = Na + Nd
 
         return getattr(model, self.model)(
-            self.vals, impurity, min_car_den, ni=self.ni, carrier='hole', **kwargs)
+            self.vals, Na, Nd, min_car_den, ni=self.ni, carrier='hole', **kwargs)
 
     def mobility_sum(self, min_car_den, Na, Nd, **kwargs):
 
@@ -53,58 +52,47 @@ class Mobility(HelperFunctions):
             self.electron_mobility(min_car_den, Na, Nd, **kwargs)
 
 
-if __name__ == "__main__":
+def check_klaassen():
+    '''compares to values taken from www.PVlighthouse.com.au'''
 
     a = Mobility('Si')
-
-    # a.change_model('dorkel1981')
+    a.change_model('klaassen1992')
 
     dn = np.logspace(10, 20)
     # dn = np.array([1e14])
     Nd = 1e14
     Na = 0
-    # mob_e = model.dorkel(a.vals, Nd, dn, dn + Nd, 300., carrier='electron')
 
-    # plt.plot(dn, mob_e)
-    # # plt.plot(dn, mob_h)
-
-    # a.change_model('dorkel1981')
-
-    # print dn.shape, a.hole_mobility(dn, Nd, 0, maj_car_den=1e16, temp=300).shape
-    # plt.plot(dn, a.hole_mobility(
-    #     dn, Nd, 0, maj_car_den=1e16 + dn, temp=300), '--')
-    # plt.plot(dn, a.electron_mobility(
-    #     dn, Nd, 0, maj_car_den=1e16 + dn, temp=300), '--')
-    # plt.ylim(bottom=0)
-
-    a.change_model('klaassen1992')
-    # (self, vals, p0, n0, dn, temp, carrier)
-    plt.plot(dn, a.hole_mobility(dn, Nd, Na, N_d=Nd, N_a=Na, temp=300))
-    plt.plot(dn, a.electron_mobility(dn, Nd, Na, N_d = Nd, N_a = Na, temp=300))
 
     folder = os.path.join(os.getcwd(), 'Si')
-    fname = 'Klassen_1e14_dopants.dat'
-    data = np.genfromtxt(os.path.join(folder, fname), names=True)
-    # print data.dtype.names
-    plt.plot(data['deltan'], data['ue'], '--',
-             label='electron - PV-lighthouse')
-    plt.plot(data['deltan'], data['uh'], '--', label='hole - PV-lighthouse')
-    plt.legend(loc=0)
+    fnames = ['Klassen_1e14_dopants.dat',
+         'Klassen_1e14_temp-450.dat']
+
+    for temp, f_name in zip([300, 450], fnames):
+
+        plt.figure('Deltan at '+ str(temp))
+        
+        plt.plot(dn, a.hole_mobility(dn, Na, Nd,  temp=temp), 
+            'r-',
+            label='hole-here')
+        plt.plot(dn, a.electron_mobility(dn, Na, Nd, temp=temp), 
+            'b-',
+            label='electron-here')
+
+        
+        data = np.genfromtxt(os.path.join(folder, f_name), names=True)
+
+        plt.plot(data['deltan'], data['uh'], 'b--',
+         label='hole - PV-lighthouse')
+        plt.plot(data['deltan'], data['ue'], 'r--',
+                 label='electron - PV-lighthouse')
+        plt.legend(loc=0, title='Mobility from')
 
 
-    print model.uLS('e', a.vals, 300), model.uLS('h', a.vals, 300)
-    print model.un('e', a.vals, 300), model.un('h', a.vals, 300)
-    print model.uc('e', a.vals), model.uc('h', a.vals)
+        plt.semilogx()
+        plt.xlabel(r'$\Delta$n (cm$^{-3}$)')
+        plt.xlabel(r'Moblity  (cm$^2$V$^{-1}$s$^{-1}$)')
 
-
-    # plt.figure('components')
-    # plt.plot(dn, model.Nsc('e', a.vals,  Nd+dn, dn, 0, Nd))
-    # plt.plot(dn, model.Nsc('h', a.vals,  Nd+dn, dn, 0, Nd))
-
-    # plt.plot(dn, model.Nsceff('e', a.vals,Nd+dn , dn, Nd, 0, 300))
-    # plt.plot(dn, model.Nsceff('h', a.vals,Nd+dn , dn, Nd, 0, 300))
-
-    # plt.loglog()
-
-    plt.semilogx()
+if __name__ == "__main__":
+    check_klaassen()
     plt.show()
