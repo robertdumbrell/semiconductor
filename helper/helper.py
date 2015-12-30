@@ -1,6 +1,14 @@
 
 import matplotlib.pylab as plt
+import json
+import sys
 
+
+"""
+To do:
+
+    Need to fix the check_doping function
+"""
 
 class HelperFunctions():
 
@@ -19,10 +27,18 @@ class HelperFunctions():
         del self.vals['model']
 
         for k, v in self.vals.iteritems():
+
+            # checks if float or list
             try:
                 self.vals[k] = float(v)
+           
             except:
-                pass
+                try:
+                    self.vals[k] =[float(i) for i in  v.split(';')]
+                    # print self.vals[k]
+                except:
+                    pass
+        pass
 
     def plot_all_models(self, update_function, xvalues=None, **kwargs):
         '''
@@ -79,13 +95,15 @@ class HelperFunctions():
         '''
         checks that Na*Nd is at least bigger than ni^2
         then increases it
+
+        This is rubish
         '''
 
-        if Na * Nd < self.ni**2:
-            if Na > Nd:
-                Nd = self.ni**2 / Na
-            else:
-                Nd = self.ni**2 / Na
+        # if np.any(Na * Nd) < self.ni**2:
+            # if Na > Nd:
+                # Nd = self.ni**2 / Na
+            # else:
+                # Nd = self.ni**2 / Na
         return Na, Nd
 
     def print_model_notes(self, model=None):

@@ -8,7 +8,7 @@ sys.path.append('../matterial')
 sys.path.append('./Si')
 
 import semiconductor.matterial.ni as ni
-import semiconductor.optical.silicon.opticalproperties as opticalproperties
+import semiconductor.optical.Si.opticalproperties as opticalproperties
 import semiconductor.optical.absorptance as absorptance
 
 
@@ -207,7 +207,7 @@ class Simulated_PL_emission(SpontaneousRadiativeMeission):
 
         self.np = self.doping * deltan
 
-    def initalise_EmittedPL(self):
+    def initalise_EmittedPL(self, temp=None):
         """
         Used for obtained the basic values required for this caculation
         i.e. optical cosntants, ni, an escape fraction
@@ -221,8 +221,7 @@ class Simulated_PL_emission(SpontaneousRadiativeMeission):
         # self.wavelength_emission = self.wavelength_emission[index]
         # self.optics_alpha_BB = self.optics_alpha_BB[index]
         # self.optics.n = self.optics.n[index]
-
-        self.ni.update_ni
+        self.ni.update_ni(temp)
 
         # The wafter thickiness is taken as the last value in the x-direction
         self.update_escape()
@@ -269,7 +268,7 @@ class Simulated_PL_emission(SpontaneousRadiativeMeission):
         # Normalised to deltan = 1, so we can just multi this by deltan
 
         if self.np.shape == self.x.shape:
-
+            print self.np[0], self.ni.ni
 #            print self.rsp.shape, self.escapeprob.shape, self.ni.ni, self.np.shape, '\n\n'
             self.Spectral_PL = numpy.trapz((self.rsp * self.escapeprob).T
                                            * self.np / self.ni.ni**2,
@@ -277,7 +276,7 @@ class Simulated_PL_emission(SpontaneousRadiativeMeission):
                                            axis=1)
 
         else:
-            print 'x and np differnt lengths'
+            print 'x and np are differnt lengths'
 
     def caculate_detected_PL(self):
         """

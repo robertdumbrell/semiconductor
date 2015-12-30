@@ -42,15 +42,20 @@ class IntrinsicCarrierDensity(HelperFunctions):
         self.change_model(model_author)
         self.temp = temp
 
-    def update_ni(self, temp=None):
+    def update_ni(self, temp=None, doping=None):
         if temp is None:
             temp = self.temp
 
-        self.ni = getattr(self, self.model)(self.vals, temp)
-        # print self.ni
+        if doping is None:
+            print 'Assuming doping is 1e16'
+            doping = 1e16
+
+        self.ni = getattr(self, self.model)(
+            self.vals, temp=temp, doping=doping)
+        print self.ni
         return self.ni
 
-    def ni_temp(self, vals, temp):
+    def ni_temp(self, vals, temp, *args):
         """
          This form comes from Bludau, Onton, and
          Heinke3 and Macfarlane et a1.31 as cited by Green,3 is
@@ -67,11 +72,13 @@ class IntrinsicCarrierDensity(HelperFunctions):
          This form comes from Bludau, Onton, and
          Heinke3 and Macfarlane et a1.31 as cited by Green,3 
         """
-        Eg = BandGap(self.matterial, vals['eg_model'], None).update_Eg(temp, doping, min_car_den, 'dopant')
+        Eg = BandGap(self.matterial, vals['eg_model'], None).caculate_Eg(
+            temp, doping, min_car_den, 'dopant')
 
-        # print vals, Eg
+
         ni = vals['a'] * temp**vals['power'] * \
-            np.exp(- Eg / 2. / Const.k / temp)
+            np.exp(- Eg / 2. * Const.e / Const.k / temp)
+        print vals, Eg, ni
 
         return ni
 
