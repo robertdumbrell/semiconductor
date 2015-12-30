@@ -64,7 +64,7 @@ def check_klaassen():
     Na = 0
 
 
-    folder = os.path.join(os.getcwd(), 'Si')
+    folder = os.path.join(os.getcwd(), 'Si', 'test_mobility_files')
     fnames = ['Klassen_1e14_dopants.dat',
          'Klassen_1e14_temp-450.dat']
 
