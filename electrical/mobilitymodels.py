@@ -36,7 +36,7 @@ def CaugheyThomas(vals,  Na, Nd, min_car_den, **kwargs):
     return mu
 
 
-def dorkel(vals, Na, Nd, min_car_den, maj_car_den, temp, carrier, **kwargs):
+def dorkel(vals, Na, Nd, dn, temp, carrier, ni, **kwargs):
     '''
     not consistent with PVlihthouse at high injection
 
@@ -50,7 +50,15 @@ def dorkel(vals, Na, Nd, min_car_den, maj_car_den, temp, carrier, **kwargs):
          hole mobility (cm^2 V^-1 s^-1)
     '''
 
-    impurity = Na, Nd
+    impurity = Na + Nd
+    p, n = num_of_carrer(dn, Nd, Na, ni)
+    if np.all(p < n):
+        min_car_den = p 
+        maj_car_den = n
+    else:
+        maj_car_den = p
+        min_car_den = n
+
 
     # this relatves the carrier to the extension in the variable name
     if carrier == 'electron':
@@ -93,6 +101,7 @@ def impurity_mobility(vals, impurity, temp, carrier):
     of the pr component is that of Brooks and
     Herring
     '''
+
     A = np.log(1. + vals['b' + carrier] * temp**2 / impurity)
     B = (vals['b' + carrier] * temp ** 2.) / \
         (impurity + vals['b' + carrier] * temp**2)
@@ -117,7 +126,7 @@ def carrier_scattering_mobility(vals, min_car_den, maj_car_den, temp):
 
 
 
-
+## below this are the functions for klaassen's model
 
 
 def unified_mobility(vals, Na, Nd, dn, temp, carrier, ni):

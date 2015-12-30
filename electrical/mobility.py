@@ -93,6 +93,48 @@ def check_klaassen():
         plt.xlabel(r'$\Delta$n (cm$^{-3}$)')
         plt.xlabel(r'Moblity  (cm$^2$V$^{-1}$s$^{-1}$)')
 
+def check_dorkel():
+    '''compares to values taken from www.PVlighthouse.com.au'''
+
+    a = Mobility('Si')
+    a.change_model('dorkel1981')
+
+    dn = np.logspace(10, 20)
+    # dn = np.array([1e14])
+    Nd = 1e14
+    Na = 0
+
+
+    folder = os.path.join(os.getcwd(), 'Si', 'test_mobility_files')
+    fnames = ['dorkel_1e14_carriers.dat',
+         'dorkel_1e14_temp-450.dat']
+
+    for temp, f_name in zip([300, 450], fnames):
+
+        plt.figure('Deltan at '+ str(temp))
+        
+        plt.plot(dn, a.hole_mobility(dn, Na, Nd,  temp=temp), 
+            'r-',
+            label='hole-here')
+        plt.plot(dn, a.electron_mobility(dn, Na, Nd, temp=temp), 
+            'b-',
+            label='electron-here')
+
+        
+        data = np.genfromtxt(os.path.join(folder, f_name), names=True)
+
+        plt.plot(data['deltan'], data['uh'], 'b--',
+         label='hole - PV-lighthouse')
+        plt.plot(data['deltan'], data['ue'], 'r--',
+                 label='electron - PV-lighthouse')
+        plt.legend(loc=0, title='Mobility from')
+
+
+        plt.semilogx()
+        plt.xlabel(r'$\Delta$n (cm$^{-3}$)')
+        plt.xlabel(r'Moblity  (cm$^2$V$^{-1}$s$^{-1}$)')
+
 if __name__ == "__main__":
     check_klaassen()
+    check_dorkel()
     plt.show()
