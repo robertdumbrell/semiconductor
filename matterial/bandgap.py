@@ -11,7 +11,7 @@ sys.path.append(
 
 from semiconductor.helper.helper import HelperFunctions
 import semiconductor.matterial.intrinsicbandgapmodels as iBg
-
+import semiconductor.matterial.BandgapNarrowingModels as Bgn
 
 class BandGap():
 
@@ -131,7 +131,8 @@ class IntrinsicBandGap(HelperFunctions):
 
         return Eg * multiplier 
 
-    def check(self):
+    def check_models(self):
+        plt.figure('Intrinsic bandgap')
         t = np.linspace(100,500)
         
         for model in self.available_models():
@@ -141,10 +142,11 @@ class IntrinsicBandGap(HelperFunctions):
         
         test_file = os.path.join(
             os.path.dirname(os.path.realpath(__file__)),
-            'Si','check data','Data.csv')
-        print test_file
+            'Si','check data','iBg.csv')
+
         data = np.genfromtxt(test_file, delimiter = ',', names=True)
-        plt.plot(data['temp'],data['Bg'],'r--', label= 'PV-lighthouse\'s: Passler')
+        for name in data.dtype.names[1:]:
+            plt.plot(data['temp'],data[name],'r--', label= 'PV-lighthouse\'s: '+name)
 
         plt.xlabel('Temperature (K)')
         plt.ylabel('Intrinsic Bandgap (K)')
@@ -163,7 +165,7 @@ class BandGapNarrowing(HelperFunctions):
         is much larger than the impact of the carrier distribution
     '''
 
-    model_file = 'bandgapnarrowing.models'
+    model_file = 'bandgap_narrowing.models'
 
     def __init__(self, matterial='Si', model=None):
         self.Models = ConfigParser.ConfigParser()
@@ -177,53 +179,37 @@ class BandGapNarrowing(HelperFunctions):
         self.Models.read(constants_file)
         self.change_model(model)
 
-    def update_BGN(self, doping, min_car_den=None):
+    def update_BGN(self, doping, min_car_den=None, model = None):
 
-        if temp is None:
-            temp = self.temp
-        self.BGN = getattr(self, self.model)(self.vals, doping, min_car_den)
+        if model is not None:
+            self.change_model(model) 
 
-        return self.BGN
+        return getattr(Bgn, self.model)(self.vals, doping, min_car_den)
 
-    def apparent_BNG(self, vals, doping, *args):
-        '''
-        It returns the 'apparent BGN'. This estimates the real bandgap narrowing, 
-        but uses boltzman stats
-        where N is the net dopant concentration. 
-        '''
+    def check_models(self):
+        plt.figure('Bandgap narrowing')
+        doping = np.logspace(12,20)
+        
+        for model in self.available_models():
+            BGN = self.update_BGN(doping, model=model)
+            plt.plot(doping, BGN, label=model)
+        
+        test_file = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            'Si','check data','Bgn.csv')
 
-        if type(doping).__module__ != np.__name__:
-            doping = np.array(doping)
 
-        BGN = np.zeros(np.array(doping).shape)
+        data = np.genfromtxt(test_file, delimiter = ',', names=True)
+        print data.dtype.names
+        for name in data.dtype.names[1:]:
+            plt.plot(data['N'],data[name],'r--', label= 'PV-lighthouse\'s: '+name)
 
-        index = doping > vals['n_onset']
-        BGN[index] = (
-            vals['de_slope'] * np.log(doping[index] / vals['n_onset']))
+        plt.semilogx()
+        plt.xlabel('Doping (cm$^{-3}$)')
+        plt.ylabel('Bandgap narrowing (K)')
 
-        return BGN
+        plt.legend(loc=0)
 
-    def BNG_dummpy(self):
-        pass
-
-    def BNG(self, vals, doping, *args):
-        '''
-        It returns the BGN when applied for carriers with fermi distribution.
-        This estimates the real bandgap narrowing, 
-        but uses boltzman stats
-        where N is the net dopant concentration. 
-        '''
-        # BGN = np.zeros(doping.shape)
-
-        BGN = vals['de_slope']\
-            * np.power(np.log(doping / vals['n_onset']), vals['b'])\
-            + vals['de_offset']
-
-        # ensures no negitive values
-        if BGN.size > 1 :
-            BGN[BGN < 0] = 0
-
-        return BGN
 
 if __name__ == "__main__":
     # a = IntrinsicCarrierDensity()
@@ -233,7 +219,8 @@ if __name__ == "__main__":
     a = BandGap('Si')
     
 
-    IntrinsicBandGap().check()
+    IntrinsicBandGap().check_models()
+    BandGapNarrowing().check_models()
     plt.show()
     # a.print_model_notes()
     # deltan = np.logspace(12, 17)
