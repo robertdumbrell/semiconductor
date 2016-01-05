@@ -1,5 +1,5 @@
 import numpy as np
-from pylab import *
+import matplotlib.pylab as plt
 import sys
 import os
 import scipy.constants as Const
@@ -10,6 +10,7 @@ sys.path.append(
     os.path.abspath(os.path.join(os.getcwd(), os.pardir, os.pardir)))
 
 from semiconductor.helper.helper import HelperFunctions
+import semiconductor.matterial.intrinsicbandgapmodels as iBg
 
 
 class BandGap():
@@ -104,36 +105,51 @@ class IntrinsicBandGap(HelperFunctions):
     # print self.E0_Passler(temp)/1.602e-19,E
     #     return E * Const.e
 
-    def update_Eg(self, temp=None):
+    def update_Eg(self, temp=None, model=None, multiplier=1.01):
+        '''
+        a function to update the intrinsic BandGap
+
+        inputs: 
+            temperature in kelvin
+            model: (optional) 
+                  the model used. 
+                  If not provided the last provided model is used
+                  If no model has been provided Passler model is used
+            multiplier: A band gap multipler. 1.01 is suggested.
+
+        output:
+            the intrinsic bandgap
+        '''
 
         if temp is None:
             temp = self.temp
-        self.Eg = getattr(self, self.model)(self.vals, temp)
+        if model is not None:
+            self.change_model(model)
 
-        return self.Eg
 
-    def Eg_Passler(self, vals, temp):
-        """
-        taken from Couderc2014
-        depent on temperature
+        Eg = getattr(iBg, self.model)(self.vals, temp)
 
-        returns Eg in eV
-        """
+        return Eg * multiplier 
 
-        gamma = (1. - 3. * vals['delta']**2) / \
-            (np.exp(vals['theta'] / temp) - 1)
-        xi = 2. * temp / vals['theta']
+    def check(self):
+        t = np.linspace(100,500)
+        
+        for model in self.available_models():
+            # print model
+            Eg = self.update_Eg(t, model=model, multiplier = 1.01)
+            plt.plot(t, Eg, label=model)
+        
+        test_file = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            'Si','check data','Data.csv')
+        print test_file
+        data = np.genfromtxt(test_file, delimiter = ',', names=True)
+        plt.plot(data['temp'],data['Bg'],'r--', label= 'PV-lighthouse\'s: Passler')
 
-        # Values for each sum component
-        No2 = np.pi**2. * xi**2. / (3. * (1 + vals['delta']**2))
-        No3 = (3. * vals['delta']**2 - 1) / 4. * xi**3
-        No4 = 8. / 3. * xi**4.
-        No5 = xi**6.
+        plt.xlabel('Temperature (K)')
+        plt.ylabel('Intrinsic Bandgap (K)')
 
-        E = vals['e0'] - vals['alpha'] * vals['theta'] * \
-            (gamma + 3. * vals['delta']**2 / 2 *
-             ((1. + No2 + No3 + No4 + No5)**(1. / 6.) - 1))
-        return E 
+        plt.legend(loc=0)
 
 
 class BandGapNarrowing(HelperFunctions):
@@ -159,13 +175,12 @@ class BandGapNarrowing(HelperFunctions):
             self.model_file)
 
         self.Models.read(constants_file)
-
         self.change_model(model)
 
     def update_BGN(self, doping, min_car_den=None):
 
-        # if temp is None:
-        #     temp = self.temp
+        if temp is None:
+            temp = self.temp
         self.BGN = getattr(self, self.model)(self.vals, doping, min_car_den)
 
         return self.BGN
@@ -214,14 +229,19 @@ if __name__ == "__main__":
     # a = IntrinsicCarrierDensity()
     # a._PlotAll()
     # plt.show()
+    
     a = BandGap('Si')
+    
+
+    IntrinsicBandGap().check()
+    plt.show()
     # a.print_model_notes()
     # deltan = np.logspace(12, 17)
     # print a.Radiative.ni, a.Auger.ni
-    doping = np.logspace(12, 20, 100)
-    # a.plot_all_models('update_BGN', xvalues=doping, doping=doping)
+    # doping = np.logspace(12, 20, 100)
+    # # a.plot_all_models('update_BGN', xvalues=doping, doping=doping)
 
-    a.caculate_Eg(300., 1e16, 1e16, 'boron')
-    # print plt.plot(doping, a.update_BGN(doping))
-    plt.semilogx()
-    plt.show()
+    # a.caculate_Eg(300., 1e16, 1e16, 'boron')
+    # # print plt.plot(doping, a.update_BGN(doping))
+    # plt.semilogx()
+    # plt.show()

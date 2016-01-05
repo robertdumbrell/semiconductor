@@ -1,0 +1,29 @@
+
+
+[default]
+model: Passler2002
+
+[Passler2002]
+; the form is taken from Couderc2014
+model: Passler
+E0: 1.17
+alpha: 3.23e-4
+theta: 446.
+delta: 0.51
+notes: Temperature range 2-415 k
+
+
+[Thurmond1975]
+model: Varshni
+E0: 1.17
+alpha: 4.73e-4
+beta: 636
+notes: values taken taken from Couderc2014
+
+
+[Alex1996]
+model: Varshni
+E0: 1.1692
+alpha: 4.9e-4
+beta: 655
+notes: values taken taken from Couderc2014
