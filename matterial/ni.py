@@ -7,19 +7,14 @@ import scipy.constants as Const
 import ConfigParser
 from bandgap import BandGap
 
-# TODO:
-# Need to make bandgap class, that includes that impact of BNG
-# this nees to be fixed as BGN has been added in the other section
-
-sys.path.append(
-    os.path.abspath(os.path.join(os.getcwd(), os.pardir, os.pardir)))
 from semiconductor.helper.helper import HelperFunctions
+from semiconductor.matterial import ni_models
 
 
 class IntrinsicCarrierDensity(HelperFunctions):
 
     '''
-    The intrinisc carrier density is the number of carriers 
+    The intrinisc carrier density is the number of carriers
     that exist the a matterial at thermal equlibrium.
     It is impacted by the band gap (and bandgap narrowing)
     '''
@@ -42,50 +37,69 @@ class IntrinsicCarrierDensity(HelperFunctions):
         self.change_model(model_author)
         self.temp = temp
 
-    def update_ni(self, temp=None, doping=None):
+    def update_ni(self, temp=None, doping=None, min_car_den=None, model=None):
         if temp is None:
             temp = self.temp
 
         if doping is None:
-            print 'Assuming doping is 1e16'
+            # print 'Assuming doping is 1e16'
             doping = 1e16
 
-        self.ni = getattr(self, self.model)(
-            self.vals, temp=temp, doping=doping)
-        print self.ni
+        if model is not None:
+            self.change_model(model)
+
+        if self.model == 'ni_temp_eg':
+            Eg = BandGap(self.matterial, self.vals['eg_model'], None
+                         ).caculate_Eg(temp, doping, min_car_den, 'dopant')
+        else:
+            Eg = 0
+
+        self.ni = getattr(ni_models, self.model)(
+            self.vals, temp=temp, doping=doping, Eg=Eg)
+
         return self.ni
 
-    def ni_temp(self, vals, temp, *args):
-        """
-         This form comes from Bludau, Onton, and
-         Heinke3 and Macfarlane et a1.31 as cited by Green,3 is
-         given by
-        """
-        ni = vals['a'] * (temp)**vals['power'] * \
-            np.exp(- vals['eg'] / temp)
-        # print self.ni, - vals['eg'], 2., Const.k, self.temp
+    def check_models(self):
 
-        return ni
+        # fig = plt.figure('Intrinsic carriers')
+        fig, ax = plt.subplots(1)
+        # fig.set_title('Intrinsic carriers')
+        temp = np.linspace(100, 500)
 
-    def ni_temp_eg(self, vals, temp, doping, min_car_den=None):
-        """
-         This form comes from Bludau, Onton, and
-         Heinke3 and Macfarlane et a1.31 as cited by Green,3 
-        """
-        Eg = BandGap(self.matterial, vals['eg_model'], None).caculate_Eg(
-            temp, doping, min_car_den, 'dopant')
+        Eg = BandGap('Si', 'Passler2002', None
+                     ).caculate_Eg(1, 1e10, 0, 'dopant')
+        Eg = 1.17
+
+        for model in self.available_models():
+            ni = self.update_ni(temp, model=model)
+            ax.plot(np.log(temp),
+                     np.log(ni * np.exp(Eg / 2. * Const.e / Const.k / temp)),
+                     label=model)
+            print model, '\t {0:.2e}'.format(self.update_ni(300, model=model))
+
+        test_file = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            'Si', 'check data', 'ni.csv')
+
+        data = np.genfromtxt(
+            test_file,
+            delimiter=',', names=True, skip_header=1, filling_values=np.inf)
+        for name in data.dtype.names[1:]:
+            ax.plot(np.log(data['Temp']),
+                     np.log(data[name] *
+                     np.exp(Eg / 2. * Const.e / Const.k / data['Temp'])),
+                     'o', label='experimental values\'s: ' + name)
+
+        ax.set_xlabel('log(Temperature (K))')
+        ax.set_ylabel(r'$log(n_i \times e^{Eg_0(0)/kT}  )$')
 
 
-        ni = vals['a'] * temp**vals['power'] * \
-            np.exp(- Eg / 2. * Const.e / Const.k / temp)
-        print vals, Eg, ni
 
-        return ni
+        ax.legend(loc=0)
+        ax.set_xlim(4,6)
+        ax.set_ylim(42,45.5)
+        plt.show()
+        # plt.semilogy()
 
 
-if __name__ == "__main__":
-    a = IntrinsicCarrierDensity()
-    temp = np.linspace(0, 600)
-    a.plot_all_models('update_ni', temp=temp)
-    plt.semilogy()
-    plt.show()
+

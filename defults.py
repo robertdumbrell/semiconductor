@@ -2,6 +2,7 @@
 
 import scipy.constants as const
 import numpy as np
+import semiconductor
 
 class Constants(object):
 
@@ -36,3 +37,12 @@ class Constants(object):
             p_0 = self.Doping
             n_0 = self.ni**2 / self.Doping
         return p, n, p_0, n_0
+
+
+if __name__ == "__main__":
+    a = semiconductor.matterial.ni.IntrinsicCarrierDensity()
+    a.check_models()
+    # temp = np.linspace(0, 600)
+    # a.plot_all_models('update_ni', temp=temp)
+
+    plt.show()
