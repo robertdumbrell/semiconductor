@@ -39,7 +39,31 @@ assumed_ni = 9.65e9 ; the assumed assumed_ni
 notes: For Boron, apparent BGN for use with BZ carrier stats
 
 [Schenk1988fer]
-model = not_implimented
+model = Schenk
+ge = 12 
+gh = 4
+udm = 0.1665
+alphae = 0.5187
+alphah = 0.4813
+Ryex = 0.01655   ; eV
+aex = 37.19e-8 ;cm
+es = 11.7
+be = 8
+bh = 1
+ce = 1.3346
+ch = 1.2365
+de = 0.893
+dh = 1.153
+pe = 0.233333333
+ph = 0.233333333
+he = 3.91
+hh = 4.2
+je = 2.8585
+jh = 2.2907
+ke = 0.012
+kh = 0.19
+qe = 0.75
+qh = 0.25
 dopant = phosphorous
 notes: Not implemented
 
