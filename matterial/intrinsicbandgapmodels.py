@@ -23,7 +23,8 @@ def Passler(vals, temp):
     E = vals['e0'] - vals['alpha'] * vals['theta'] * \
         (gamma + 3. * vals['delta']**2 / 2 *
          ((1. + No2 + No3 + No4 + No5)**(1. / 6.) - 1))
-    return E 
+    return E
+
 
 def Varshni(vals, temp):
-	return vals['e0'] - vals['alpha'] * temp**2 / (temp + vals['beta'])
+    return vals['e0'] - vals['alpha'] * temp**2 / (temp + vals['beta'])

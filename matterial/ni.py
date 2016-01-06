@@ -5,7 +5,7 @@ import sys
 import os
 import scipy.constants as Const
 import ConfigParser
-from bandgap import BandGap
+from bandgap import IntrinsicBandGap
 
 from semiconductor.helper.helper import HelperFunctions
 from semiconductor.matterial import ni_models
@@ -37,44 +37,60 @@ class IntrinsicCarrierDensity(HelperFunctions):
         self.change_model(model_author)
         self.temp = temp
 
-    def update_ni(self, temp=None, doping=None, min_car_den=None, model=None):
+    def update_ni(self, temp=None, model=None):
+        '''
+        a function to update the intrinsic BandGap
+
+        inputs:
+            temperature: (optional)
+                         in kelvin
+            model:  (optional)
+                    the model used.
+                    If not provided the last provided model is used
+                    If no model has been provided Passler model is used
+        output:
+            the intrinsic carrier concentration in cm^-3. This is not the effectice
+            carrier concentration
+        '''
+        # able to input a temperature to change
         if temp is None:
             temp = self.temp
 
-        if doping is None:
-            # print 'Assuming doping is 1e16'
-            doping = 1e16
-
+        # a check to make sure the model hasn't changed
         if model is not None:
             self.change_model(model)
 
+        # if the model required the energy gap, caculate it
         if self.model == 'ni_temp_eg':
-            Eg = BandGap(self.matterial, self.vals['eg_model'], None
-                         ).caculate_Eg(temp, doping, min_car_den, 'dopant')
+            Eg = IntrinsicBandGap(self.matterial, self.vals['eg_model']
+                                  ).update_iEg(temp=temp, multiplier=1)
         else:
             Eg = 0
 
         self.ni = getattr(ni_models, self.model)(
-            self.vals, temp=temp, doping=doping, Eg=Eg)
+            self.vals, temp=temp, Eg=Eg)
 
         return self.ni
 
     def check_models(self):
-
+        '''
+        Displays a plot of all the models against experimental data
+        '''
         # fig = plt.figure('Intrinsic carriers')
         fig, ax = plt.subplots(1)
+        fig.suptitle('Intrinsic carrier concentration')
         # fig.set_title('Intrinsic carriers')
         temp = np.linspace(100, 500)
 
-        Eg = BandGap('Si', 'Passler2002', None
-                     ).caculate_Eg(1, 1e10, 0, 'dopant')
+        Eg = IntrinsicBandGap('Si', 'Passler2002'
+                              ).update_iEg(temp=1, multiplier=1)
         Eg = 1.17
 
         for model in self.available_models():
             ni = self.update_ni(temp, model=model)
             ax.plot(np.log(temp),
-                     np.log(ni * np.exp(Eg / 2. * Const.e / Const.k / temp)),
-                     label=model)
+                    np.log(ni * np.exp(Eg / 2. * Const.e / Const.k / temp)),
+                    label=model)
             print model, '\t {0:.2e}'.format(self.update_ni(300, model=model))
 
         test_file = os.path.join(
@@ -86,20 +102,15 @@ class IntrinsicCarrierDensity(HelperFunctions):
             delimiter=',', names=True, skip_header=1, filling_values=np.inf)
         for name in data.dtype.names[1:]:
             ax.plot(np.log(data['Temp']),
-                     np.log(data[name] *
-                     np.exp(Eg / 2. * Const.e / Const.k / data['Temp'])),
-                     'o', label='experimental values\'s: ' + name)
+                    np.log(data[name] *
+                           np.exp(Eg / 2. * Const.e / Const.k / data['Temp'])),
+                    'o', label='experimental values\'s: ' + name)
 
         ax.set_xlabel('log(Temperature (K))')
         ax.set_ylabel(r'$log(n_i \times e^{Eg_0(0)/kT}  )$')
 
-
-
         ax.legend(loc=0)
-        ax.set_xlim(4,6)
-        ax.set_ylim(42,45.5)
+        ax.set_xlim(4, 6)
+        ax.set_ylim(42, 47)
         plt.show()
-        # plt.semilogy()
-
-
 
