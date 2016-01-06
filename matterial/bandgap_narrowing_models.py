@@ -62,8 +62,7 @@ def Schenk(vals, doping, min_car_den, Nd, Na, ne, nh, temp, *args):
     2. the ionic quasi-particle shifts of the conduction and
     valence band edges resulting from ionised dopants concentrations
     '''
-    print Nd - ne
-    print Na - nh
+
     # makes the values unitless
     ne *= vals['aex']**3. 
     nh *= vals['aex']**3. 
@@ -81,12 +80,12 @@ def Schenk(vals, doping, min_car_den, Nd, Na, ne, nh, temp, *args):
     delta_EV = ridged_shift(vals, n_sum, n_p, nh, 'h')\
                + ionic_shift(vals, n_sum, n_p, n_ionic, 'h')
 
-    print ridged_shift(vals, n_sum, n_p, ne, 'e')
-    print ridged_shift(vals, n_sum, n_p, nh, 'h')
+    # print ridged_shift(vals, n_sum, n_p, ne, 'e')
+    # print ridged_shift(vals, n_sum, n_p, nh, 'h')
     # print ionic_shift(vals, n_sum, n_p, n_ionic, 'e')
     # print ionic_shift(vals, n_sum, n_p, n_ionic, 'h')
-    print delta_Ec, delta_EV
-    print -delta_Ec+0.569, -0.566+ delta_EV  
+
+    print -delta_Ec+0.561, -0.563+ delta_EV  
 
     print abs(delta_Ec)+abs(delta_EV)
     
