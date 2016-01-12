@@ -5,7 +5,7 @@ import sys
 import os
 import scipy.constants as Const
 import ConfigParser
-from bandgap import IntrinsicBandGap
+from bandgap_intrinsic import IntrinsicBandGap
 
 from semiconductor.helper.helper import HelperFunctions
 from semiconductor.matterial import ni_models
@@ -16,14 +16,17 @@ class IntrinsicCarrierDensity(HelperFunctions):
     '''
     The intrinisc carrier density is the number of carriers
     that exist the a matterial at thermal equlibrium.
-    It is impacted by the band gap (and bandgap narrowing)
+    It is impacted by the band gap
+
+    The effective intrinsic carrier density refers to a modification
+    of the intrinsic to account for band gap narrowing.
     '''
 
     # ni = 1e10
     temp = 300.
     model_file = 'ni.models'
 
-    def __init__(self, matterial='Si', model_author=None, temp=300.):
+    def __init__(self, matterial='Si', model=None, temp=300.):
         self.Models = ConfigParser.ConfigParser()
         self.matterial = matterial
 
@@ -34,7 +37,7 @@ class IntrinsicCarrierDensity(HelperFunctions):
 
         self.Models.read(constants_file)
 
-        self.change_model(model_author)
+        self.change_model(model)
         self.temp = temp
 
     def update_ni(self, temp=None, model=None):
@@ -113,4 +116,3 @@ class IntrinsicCarrierDensity(HelperFunctions):
         ax.set_xlim(4, 6)
         ax.set_ylim(42, 47)
         plt.show()
-

@@ -4,7 +4,8 @@ import scipy.constants as Const
 from fractions import Fraction
 from decimal import Decimal
 
-def apparent_BGN(vals, doping, *args):
+
+def apparent_BGN(vals, doping, **kargs):
     '''
     It returns the 'apparent BGN'. This estimates the real bandgap
     narrowing, but uses the accurate boltzman statastics. N is the
@@ -27,14 +28,14 @@ def apparent_BGN(vals, doping, *args):
     return BGN
 
 
-def not_implimented(vals, doping, *args):
+def not_implimented(vals, doping, **kargs):
     '''
     model not implimented, returning 0 values
     '''
     return np.zeros(doping.shape)
 
 
-def BGN(vals, doping, *args):
+def BGN(vals, doping, **kargs):
     '''
     Returns the BGN when applied for carriers with fermi distribution.
     This estimates the real bandgap narrowing,
@@ -54,7 +55,7 @@ def BGN(vals, doping, *args):
     return bgn
 
 
-def Schenk(vals, doping, min_car_den, Nd, Na, ne, nh, temp, *args):
+def Schenk(vals, Nd, Na, ne, nh, temp, **args):
     '''
     Based on the two principles:
     1. The rigid quasi-particle shifts of the conduction and
@@ -63,56 +64,56 @@ def Schenk(vals, doping, min_car_den, Nd, Na, ne, nh, temp, *args):
     valence band edges resulting from ionised dopants concentrations
     '''
 
+
     # makes the values unitless
-    ne *= vals['aex']**3. 
-    nh *= vals['aex']**3. 
+    ne *= vals['aex']**3.
+    nh *= vals['aex']**3.
     Na *= vals['aex']**3.
     Nd *= vals['aex']**3.
 
-    n_sum = ne+nh
+
+    n_sum = ne + nh
     n_ionic = Na + Nd
 
-    n_p = vals['alphae'] * ne + vals['alphah']*nh
-    vals['t'] = Const.k * temp /vals['ryex'] 
+    n_p = vals['alphae'] * ne + vals['alphah'] * nh
+
+    # cacualtes curly T, to give linear dependence with temp
+    vals['t'] = Const.k * temp / vals['ryex'] / Const.e
 
     delta_Ec = ridged_shift(vals, n_sum, n_p, ne, 'e')\
-               + ionic_shift(vals, n_sum, n_p, n_ionic, 'e')
+        + ionic_shift(vals, n_sum, n_p, n_ionic, 'e')
     delta_EV = ridged_shift(vals, n_sum, n_p, nh, 'h')\
-               + ionic_shift(vals, n_sum, n_p, n_ionic, 'h')
+        + ionic_shift(vals, n_sum, n_p, n_ionic, 'h')
 
-    # print ridged_shift(vals, n_sum, n_p, ne, 'e')
-    # print ridged_shift(vals, n_sum, n_p, nh, 'h')
-    # print ionic_shift(vals, n_sum, n_p, n_ionic, 'e')
-    # print ionic_shift(vals, n_sum, n_p, n_ionic, 'h')
 
-    print -delta_Ec+0.561, -0.563+ delta_EV  
+    return delta_Ec+ delta_EV
 
-    print abs(delta_Ec)+abs(delta_EV)
-    
+
 def ridged_shift(vals, n_sum, n_p, num_carrier, carrier):
     '''
     The rigid quasi-particle shift for a band
     the subscript a represents a carrier value (electron or hole)
     '''
     # print carrier
-    # print   '1st',     (4 * Const.pi)**3 *n_sum**2 
+    # print   '1st',     (4 * Const.pi)**3 *n_sum**2
     # print   '2nd',     (48 * num_carrier / Const.pi / vals['g'+carrier])**(1. / 3.)
     # print   '3rd',    + vals['c'+carrier] * np.log(1 + vals['d'+carrier] + n_p)
     # print   '4th',    + (8 * Const.pi * vals['alpha'+carrier] / vals['g'+carrier])
     # print   '5th',    num_carrier * vals['t']**2 \
 
     # print  np.sqrt(8 * Const.pi * n_sum)* vals['t']**(5. / 2.)
+
     delta = -(
-            (4. * Const.pi)**3. *n_sum**2. *\
-            (
-            (48. * num_carrier / Const.pi / vals['g'+carrier])**(1. / 3.)\
-            + vals['c'+carrier] * np.log(1. + vals['d'+carrier] * n_p**vals['p'+carrier]))\
-            + (8. * Const.pi * vals['alpha'+carrier] / vals['g'+carrier])\
-            * num_carrier * vals['t']**2. \
-            + np.sqrt(8. * Const.pi * n_sum) * vals['t']**(5. / 2.)\
-            ) / (
-            (4. * Const.pi)**3. * n_sum**2. + vals['t']**3. + vals['b'+carrier] * \
-            n_sum**(0.5) * vals['t']**2. + 40. * n_sum**1.5 * vals['t'])
+        (4. * Const.pi)**3. * n_sum**2. *
+        (
+            (48. * num_carrier / Const.pi / vals['g' + carrier])**(1. / 3.)
+            + vals['c' + carrier] * np.log(1. + vals['d' + carrier] * n_p**vals['p' + carrier]))
+        + (8. * Const.pi * vals['alpha' + carrier] / vals['g' + carrier])
+        * num_carrier * vals['t']**2.
+        + np.sqrt(8. * Const.pi * n_sum) * vals['t']**(5. / 2.)
+    ) / (
+        (4. * Const.pi)**3. * n_sum**2. + vals['t']**3. + vals['b' + carrier] *
+        np.sqrt(n_sum) * vals['t']**2. + 40. * n_sum**1.5 * vals['t'])
     return -vals['ryex'] * delta
 
 
@@ -123,12 +124,13 @@ def ionic_shift(vals, n_sum, n_p, n_ionic, carrier):
 
     U = n_sum**2. / vals['t']**3.
 
-    delta = -n_ionic * (1.+ U)/(
-             np.sqrt(vals['t'] * n_sum/2./Const.pi) * \
-                (
-                1.+vals['h'+carrier] * np.log(1.+ np.sqrt(n_sum)/vals['t'])
-                ) 
-             + vals['j'+carrier] * U * n_p**.75 * (1.+vals['k'+carrier]*n_p**vals['q'+carrier]) 
-            )
-    # print delta, 'delta'
+    delta = -n_ionic * (1. + U) / (
+        np.sqrt(vals['t'] * n_sum / 2. / Const.pi) *
+        (
+            1. + vals['h' + carrier] * np.log(1. + np.sqrt(n_sum) / vals['t'])
+        )
+        + vals['j' + carrier] * U * n_p**.75 *
+        (1. + vals['k' + carrier] * n_p**vals['q' + carrier])
+    )
+
     return -vals['ryex'] * delta

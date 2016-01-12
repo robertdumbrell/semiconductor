@@ -17,6 +17,9 @@ $RECYCLE.BIN/
 *.xlsx
 *.xls
 
+#yed file
+*.graphml
+
 # Windows shortcuts
 *.lnk
 

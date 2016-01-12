@@ -2,6 +2,7 @@
 import matplotlib.pylab as plt
 import json
 import sys
+import numpy as np
 
 
 """
@@ -9,6 +10,7 @@ To do:
 
     Need to fix the check_doping function
 """
+
 
 class HelperFunctions():
 
@@ -31,10 +33,10 @@ class HelperFunctions():
             # checks if float or list
             try:
                 self.vals[k] = float(v)
-           
+
             except:
                 try:
-                    self.vals[k] =[float(i) for i in  v.split(';')]
+                    self.vals[k] = [float(i) for i in v.split(';')]
                     # print self.vals[k]
                 except:
                     pass
@@ -105,6 +107,31 @@ class HelperFunctions():
             # else:
                 # Nd = self.ni**2 / Na
         return Na, Nd
+
+    def get_carriers(self, Na, Nd, dn, ni):
+        '''
+        returns the carrier density given the doping and ni
+        and the excess carriers
+
+        input:
+        Na
+        Nd 
+        min_car_den
+        ni
+
+        returns ne, nh
+
+        '''
+        ne, nh = Nd - Na, Na - Nd
+
+        if np.all(Na < Nd):
+            ne += dn
+            nh = dn + ni
+        elif np.all(Na > Nd):
+            nh += dn
+            ne = dn + ni
+
+        return ne, nh
 
     def print_model_notes(self, model=None):
         '''
