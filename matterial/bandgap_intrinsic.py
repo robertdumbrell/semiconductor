@@ -3,7 +3,7 @@ import matplotlib.pylab as plt
 import os
 import ConfigParser
 import numpy as np
-import semiconductor.matterial.intrinsic_bandgap_models as iBg
+import semiconductor.matterial.bandgap_intrinsic_models as iBg
 from semiconductor.helper.helper import HelperFunctions
 
 
