@@ -1,8 +1,8 @@
+#!/usr/local/bin/python
+# UTF-8
 
 import numpy as np
 import scipy.constants as Const
-from fractions import Fraction
-from decimal import Decimal
 
 
 def apparent_BGN(vals, doping, **kargs):

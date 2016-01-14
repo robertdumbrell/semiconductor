@@ -1,3 +1,5 @@
+#!/usr/local/bin/python
+# UTF-8
 
 import numpy as np
 from pylab import *

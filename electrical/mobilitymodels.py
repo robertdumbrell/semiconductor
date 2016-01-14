@@ -1,9 +1,8 @@
+#!/usr/local/bin/python
+# UTF-8
 
 import numpy as np
-import matplotlib.pylab as plt
-import sys
-import os
-import ConfigParser
+import semiconductor.general_functions.carrierfunctions as GF
 
 
 def add_mobilities(self, mobility_list):
@@ -15,7 +14,7 @@ def add_mobilities(self, mobility_list):
     return 1. / imobility
 
 
-def CaugheyThomas(vals,  Na, Nd, min_car_den, **kwargs):
+def CaugheyThomas(vals, Na, Nd, min_car_den, **kwargs):
     '''
     emperical form for one temperature taken from:
     D. M. Caughey and R. E. Thomas, Proc. U.E.E., pp. 2192,
@@ -36,7 +35,7 @@ def CaugheyThomas(vals,  Na, Nd, min_car_den, **kwargs):
     return mu
 
 
-def dorkel(vals, Na, Nd, dn, temp, carrier, ni, **kwargs):
+def dorkel(vals, Na, Nd, min_car_den, temp, carrier, **kwargs):
     '''
     not consistent with PVlihthouse at high injection
 
@@ -51,14 +50,18 @@ def dorkel(vals, Na, Nd, dn, temp, carrier, ni, **kwargs):
     '''
 
     impurity = Na + Nd
-    p, n = num_of_carrer(dn, Nd, Na, ni)
-    if np.all(p < n):
-        min_car_den = p 
-        maj_car_den = n
-    else:
-        maj_car_den = p
-        min_car_den = n
 
+    ne, nh = GF.get_carriers(Na,
+                             Nd,
+                             min_car_den,
+                             temp=temp)
+
+    if np.all(nh < ne):
+        min_car_den = nh
+        maj_car_den = ne
+    else:
+        maj_car_den = nh
+        min_car_den = ne
 
     # this relatves the carrier to the extension in the variable name
     if carrier == 'electron':
@@ -125,12 +128,10 @@ def carrier_scattering_mobility(vals, min_car_den, maj_car_den, temp):
     return mu_css
 
 
+# below this are the functions for klaassen's model
 
-## below this are the functions for klaassen's model
 
-
-def unified_mobility(vals, Na, Nd, dn, temp, carrier, ni):
-
+def unified_mobility(vals, Na, Nd, min_car_den, temp, carrier):
     """
     Thaken from: 
 
@@ -167,58 +168,66 @@ def unified_mobility(vals, Na, Nd, dn, temp, carrier, ni):
     else:
         print 'incorrect input for carrier input'
 
-
     # Things to fix up
     # ni = ni
 
-    # the only thing ni is used for, this can be factored out so these values are passed to this function
-    p, n = num_of_carrer(dn, Nd, Na, ni)
+    # the only thing ni is used for, this can be factored out so these values
+    # are passed to this function
 
+    ne, nh = GF.get_carriers(Na,
+                             Nd,
+                             min_car_den,
+                             temp=temp)
 
+    return 1. / (
+        1. / uDCS(carrier, vals, nh, ne, Na, Nd, temp) +
+        1. / uLS(carrier, vals, temp))
 
-    return 1. / (1. / uDCS(carrier, vals, p, n, Na, Nd, temp) + 1. / uLS(carrier, vals, temp))
 
 def uLS(carrier, vals, temp):
 
-    return vals['umax_'+carrier] * (300. / temp)**vals['theta_'+carrier]
+    return vals['umax_' + carrier] * (300. / temp)**vals['theta_' + carrier]
 
-def uDCS(carrier, vals, p, n, Na, Nd, temp):
-    carrier_sum = p+n
 
-    return un(carrier, vals, temp) * Nsc(carrier, vals, p, n, Na, Nd) / Nsceff(carrier, vals, p, n, Na, Nd, temp) * (
-        vals['nref_'+carrier] / Nsc(carrier, vals,  p, n, Na, Nd))**(vals['alpha_'+carrier]) + (
-        uc(carrier, vals, temp) * carrier_sum / Nsceff(carrier, vals, p, n, Na, Nd, temp))
+def uDCS(carrier, vals, nh, ne, Na, Nd, temp):
+    carrier_sum = nh+ne
+
+    return un(carrier, vals, temp) * Nsc(carrier, vals, nh, ne, Na, Nd) / Nsceff(carrier, vals, nh, ne, Na, Nd, temp) * (
+        vals['nref_' + carrier] / Nsc(carrier, vals, nh, ne, Na, Nd))**(vals['alpha_' + carrier]) + (
+        uc(carrier, vals, temp) * carrier_sum / Nsceff(carrier, vals, nh, ne, Na, Nd, temp))
+
 
 def un(carrier, vals, temp):
     """
     majority dopant scattering (with screening)
     """
     # Done
-    return vals['umax_'+carrier] * vals['umax_'+carrier] / (vals['umax_'+carrier] - vals['umin_'+carrier]) *\
-     (temp / 300.)**(3. * vals['alpha_'+carrier] - 1.5)
+    return vals['umax_' + carrier] * vals['umax_' + carrier] / (vals['umax_' + carrier] - vals['umin_' + carrier]) *\
+        (temp / 300.)**(3. * vals['alpha_' + carrier] - 1.5)
 
-def Nsc(carrier, vals,  p, n, Na, Nd):
+
+def Nsc(carrier, vals, nh, ne, Na, Nd):
 
     # checked
-    car_den = return_carrer(carrier, p, n, opposite=True)
+    car_den = return_carrer(carrier, nh, ne, opposite=True)
 
     return return_dopant('e', Na, Nd) * Z('e', vals, Na, Nd) + (
         return_dopant('h', Na, Nd) * Z('h', vals, Na, Nd) +
         car_den)
 
-def Nsceff(carrier, vals, p, n, Na, Nd, temp):
+
+def Nsceff(carrier, vals, nh, ne, Na, Nd, temp):
 
     # checked
 
-    car_den = return_carrer(carrier, p, n, opposite=True)
-
+    car_den = return_carrer(carrier, nh, ne, opposite=True)
 
     if carrier == 'e':
-        N_a = G(carrier, vals, p, n, Na, Nd, temp)
+        N_a = G(carrier, vals, nh, ne, Na, Nd, temp)
         N_a *= return_dopant('h', Na, Nd) * Z('h', vals, Na, Nd)
         N_d = return_dopant('e', Na, Nd) * Z('e', vals, Na, Nd)
     elif carrier == 'h':
-        N_d = G(carrier, vals, p,n, Na, Nd, temp)
+        N_d = G(carrier, vals, nh, ne, Na, Nd, temp)
         N_d *= return_dopant('e', Na, Nd) * Z('e', vals, Na, Nd)
         N_a = return_dopant('h', Na, Nd) * Z('h', vals, Na, Nd)
 
@@ -231,65 +240,67 @@ def Nsceff(carrier, vals, p, n, Na, Nd, temp):
     # print F(carrier, vals, p,n, Na, Nd, temp)
     # plt.loglog()
     # plt.show()
-    return N_a + N_d + car_den / F(carrier, vals, p,n, Na, Nd, temp)
+    return N_a + N_d + car_den / F(carrier, vals, nh, ne, Na, Nd, temp)
+
 
 def Z(carrier, vals, Na, Nd):
     """
     accounts for high doping effects - clustering
     """
 
-    return 1. + 1. / (vals['c_'+carrier] +
-                      (vals['nref2_'+carrier] / return_dopant(carrier, Na, Nd))**2.)
+    return 1. + 1. / (vals['c_' + carrier] +
+                      (vals['nref2_' + carrier] / return_dopant(carrier, Na, Nd))**2.)
 
 
-def G(carrier, vals, p,n, Na, Nd, temp):
+def G(carrier, vals, nh, ne, Na, Nd, temp):
     """
     Accounts for minority impurity scattering
     """
 
-    P_value = P(carrier, vals, p, n, Na, Nd, temp)
-
+    P_value = P(carrier, vals, nh, ne, Na, Nd, temp)
 
     a = 1.
     b = - vals['s1'] / \
-        (vals['s2'] + (temp / 300. / vals['mr_'+carrier])
+        (vals['s2'] + (temp / 300. / vals['mr_' + carrier])
          ** vals['s4'] * P_value)**vals['s3']
     c = vals['s5'] / \
         ((300. / temp /
-          vals['mr_'+carrier])**vals['s7'] *P_value)**vals['s6']
+          vals['mr_' + carrier])**vals['s7'] * P_value)**vals['s6']
     return a + b + c
 
-def P(carrier, vals, p,n, Na, Nd, temp):
-    return 1. / (vals['fcw'] / PCW(carrier, vals,  p, n, Na, Nd, temp)
-     + vals['fbh'] / PBH(carrier, vals, temp, n+p))
+
+def P(carrier, vals, nh, ne, Na, Nd, temp):
+    return 1. / (vals['fcw'] / PCW(carrier, vals, nh, ne, Na, Nd, temp)
+                 + vals['fbh'] / PBH(carrier, vals, temp, ne + nh))
 
 
-def PCW(carrier, vals,  p, n, Na, Nd, temp):
+def PCW(carrier, vals, nh, ne, Na, Nd, temp):
     # Done
     return 3.97e13 * (
-        1. / (Nsc(carrier, vals,  p, n, Na, Nd)) * ((temp / 300.)**(3.)))**(2. / 3.)
+        1. / (Nsc(carrier, vals, nh, ne, Na, Nd)) * ((temp / 300.)**(3.)))**(2. / 3.)
+
 
 def PBH(carrier, vals, temp, carrier_sum):
     # Done
     return 1.36e20 / carrier_sum * (
-        vals['mr_'+carrier] * (temp / 300.0)**2.0)
+        vals['mr_' + carrier] * (temp / 300.0)**2.0)
 
-def F(carrier, vals, p,n, Na, Nd, temp):
+
+def F(carrier, vals, nh, ne, Na, Nd, temp):
     """
     Accounts for electron-hole scattering
     """
     # done
     # uses Since True == 1 and False == 0 in python
-    
-    switch = {'e':'h', 'h':'e'}
 
+    switch = {'e': 'h', 'h': 'e'}
 
-    return (vals['r1'] * P(carrier, vals, p,n, Na, Nd, temp)**vals['r6']
+    return (vals['r1'] * P(carrier, vals, nh, ne, Na, Nd, temp)**vals['r6']
             + vals['r2'] + vals['r3'] *
-            vals['mr_'+carrier] / vals['mr_'+switch[carrier]]
+            vals['mr_' + carrier] / vals['mr_' + switch[carrier]]
             ) / (
-        P(carrier, vals, p,n, Na, Nd, temp)**(vals['r6']) + vals['r4'] +
-        vals['r5'] * vals['mr_'+carrier] / vals['mr_'+switch[carrier]])
+        P(carrier, vals, nh, ne, Na, Nd, temp)**(vals['r6']) + vals['r4'] +
+        vals['r5'] * vals['mr_' + carrier] / vals['mr_' + switch[carrier]])
 
 
 def uc(carrier, vals, temp):
@@ -298,48 +309,22 @@ def uc(carrier, vals, temp):
     """
     # Done
 
-    return vals['umin_'+carrier] * vals['umax_'+carrier] / (
-        vals['umax_'+carrier] - vals['umin_'+carrier]) * (300. / temp)**0.5
+    return vals['umin_' + carrier] * vals['umax_' + carrier] / (
+        vals['umax_' + carrier] - vals['umin_' + carrier]) * (300. / temp)**0.5
 
 
-
-def num_of_carrer(deltan, Nd, Na, ni):
-    '''
-    Returns the number of electron hole and pairs
-    given the number of dopants and dn
-    '''
-
-    # finding the majority carriers
-    doping_net = Nd - Na
-
-    if np.all(doping_net>0):
-        # print 'p-type'
-        p0 = doping_net
-        n0 = ni**2 / p0
-    elif np.all(doping_net< 0) :
-        # print 'n-type'
-        n0 = np.abs(doping_net)
-        p0 = ni**2 / n0
-    else:
-        print 'only doing one type or doping atm'
-
-    p = deltan + p0
-    n = deltan + n0
-    
-    return p, n
-
-
-def return_carrer(carrier, p, n , opposite=True):
+def return_carrer(carrier, nh, ne, opposite=True):
 
     if opposite:
-        switch = {'e':'h', 'h':'e'}
+        switch = {'e': 'h', 'h': 'e'}
         carrier = switch[carrier]
 
     if carrier == 'h':
-        car_den = p
+        car_den = nh
     elif carrier == 'e':
-        car_den = n
+        car_den = ne
     return car_den
+
 
 def return_dopant(carrier, Na, Nd):
 
@@ -349,9 +334,3 @@ def return_dopant(carrier, Na, Nd):
         dopant = np.array([Nd]).flatten()
 
     return dopant
-
-
-
-
-
-

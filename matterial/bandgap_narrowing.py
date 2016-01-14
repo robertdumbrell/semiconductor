@@ -1,3 +1,6 @@
+#!/usr/local/bin/python
+# UTF-8
+
 import numpy as np
 import matplotlib.pylab as plt
 import os
@@ -5,7 +8,7 @@ import ConfigParser
 
 from semiconductor.helper.helper import HelperFunctions
 import semiconductor.matterial.bandgap_narrowing_models as Bgn
-from semiconductor.matterial.ni import IntrinsicCarrierDensity as ni
+import semiconductor.general_functions.carrierfunctions as GF
 
 
 class BandGapNarrowing(HelperFunctions):
@@ -36,8 +39,6 @@ class BandGapNarrowing(HelperFunctions):
         self.Models.read(constants_file)
         self.change_model(model)
 
-        self.ni = ni(matterial, model=ni_model, temp=300)
-
     def update_BGN(self, Na, Nd, min_car_den=None, model=None, temp=300, ni_model=None):
         '''
         Calculates the band gap narrowing
@@ -50,13 +51,11 @@ class BandGapNarrowing(HelperFunctions):
         '''
 
         # this should be change an outside function alter
+        ne, nh = GF.get_carriers(Na,
+                                 Nd,
+                                 min_car_den,
+                                 temp = temp)
 
-        ne, nh = self.get_carriers(Na,
-                                   Nd,
-                                   min_car_den,
-                                   self.ni.update_ni(temp=temp,
-                                                     model=ni_model))
-        print self.ni.update_ni(temp=temp, model=ni_model)
         doping = np.abs(Na - Nd)
 
         if model is not None:
@@ -76,7 +75,7 @@ class BandGapNarrowing(HelperFunctions):
         Na = np.logspace(12, 20)
         Nd = 0
         dn = 1e14
-        temp = 550
+        temp = 300
 
         for model in self.available_models():
             BGN = self.update_BGN(Na=Na, Nd=Nd, min_car_den=dn,

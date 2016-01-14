@@ -1,4 +1,5 @@
-
+#!/usr/local/bin/python
+# UTF-8
 
 from bandgap_intrinsic import IntrinsicBandGap
 from bandgap_narrowing import BandGapNarrowing
