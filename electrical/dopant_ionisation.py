@@ -7,27 +7,22 @@ import os
 import ConfigParser
 
 from semiconductor.helper.helper import HelperFunctions
-import semiconductor.matterial.bandgap_narrowing_models as Bgn
-import semiconductor.general_functions.carrierfunctions as GF
+import dopant_ionisation_models 
+# import semiconductor.matterial.bandgap_narrowing_models as Bgn
+# import semiconductor.general_functions.carrierfunctions as GF
 
 
-class BandGapNarrowing(HelperFunctions):
+class DopantIonisation(HelperFunctions):
 
     '''
-    Bang gap narrowing accounts for a reduction in bandgap that
-    occurs as a result from no thermal effects. These include:
-        doping 
-        excess carrier density (non thermal distribution)
-
-    As it depends ont eh excess carriers, it also depends on the 
-    intrinsic carrier density. 
-    Note: I currently believed that the impact of dopants
-        is much larger than the impact of the carrier distribution
+    Depending on a dopant level from a band, and the thermal 
+    energy available, a dopant is electrical active (donating or
+    accepting an electron to the band)  or inactive. 
     '''
 
-    author_list = 'bandgap_narrowing.models'
+    author_list = 'ionisation.models'
 
-    def __init__(self, matterial='Si', author=None, ni_author=None):
+    def __init__(self, matterial='Si', author=None):
         self.Models = ConfigParser.ConfigParser()
         self.matterial = matterial
 
@@ -39,37 +34,20 @@ class BandGapNarrowing(HelperFunctions):
         self.Models.read(constants_file)
         self.change_model(author)
 
-    def update_BGN(self, Na, Nd, min_car_den=None, author=None, temp=300, ni_author=None):
+    def update_DI(self, Na, Nd, temp, author=None,  ni_author=None):
         '''
-        Calculates the band gap narrowing
+        Calculates the dopant ionisation fraction
 
         Inputs:
-        Na, Nd, delta n, temp, ni
+            ???
 
         output:
-            band gap narrowing in eV
+            ???
         '''
 
         # this should be change an outside function alter
-        ne, nh = GF.get_carriers(Na,
-                                 Nd,
-                                 min_car_den,
-                                 temp=temp)
-
-        doping = np.abs(Na - Nd)
-
-        if author is not None:
-            self.change_model(author)
-
-        return getattr(Bgn, self.model)(
-            self.vals,
-            Na=np.copy(Na),
-            Nd=np.copy(Nd),
-            ne=ne,
-            nh=nh,
-            temp=temp,
-            doping=doping)
-
+        pass 
+        
     def check_models(self):
         plt.figure('Bandgap narrowing')
         Na = np.logspace(12, 20)
