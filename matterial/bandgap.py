@@ -13,10 +13,12 @@ class BandGap():
     '''
 
     def __init__(self,
-                 matterial='Si', iEg_model=None, BNG_model=None, dopant=None):
+                 matterial='Si',
+                 iEg_author=None, BNG_author=None,
+                 dopant=None):
 
-        self.iEg = IntrinsicBandGap(matterial, model=iEg_model)
-        self.BGN = BandGapNarrowing(matterial, model=BNG_model)
+        self.iEg = IntrinsicBandGap(matterial, author=iEg_author)
+        self.BGN = BandGapNarrowing(matterial, author=BNG_author)
         self.dopant = dopant
 
     def plot_all_models(self):

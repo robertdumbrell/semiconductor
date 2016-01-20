@@ -25,21 +25,21 @@ class BandGapNarrowing(HelperFunctions):
         is much larger than the impact of the carrier distribution
     '''
 
-    model_file = 'bandgap_narrowing.models'
+    author_list = 'bandgap_narrowing.models'
 
-    def __init__(self, matterial='Si', model=None, ni_model=None):
+    def __init__(self, matterial='Si', author=None, ni_model=None):
         self.Models = ConfigParser.ConfigParser()
         self.matterial = matterial
 
         constants_file = os.path.join(
             os.path.dirname(os.path.realpath(__file__)),
             matterial,
-            self.model_file)
+            self.author_list)
 
         self.Models.read(constants_file)
-        self.change_model(model)
+        self.change_model(author)
 
-    def update_BGN(self, Na, Nd, min_car_den=None, model=None, temp=300, ni_model=None):
+    def update_BGN(self, Na, Nd, min_car_den=None, author=None, temp=300, ni_author=None):
         '''
         Calculates the band gap narrowing
 
@@ -54,12 +54,12 @@ class BandGapNarrowing(HelperFunctions):
         ne, nh = GF.get_carriers(Na,
                                  Nd,
                                  min_car_den,
-                                 temp = temp)
+                                 temp=temp)
 
         doping = np.abs(Na - Nd)
 
-        if model is not None:
-            self.change_model(model)
+        if author is not None:
+            self.change_model(author)
 
         return getattr(Bgn, self.model)(
             self.vals,
@@ -77,13 +77,13 @@ class BandGapNarrowing(HelperFunctions):
         dn = 1e14
         temp = 300
 
-        for model in self.available_models():
+        for author in self.available_models():
             BGN = self.update_BGN(Na=Na, Nd=Nd, min_car_den=dn,
-                                  model=model,
+                                  author=author,
                                   temp=temp)
 
             if not np.all(BGN == 0):
-                plt.plot(Na, BGN, label=model)
+                plt.plot(Na, BGN, label=author)
 
         test_file = os.path.join(
             os.path.dirname(os.path.realpath(__file__)),

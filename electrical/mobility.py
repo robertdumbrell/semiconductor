@@ -15,7 +15,7 @@ class Mobility(HelperFunctions):
     ni = 1e10
     temp = 300
 
-    def __init__(self, matterial='Si', model_author=None, temp=300.):
+    def __init__(self, matterial='Si', author=None, temp=300.):
         self.Models = ConfigParser.ConfigParser()
         self.matterial = matterial
 
@@ -26,7 +26,7 @@ class Mobility(HelperFunctions):
 
         self.Models.read(constants_file)
 
-        self.change_model(model_author)
+        self.change_model(author)
 
     def electron_mobility(self, min_car_den, Na, Nd, **kwargs):
 

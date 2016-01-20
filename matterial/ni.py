@@ -26,33 +26,33 @@ class IntrinsicCarrierDensity(HelperFunctions):
 
     # ni = 1e10
     temp = 300.
-    model_file = 'ni.models'
+    author_list = 'ni.models'
 
-    def __init__(self, matterial='Si', model=None, temp=300.):
+    def __init__(self, matterial='Si', author=None, temp=300.):
         self.Models = ConfigParser.ConfigParser()
         self.matterial = matterial
 
         constants_file = os.path.join(
             os.path.dirname(os.path.realpath(__file__)),
             matterial,
-            self.model_file)
+            self.author_list)
 
         self.Models.read(constants_file)
 
-        self.change_model(model)
+        self.change_model(author)
         self.temp = temp
 
-    def update_ni(self, temp=None, model=None):
+    def update_ni(self, temp=None, author=None):
         '''
         a function to update the intrinsic BandGap
 
         inputs:
             temperature: (optional)
                          in kelvin
-            model:  (optional)
-                    the model used.
-                    If not provided the last provided model is used
-                    If no model has been provided Passler model is used
+            author:  (optional)
+                    the author used.
+                    If not provided the last provided author is used
+                    If no author has been provided,  Couderc's model is used
         output:
             the intrinsic carrier concentration in cm^-3. This is not the effectice
             carrier concentration
@@ -62,8 +62,8 @@ class IntrinsicCarrierDensity(HelperFunctions):
             temp = self.temp
 
         # a check to make sure the model hasn't changed
-        if model is not None:
-            self.change_model(model)
+        if author is not None:
+            self.change_model(author)
 
         # if the model required the energy gap, caculate it
         if self.model == 'ni_temp_eg':
@@ -91,12 +91,12 @@ class IntrinsicCarrierDensity(HelperFunctions):
                               ).update_iEg(temp=1, multiplier=1)
         Eg = 1.17
 
-        for model in self.available_models():
-            ni = self.update_ni(temp, model=model)
+        for author in self.available_models():
+            ni = self.update_ni(temp, author=author)
             ax.plot(np.log(temp),
                     np.log(ni * np.exp(Eg / 2. * Const.e / Const.k / temp)),
-                    label=model)
-            print model, '\t {0:.2e}'.format(self.update_ni(300, model=model))
+                    label=author)
+            print author, '\t {0:.2e}'.format(self.update_ni(300, author=author))
 
         test_file = os.path.join(
             os.path.dirname(os.path.realpath(__file__)),

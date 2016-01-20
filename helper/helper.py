@@ -12,17 +12,17 @@ To do:
 
 class HelperFunctions():
 
-    def change_model(self, model_author=None):
+    def change_model(self, author=None):
 
-        if model_author is None:
-            self.model_author = self.Models.get('default', 'model')
+        if author is None:
+            self.author = self.Models.get('default', 'model')
         else:
             # Need a check to make sure craNhcan't be passed
-            self.model_author = model_author
-        # print self.model_author
-        self.model = self.Models.get(self.model_author, 'model')
+            self.author = author
+        # print self.author
+        self.model = self.Models.get(self.author, 'model')
 
-        self.vals = dict(self.Models.items(self.model_author))
+        self.vals = dict(self.Models.items(self.author))
         # List.remove('model')
         del self.vals['model']
 
@@ -45,7 +45,7 @@ class HelperFunctions():
         cycles through all the models and plots the result
         inputs:
             update_function: str
-                 the name of the specific function used to update the model_author
+                 the name of the specific function used to update the author
                 i.e 'update_Eg'
             **kwargs:
                 variables to be passed to the update function. 

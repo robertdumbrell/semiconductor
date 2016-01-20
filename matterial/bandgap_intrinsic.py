@@ -17,7 +17,7 @@ class IntrinsicBandGap(HelperFunctions):
 
     model_file = 'bandgap.models'
 
-    def __init__(self, matterial='Si', model=None):
+    def __init__(self, matterial='Si', author=None):
         self.Models = ConfigParser.ConfigParser()
         self.matterial = matterial
 
@@ -28,18 +28,18 @@ class IntrinsicBandGap(HelperFunctions):
 
         self.Models.read(constants_file)
 
-        self.change_model(model)
+        self.change_model(author)
 
-    def update_iEg(self, temp=None, model=None, multiplier=1.01):
+    def update_iEg(self, temp=None, author=None, multiplier=1.01):
         '''
         a function to update the intrinsic BandGap
 
         inputs:
             temperature in kelvin
-            model: (optional)
-                  the model used.
-                  If not provided the last provided model is used
-                  If no model has been provided Passler model is used
+            author: (optional)
+                  the author used.
+                  If not provided the last provided author is used
+                  If no author has then the author Passler's is used
             multiplier: A band gap multipler. 1.01 is suggested.
 
         output:
@@ -48,8 +48,8 @@ class IntrinsicBandGap(HelperFunctions):
 
         if temp is None:
             temp = self.temp
-        if model is not None:
-            self.change_model(model)
+        if author is not None:
+            self.change_model(author)
 
         Eg = getattr(iBg, self.model)(self.vals, temp)
 
@@ -63,10 +63,10 @@ class IntrinsicBandGap(HelperFunctions):
         plt.figure('Intrinsic bandgap')
         t = np.linspace(1, 500)
 
-        for model in self.available_models():
+        for author in self.available_models():
 
-            Eg = self.update_iEg(t, model=model, multiplier=1.0)
-            plt.plot(t, Eg, label=model)
+            Eg = self.update_iEg(t, author=author, multiplier=1.0)
+            plt.plot(t, Eg, label=author)
 
         test_file = os.path.join(
             os.path.dirname(os.path.realpath(__file__)),
@@ -82,4 +82,4 @@ class IntrinsicBandGap(HelperFunctions):
         plt.ylabel('Intrinsic Bandgap (eV)')
 
         plt.legend(loc=0)
-        self.update_iEg(0, model=model, multiplier=1.01)
+        self.update_iEg(0, author=author, multiplier=1.01)

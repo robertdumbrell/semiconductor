@@ -5,7 +5,8 @@ import numpy as np
 from semiconductor.matterial.ni import IntrinsicCarrierDensity as NI
 
 
-def get_carriers(Na, Nd, dn, temp=300, ni_model=None, matterial='Si', ni=None):
+def get_carriers(Na, Nd, dn,
+                 temp=300, ni_author=None, matterial='Si', ni=None):
     '''
     returns the carrier density given the doping and ni
     and the excess carriers
@@ -22,7 +23,7 @@ def get_carriers(Na, Nd, dn, temp=300, ni_model=None, matterial='Si', ni=None):
 
     '''
     if ni is None:
-        ni = NI(matterial=matterial).update_ni(model=ni_model, temp=temp)
+        ni = NI(matterial=matterial).update_ni(author=ni_author, temp=temp)
     ne, nh = Nd - Na, Na - Nd
 
     if np.all(Na < Nd):

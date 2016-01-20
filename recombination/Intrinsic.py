@@ -15,20 +15,25 @@ from semiconductor.helper.helper import HelperFunctions
 
 class Intrinsic():
 
-    def __init__(self, matterial='Si', rad_model_author=None, aug_model_author=None, **kwargs):
+    def __init__(self, matterial='Si', rad_author=None, aug_author=None, **kwargs):
 
-        self.Radiative = Radiative(matterial, rad_model_author, **kwargs)
+        self.Radiative = Radiative(matterial, rad_author, **kwargs)
 
-        self.Auger = Auger(matterial, aug_model_author, **kwargs)
+        self.Auger = Auger(matterial, aug_author, **kwargs)
 
-    def intrisic_carrier_lifetime(self, min_car_den, Na, Nd):
-        return 1. / (1. / self.Radiative.tau(min_car_den, Na, Nd) + 1. / self.Auger.tau(min_car_den, Na, Nd))
+    def intrisic_carrier_lifetime(self, min_car_den, Na, Nd, inverse=False):
+        itau = 1. / \
+            self.Radiative.tau(min_car_den, Na, Nd) + 1. / \
+            self.Auger.tau(min_car_den, Na, Nd)
+        if inverse is False:
+            itau = 1. / itau
+        return itau
 
 
 class Radiative(HelperFunctions):
     model_file = 'radiative.model'
 
-    def __init__(self, matterial='Si', model_author=None, temp=300., ni=9.65e9):
+    def __init__(self, matterial='Si', author=None, temp=300., ni=9.65e9):
         self.Models = ConfigParser.ConfigParser()
         self.matterial = matterial
 
@@ -39,7 +44,7 @@ class Radiative(HelperFunctions):
 
         self.Models.read(constants_file)
 
-        self.change_model(model_author)
+        self.change_model(author)
 
         'sets the temp for the thing'
         self.temp = temp
@@ -49,15 +54,16 @@ class Radiative(HelperFunctions):
 
     def tau(self, min_car_den, Na, Nd):
         self.Nh_0, self.Ne_0 = self.check_doping(Na, Nd)
-        doping = np.max(Na, Nd)
+
+        doping = np.amax([Na, Nd])
         return getattr(self, self.model)(min_car_den, doping)
 
     def itau(self, min_car_den, Na, Nd):
         return 1. / self.tau(min_car_den, Na, Nd)
 
-    def Roosbroeck(self,  min_car_den, doping, B=None):
+    def Roosbroeck(self, min_car_den, doping, B=None):
         if B is None:
-            B = self.Models.getfloat(self.model_author, 'B')
+            B = self.Models.getfloat(self.author, 'B')
 
         Nh = self.Nh_0 + min_car_den
         Ne = self.Ne_0 + min_car_den
@@ -89,7 +95,7 @@ class Radiative(HelperFunctions):
 class Auger(HelperFunctions):
     model_file = 'auger.model'
 
-    def __init__(self, matterial ='Si', model_author=None, temp=300, ni=9.65e9):
+    def __init__(self, matterial='Si', author=None, temp=300, ni=9.65e9):
 
         self.Models = ConfigParser.ConfigParser()
         self.matterial = matterial
@@ -101,15 +107,14 @@ class Auger(HelperFunctions):
 
         self.Models.read(constants_file)
 
-        self.change_model(model_author)
+        self.change_model(author)
         self.temp = temp
         self.ni = ni
-
 
     def tau(self, min_car_den, Na, Nd):
 
         self.Nh_0, self.Ne_0 = self.check_doping(Na, Nd)
-        doping = np.max(Na, Nd)
+        doping = np.max([Na, Nd])
         return getattr(self, self.model)(min_car_den, doping)
 
     def itau_aug(self, min_car_den, Na, Nd):
@@ -124,8 +129,8 @@ class Auger(HelperFunctions):
         It also requires the dark carrier concentrations
         I'm not sure where C1 is being used... need to check this
         '''
-        Ce = self.Models.getfloat(self.model_author, 'cn')
-        Ch = self.Models.getfloat(self.model_author, 'cp')
+        Ce = self.Models.getfloat(self.author, 'cn')
+        Ch = self.Models.getfloat(self.author, 'cp')
 
         Nh = self.Nh_0 + min_car_den
         Ne = self.Ne_0 + min_car_den
