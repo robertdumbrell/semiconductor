@@ -52,7 +52,7 @@ class IntrinsicBandGap(HelperFunctions):
             self.change_model(author)
 
         Eg = getattr(iBg, self.model)(self.vals, temp)
-
+        
         return Eg * multiplier
 
     def check_models(self):

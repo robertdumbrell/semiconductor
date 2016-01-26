@@ -1,0 +1,43 @@
+
+[default]
+model: Couderc2014
+
+[Couderc2014]
+model: Couderc
+Av:  2.525e-9
+Bv:  -4.689e-6
+Cv:  3.376e-3
+Dv:  3.426e-1
+Ac: -4.609e-10
+Bc: 6.7523e-7
+Cc: -1.312e-5
+Dc: 1.094
+doi: 10.1063/1.4867776 
+notes: Fit at low temperature to well measured data. Then uses decription of
+	change in band gap to determine the change in the effective masses of the carriers
+	which intern describes the change in density of states. 
+
+[Green1990_full]
+model:Green_full
+mt: .1905 ; times rest electron mass
+ml: .9163 ; times rest electron mass
+# delta: 0.0441 ;eV
+a: 0.4435870
+b: 0.3609528e-2
+c: 0.1173515e-3
+d: 0.1263218e-5
+e: 0.3025581e-8
+f: 0.4683382e-2
+g: 0.2286895e-3
+h: 0.7469271e-6
+i: 0.1727481e-8
+doi:10.1063/1.345414
+Egi_author: Green1990
+notes: measurements taken at low temp from cyclon resonance. Then using a fit to
+	the energy bandgap with temp to determine the change in the masses with temp
+	to provide the finial change in the DOS. Valid up to 400 K.
+
+[Green1990_param]
+model:Green_param
+doi:10.1063/1.345414
+notes: a simple parameterisation from 200-500K quoted as with 2% accuracy

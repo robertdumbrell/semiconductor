@@ -16,6 +16,8 @@ $RECYCLE.BIN/
 *.pyc
 *.xlsx
 *.xls
+*ignore*
+*sublime*
 
 #yed file
 *.graphml

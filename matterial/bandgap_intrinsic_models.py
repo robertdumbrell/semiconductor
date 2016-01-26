@@ -28,3 +28,37 @@ def Passler(vals, temp):
 
 def Varshni(vals, temp):
     return vals['e0'] - vals['alpha'] * temp**2 / (temp + vals['beta'])
+
+
+def Cubic_partial(vals, temp):
+    '''
+    Is a cublic paramterisation for several given temp range, spliced together.
+    The first paper where this is seen for silicon is believed to be Bludau1974a.
+    
+    inputs:
+        vals a dictionary containing the coefs for a fit in the from
+            Eg = \sum_{i=0}^3 ai + bi \times temp + ci \times temp^2
+        and the temp range for each coeffieinct given by "ti". It is assumed that the ith
+        values apply up to this temperature value.
+
+    output:
+        returns the band gap in eV
+    '''
+
+    temp = np.asarray(temp * 1.)
+
+    Eg = np.copy(temp * 1.)
+
+    for i in [2, 1, 0]:
+        index = temp < vals['t' + str(i)]
+
+        Eg[index] = vals['a' + str(i)] + \
+            vals['b' + str(i)] * temp[index] + \
+            vals['c' + str(i)] * temp[index]**2.
+    if np.any(temp > vals['t2']):
+        print 'Intrinsic bandgap does not cover this temperature range'
+        index = temp > vals['t2']
+        Eg[index] = vals['a2'] + \
+            vals['b2'] * temp[index] + \
+            vals['c2'] * temp[index]**2.        
+    return Eg

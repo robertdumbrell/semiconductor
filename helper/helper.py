@@ -2,6 +2,7 @@
 # UTF-8
 
 import matplotlib.pylab as plt
+import numpy as np
 
 """
 To do:
@@ -63,6 +64,33 @@ class HelperFunctions():
                 ax.plot(xvalues, result, label=model)
         plt.legend(loc=0)
 
+    def plotting_colours(self, n_colours, fig, ax, repeats=None):
+        '''
+        a function to help with plotting
+        Lets you get a unique range of colours, 
+        and have repeats of colours
+        '''
+
+        colours = []
+
+        # Define the colours for the figures, using CMRmap to get the colours
+        for i in np.linspace(.1, .7, n_colours):
+
+            # if don't want any repeat of colours
+            if repeats is None:
+                colours.append(plt.cm.CMRmap(i))
+            else:
+                for j in range(repeats):
+                    colours.append(plt.cm.CMRmap(i))
+
+        # incase its a 2D axis
+        try:
+            for axes in ax.flatten():
+                axes.set_color_cycle(colours)
+        except:
+            ax.set_color_cycle(colours)
+
+
     def available_models(self, Filter=None, Filter_value=None):
         '''
         Returns a list of all models.
@@ -105,8 +133,6 @@ class HelperFunctions():
             # else:
                 # Nd = self.ni**2 / Na
         return Na, Nd
-
-
 
     def print_model_notes(self, model=None):
         '''

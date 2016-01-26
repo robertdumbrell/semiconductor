@@ -27,3 +27,22 @@ E0: 1.1692
 alpha: 4.9e-4
 beta: 655
 notes: values taken taken from Couderc2014
+
+[Green1990]
+model: Cubic_partial
+A0: 1.1700 
+B0: 1.059e-5 
+C0: -6.05e-7
+T0: 190 ; temp limit for 0th coefs
+A1: 1.1785
+B1: -9.025e-5
+C1: -3.05e-7
+T1: 300 ; temp limit for 1st coefs
+A2: 1.206 
+B2: -2.73e-4 
+C2: 0
+T2: 415 ; temp limit for 1nd coefs
+doi:10.1063/1.345414
+doi2:10.1063/1.1663501
+notes: This is really from Bludau1974, who used wavelenth modulation spectrosopy, with a 
+	small extenstion up to 415 K from Martin Green.
