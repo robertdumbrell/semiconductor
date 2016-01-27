@@ -45,9 +45,11 @@ def Cubic_partial(vals, temp):
         returns the band gap in eV
     '''
 
-    temp = np.asarray(temp * 1.)
-
-    Eg = np.copy(temp * 1.)
+    # this line is to make sure the number is a numpy 1D array
+    # really this should be somewhere else, as a general function and not here
+    temp = np.asarray([temp * 1.]).flatten()
+    
+    Eg = np.copy(temp)
 
     for i in [2, 1, 0]:
         index = temp < vals['t' + str(i)]

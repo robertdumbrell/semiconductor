@@ -7,7 +7,7 @@ import scipy.constants as Const
 
 def apparent_BGN(vals, doping, **kargs):
     '''
-    It returns the 'apparent BGN'. This estimates the real bandgap
+    It returns the 'apparent BGN'. This estimates the real band gap
     narrowing, but uses the accurate boltzman statastics. N is the
     net dopant concentration.
     This model incorporates degeneracy as well as band gap narrowing,
@@ -38,7 +38,7 @@ def not_implimented(vals, doping, **kargs):
 def BGN(vals, doping, **kargs):
     '''
     Returns the BGN when applied for carriers with fermi distribution.
-    This estimates the real bandgap narrowing,
+    This estimates the real band gap narrowing,
     but uses boltzman stats
     where N is the net dopant concentration.
     '''
@@ -64,13 +64,11 @@ def Schenk(vals, Nd, Na, ne, nh, temp, **args):
     valence band edges resulting from ionised dopants concentrations
     '''
 
-
     # makes the values unitless
     ne *= vals['aex']**3.
     nh *= vals['aex']**3.
     Na *= vals['aex']**3.
     Nd *= vals['aex']**3.
-
 
     n_sum = ne + nh
     n_ionic = Na + Nd
@@ -85,8 +83,7 @@ def Schenk(vals, Nd, Na, ne, nh, temp, **args):
     delta_EV = ridged_shift(vals, n_sum, n_p, nh, 'h')\
         + ionic_shift(vals, n_sum, n_p, n_ionic, 'h')
 
-
-    return delta_Ec+ delta_EV
+    return delta_Ec + delta_EV
 
 
 def ridged_shift(vals, n_sum, n_p, num_carrier, carrier):
@@ -94,14 +91,6 @@ def ridged_shift(vals, n_sum, n_p, num_carrier, carrier):
     The rigid quasi-particle shift for a band
     the subscript a represents a carrier value (electron or hole)
     '''
-    # print carrier
-    # print   '1st',     (4 * Const.pi)**3 *n_sum**2
-    # print   '2nd',     (48 * num_carrier / Const.pi / vals['g'+carrier])**(1. / 3.)
-    # print   '3rd',    + vals['c'+carrier] * np.log(1 + vals['d'+carrier] + n_p)
-    # print   '4th',    + (8 * Const.pi * vals['alpha'+carrier] / vals['g'+carrier])
-    # print   '5th',    num_carrier * vals['t']**2 \
-
-    # print  np.sqrt(8 * Const.pi * n_sum)* vals['t']**(5. / 2.)
 
     delta = -(
         (4. * Const.pi)**3. * n_sum**2. *

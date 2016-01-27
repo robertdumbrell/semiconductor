@@ -1,0 +1,69 @@
+
+[default]
+model: Altermatt2006_table1
+
+[Altermatt2006_table1]
+model = altermatt2006
+phosphorous: p
+E_dop0_p: 45.5e-3
+N_ref_p: 3e18
+c_p: 2
+N_b_p: 6e18
+d_p: 2.3
+g_p: 0.5
+tpe_p: donor
+boron: b
+E_dop0_b: 44.39e-3
+N_ref_b: 1.7e18
+c_b: 1.4
+N_b_b: 6e18
+d_b: 2.4
+g_b: 0.25
+tpe_b: acceptor
+arsenic: as
+E_dop0_as: 53.7e-3
+N_ref_as: 4e18
+c_as: 1.5
+N_b_as: 1.4e19
+d_as: 3
+g_as: 0.5
+tpe_as: donor
+DOS_author: Green1990_full
+doi:10.1063/1.2386935
+doi2:10.1063/1.2386934
+notes: Has models for boron (b), phosphorous (p) and arsenic (As). 
+	Adjusts for both the impact of excess carriers (reduces ionisation) and 
+	temperature (increases ionisation) of dopants. 
+
+[Altermatt2006_table3]
+model = altermatt2006
+phosphorous: p
+E_dop0_p: 45.5e-3
+N_ref_p: 2.2e18
+c_p: 2
+N_b_p: 6e18
+d_p: 2.3
+g_p: 0.5
+tpe_p: donor
+boron: b
+E_dop0_b: 44.39e-3
+N_ref_b: 1.3e18
+c_b: 1.4
+N_b_b: 4.5e18
+d_b: 2.4
+g_b: 0.25
+tpe_b: acceptor
+arsenic: as
+E_dop0_as: 53.7e-3
+N_ref_as: 3e18
+c_as: 1.5
+N_b_as: 9e18
+d_as: 1.8
+g_as: 0.5
+tpe_as: donor
+DOS_author: Green1990_full
+doi: 10.1063/1.2386935
+doi2:10.1063/1.2386934
+notes: Has models for boron (b), phorphous (p) and arsenic (As). 
+	Adjusts for both the impact of excess carriers (reduces ionisation) and 
+	temperature (increases ionisation) of dopants. These values are suggested to be used in the paper, but do not provide the same results as presented in the paper. The reason is currently unknown. 

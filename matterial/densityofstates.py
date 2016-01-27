@@ -82,6 +82,7 @@ class DOS(HelperFunctions):
 
         for author in self.available_models():
             Nc, Nv = self.update(temp, author)
+            # print Nc.shape, Nv.shape, temp.shape
             ax.plot(temp, Nc, '--')
             ax.plot(temp, Nv, '.', label=author)
 
