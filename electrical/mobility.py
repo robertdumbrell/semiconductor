@@ -26,7 +26,7 @@ class Mobility(HelperFunctions):
 
         self.Models.read(constants_file)
 
-        self.change_model(author)
+        self.vals, self.model = self.change_model(author)
 
     def electron_mobility(self, min_car_den, Na, Nd, **kwargs):
 

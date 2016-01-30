@@ -22,7 +22,7 @@ class absorptioncoefficient(HelperFunctions):
     beta = 0
     gamma = 0
 
-    def __init__(self, matterial='Si', model_author=None):
+    def __init__(self, matterial='Si', author=None):
         self.Models = ConfigParser.ConfigParser()
         self.matterial = matterial
 
@@ -33,7 +33,7 @@ class absorptioncoefficient(HelperFunctions):
 
         self.Models.read(constants_file)
 
-        self.change_model(model_author)
+        self.vals, self.model = self.change_model(author)
 
 
     def update_absorptioncoefficients(self, f=None, Input=None):
@@ -224,17 +224,4 @@ class absorptioncoefficient(HelperFunctions):
         return alpha
 
 
-if __name__ == "__main__":
 
-    a = absorptioncoefficient()
-    W = np.linspace(300, 1200, 100)
-    a.f = a._wavelength2frequency(W)
-
-    plt.plot(W, a.update_absorptioncoefficients())
-    a.change_model('Bucher1993')
-    plt.plot(W, a.update_absorptioncoefficients(), '--')
-    a.change_model('Macfarlane1958')
-    plt.plot(W, a.update_absorptioncoefficients(), '--')
-
-    plt.semilogy()
-    plt.show()

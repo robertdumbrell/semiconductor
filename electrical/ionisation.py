@@ -32,7 +32,7 @@ class Ionisation(HelperFunctions):
             self.author_list)
 
         self.Models.read(constants_file)
-        self.change_model(author)
+        self.vals, self.model = self.change_model(author)
         self.temp = temp
 
     def update(self, N_imp, ne, nh, impurity, temp=None, author=None):
@@ -61,8 +61,7 @@ class Ionisation(HelperFunctions):
 
         # a check to make sure the model hasn't changed
         if author is not None:
-            self.change_model(author)
-        print impurity
+            self.vals, self.model = self.change_model(author)
         # this should be change an outside function alter
 
         Nc, Nv = DOS.DOS('Si').update(
@@ -90,9 +89,10 @@ class Ionisation(HelperFunctions):
             temp = self.temp
 
         if author is not None:
-            self.change_model(author)
+            self.vals, self.model = self.change_model(author)
 
         iN_dop = N_dop
+
         if impurity in self.vals.keys():
             ## TO DO, change this doing just running 10 times to a proper check
             for i in range(10):
@@ -106,7 +106,7 @@ class Ionisation(HelperFunctions):
                 ne, nh = CF.get_carriers(Na, Nd, dn, temp=temp, matterial='Si')
 
                 iN_dop = self.update(
-                    N_dop, ne, nh, impurity, temp=None, author=None)
+                    N_dop, ne, nh, impurity, temp=temp, author=None)
         else:
             print 'Not a valid impurity'
         return iN_dop

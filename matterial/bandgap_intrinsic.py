@@ -28,7 +28,7 @@ class IntrinsicBandGap(HelperFunctions):
 
         self.Models.read(constants_file)
 
-        self.change_model(author)
+        self.vals, self.model = self.change_model(author)
 
     def update_iEg(self, temp=None, author=None, multiplier=1.01):
         '''
@@ -49,7 +49,7 @@ class IntrinsicBandGap(HelperFunctions):
         if temp is None:
             temp = self.temp
         if author is not None:
-            self.change_model(author)
+            self.vals, self.model = self.change_model(author)
 
         Eg = getattr(iBg, self.model)(self.vals, temp)
         

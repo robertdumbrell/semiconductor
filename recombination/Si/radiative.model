@@ -6,7 +6,8 @@ model = Altermatt2005
 [Altermatt2005]
 ; There was a misprint in the paper corrected in Altermatt2011
 model = Roosbroeck_with_screening
-blow = 4.73e-15
+blow_model = Trupke2003
+blow = 4.733e-15
 bmax = 1.
 rmax = 0.2
 smax = 1.5e18
@@ -26,3 +27,12 @@ w2 = 3.54
 [PC1D]
 model = Roosbroeck
 B = 9.5e-15
+
+[Trupke2003]
+model: cubic_loglog_parm
+temp_limit: 300
+a:-2.28765176
+b: 17.94655444
+c: -47.53455728
+d: 28.07323491
+note:This is a parameterisation of his data from Table I

@@ -21,25 +21,25 @@ class HelperFunctions():
             # Need a check to make sure craNhcan't be passed
             self.author = author
         # print self.author
-        self.model = self.Models.get(self.author, 'model')
+        model = self.Models.get(self.author, 'model')
 
-        self.vals = dict(self.Models.items(self.author))
+        vals = dict(self.Models.items(self.author))
         # List.remove('model')
-        del self.vals['model']
+        del vals['model']
 
-        for k, v in self.vals.iteritems():
+        for k, v in vals.iteritems():
 
             # checks if float or list
             try:
-                self.vals[k] = float(v)
+                vals[k] = float(v)
 
             except:
                 try:
-                    self.vals[k] = [float(i) for i in v.split(';')]
+                    vals[k] = [float(i) for i in v.split(';')]
                     # print self.vals[k]
                 except:
                     pass
-        pass
+        return vals, model
 
     def plot_all_models(self, update_function, xvalues=None, **kwargs):
         '''
@@ -89,7 +89,6 @@ class HelperFunctions():
                 axes.set_color_cycle(colours)
         except:
             ax.set_color_cycle(colours)
-
 
     def available_models(self, Filter=None, Filter_value=None):
         '''

@@ -19,22 +19,23 @@ K_ehh= 2e16
 notes: Reinterpretation of data, introduced new parameterisation 
 
 [Altermatt1997]
-model = auger_part
+model = auger_notimplimented
 notes: missing
 
 [Richter2012]
 model= coulomb_enhanced_auger
 K_n= 2.5e-31
 K_p= 8.5e-32
-K_Delta= 3.e-29
-delta= .92
+K_Delta= 3.0e-29
+delta= 0.92
 L_eeh= 13
 N_eeh= .66
 K_eeh= 3.3e17
-P_ehh= .63
+P_ehh= 0.63
 L_ehh= 7.5
 K_ehh= 7e17
-notes: Based on lifetime measurements (photoluminescence and photoconductance)
+doi: 10.1103/PhysRevB.86.165202
+notes: Based on lifetime measurements (photoluminescence and photoconductance). Values taken from Table II. Only valid for 300K. Check values are taken from Fig 9. The names of the vairables are renamed to match the existing model.
 
 [SchroderTextbook]
 model= auger
@@ -61,17 +62,21 @@ cp = 1.2e-31 ;for doping 2e18-3e19
 notes : Based on photoluminescence measurements
 
 [DelAlamo1984]
-model = auger_part
+model = auger_notimplimented
 cn = 1.8e-31 ;for doping 6e18-6e19
 notes: Not implemented
 
 [Wang1984]
 # Done with transient photoconductance
-model = auger_part
+model = auger_notimplimented
 cn = 2.22e-31 ;for doping 2.5e19-8e19
 notes: Not implemented, Based on transient photoconductance measurements
 
 [Wieder1980]
-model = auger_part
+model = auger_notimplimented
 cn = 1.6e-31 ;for doping 5e18-2e120
 notes: Not implemented, Based on measurements of diffusions in lateral transistors
+
+[Wang2012]
+model: auger_notimplimented
+notes: The first temperature dependent model of auger for silicon. The model describes the temperature change in the Auger coefficient for holes. It was performed only at one injection level (5e16 cm^-3). There are many paramters still unknown for a full temperature dependent auger model.

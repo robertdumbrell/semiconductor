@@ -39,7 +39,7 @@ class IntrinsicCarrierDensity(HelperFunctions):
 
         self.Models.read(constants_file)
 
-        self.change_model(author)
+        self.vals, self.model = self.change_model(author)
         self.temp = temp
 
     def update_ni(self, temp=None, author=None):
@@ -63,7 +63,7 @@ class IntrinsicCarrierDensity(HelperFunctions):
 
         # a check to make sure the model hasn't changed
         if author is not None:
-            self.change_model(author)
+            self.vals, self.model = self.change_model(author)
 
         # if the model required the energy gap, caculate it
         if self.model == 'ni_temp_eg':

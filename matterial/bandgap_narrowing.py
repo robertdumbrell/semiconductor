@@ -37,7 +37,7 @@ class BandGapNarrowing(HelperFunctions):
             self.author_list)
 
         self.Models.read(constants_file)
-        self.change_model(author)
+        self.vals, self.model = self.change_model(author)
 
     def update_BGN(self, Na, Nd, min_car_den=None, author=None, temp=300, ni_author=None):
         '''
@@ -59,7 +59,7 @@ class BandGapNarrowing(HelperFunctions):
         doping = np.abs(Na - Nd)
 
         if author is not None:
-            self.change_model(author)
+            self.vals, self.model = self.change_model(author)
 
         return getattr(Bgn, self.model)(
             self.vals,
