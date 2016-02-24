@@ -17,6 +17,8 @@ from glob import glob
 #     return (N_dop * b()) / np.sqrt(s * C.pi) / delta() *\
 #         np.exp(-(E - E_dop())**2 / (2. * delta()**2))
 
+def complete(values, N_imp, *args):
+    return np.ones(N_imp.shape[0])
 
 def E_dop(values, Ni, dopant):
     '''retuns the Dopant energy level in eV'''

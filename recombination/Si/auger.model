@@ -19,7 +19,7 @@ K_ehh= 2e16
 notes: Reinterpretation of data, introduced new parameterisation 
 
 [Altermatt1997]
-model = auger_notimplimented
+model = not_implimented
 notes: missing
 
 [Richter2012]
@@ -62,21 +62,21 @@ cp = 1.2e-31 ;for doping 2e18-3e19
 notes : Based on photoluminescence measurements
 
 [DelAlamo1984]
-model = auger_notimplimented
+model = not_implimented
 cn = 1.8e-31 ;for doping 6e18-6e19
 notes: Not implemented
 
 [Wang1984]
 # Done with transient photoconductance
-model = auger_notimplimented
+model = not_implimented
 cn = 2.22e-31 ;for doping 2.5e19-8e19
 notes: Not implemented, Based on transient photoconductance measurements
 
 [Wieder1980]
-model = auger_notimplimented
+model = not_implimented
 cn = 1.6e-31 ;for doping 5e18-2e120
 notes: Not implemented, Based on measurements of diffusions in lateral transistors
 
 [Wang2012]
-model: auger_notimplimented
+model: not_implimented
 notes: The first temperature dependent model of auger for silicon. The model describes the temperature change in the Auger coefficient for holes. It was performed only at one injection level (5e16 cm^-3). There are many paramters still unknown for a full temperature dependent auger model.

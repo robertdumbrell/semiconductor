@@ -92,31 +92,41 @@ class HelperFunctions():
 
     def available_models(self, Filter=None, Filter_value=None):
         '''
-        Returns a list of all models.
-        If this value is provide the list returned will consists of models that 
-        have the value in field (indicated by Filter) indicated by "Filter_value"
+        Returns a list of all authors for a given parameter this a class of.
+        The returned list can be filtered in field "Filter" by the value "Filter_value"
 
         inputs: (all optional)
             Filter: (str)
                 The model field that is to be checked        
             Filter_value:
                 The value to be checked for
+        returns:
+            list of authors
         '''
 
-        model_list = self.Models.sections()
-        model_list.remove('default')
+        author_list = self.Models.sections()
+        author_list.remove('default')
+
+        # remove modles that are not implimented
+        for author in list(author_list):
+            # print  dict(self.Models.items(author))['model']
+            # print 'not_implimented' in dict(self.Models.items(author))['model']
+            # print author
+            if 'not_implimented' in dict(self.Models.items(author))['model']:
+                # print author, 'removed'
+                author_list.remove(author)
 
         # does the filtering
         if Filter is not None:
-            for c, model in enumerate(model_list):
-                if self.Models.get(model, Filter) not in Filter_value:
-                    model_list.remove(model)
+            for c, author in enumerate(author_list):
+                if self.Models.get(author, Filter) not in Filter_value:
+                    author_list.remove(author)
 
         # prints no models available
-        if not model_list:
-            print 'No models available'
+        if not author_list:
+            print 'No authors for this models available'
 
-        return model_list
+        return author_list
 
     def check_doping(self, Na, Nd):
         '''

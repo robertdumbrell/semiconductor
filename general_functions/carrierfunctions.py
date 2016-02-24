@@ -25,7 +25,7 @@ def get_carriers(Na, Nd, min_car_den,
     if ni is None:
         ni = NI(matterial=matterial).update_ni(author=ni_author, temp=temp)
     ne, nh = Nd - Na, Na - Nd
-    print ni
+
     if np.all(Na < Nd):
         ne += min_car_den
         nh = min_car_den + ni**2/ne

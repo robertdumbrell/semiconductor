@@ -2,6 +2,21 @@
 [default]
 model: Altermatt2006_table1
 
+[100%]
+model = complete
+phosphorous: p
+tpe_p: donor
+boron: b
+tpe_b: donor
+arsenic: as
+tpe_as: donor
+gallium: ga
+tpe_ga: donor
+germanium: ge
+tpe_ge: donor
+notes: all dopants are ionised. For a new dopant, jsut add it to the list
+	the carrier tpye has no impact on the results
+
 [Altermatt2006_table1]
 model = altermatt2006
 phosphorous: p

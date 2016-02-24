@@ -64,9 +64,14 @@ class Ionisation(HelperFunctions):
             self.vals, self.model = self.change_model(author)
         # this should be change an outside function alter
 
-        Nc, Nv = DOS.DOS('Si').update(
-            temp=temp, author=self.vals['dos_author'])
+        # checks if and get the required density of states model
+        if 'dos_author' in self.vals.keys():
+            Nc, Nv = DOS.DOS('Si').update(
+                temp=temp, author=self.vals['dos_author'])
+        else:
+            Nc, Nv = 0, 0
 
+        # 
         if impurity in self.vals.keys():
             iN_imp = getattr(IIm, self.model)(
                 self.vals, N_imp, ne, nh, temp, Nc, Nv, self.vals[impurity])
@@ -94,7 +99,7 @@ class Ionisation(HelperFunctions):
         iN_dop = N_dop
 
         if impurity in self.vals.keys():
-            ## TO DO, change this doing just running 10 times to a proper check
+            # TO DO, change this from just running 10 times to a proper check
             for i in range(10):
                 if self.vals['tpe_' + self.vals[impurity]] == 'donor':
                     Nd = iN_dop
@@ -131,7 +136,8 @@ class Ionisation(HelperFunctions):
                                                    temp, author=None)
 
             if not np.all(iN_imp == 0):
-                plt.plot(N_imp, iN_imp / N_imp * 100, label='Altermatt: '+impurity)
+                plt.plot(
+                    N_imp, iN_imp / N_imp * 100, label='Altermatt: ' + impurity)
 
         test_file = os.path.join(
             os.path.dirname(os.path.realpath(__file__)),
