@@ -2,15 +2,15 @@
 
 #[Fei]
 ; Interstitial iron. 
-# Taken from Iron detection in crystalline silicon by carrier lifetime
-# measurements for arbitrary injection and doping 2004
+; Taken from Iron detection in crystalline silicon by carrier lifetime
+; measurements for arbitrary injection and doping 2004
 #Et=  -.18 ;.38 eV above Ev
 #sigma_n = 5e-14 ;s
 #sigma_p = 7e-17 ;s
 
 #[FeB]
-# Taken from Iron detection in crystalline silicon by carrier lifetime
-# measurements for arbitrary injection and doping 2004
+; Taken from Iron detection in crystalline silicon by carrier lifetime
+; measurements for arbitrary injection and doping 2004
 #Et=  .33 ;.23 eV below Ec
 #sigma_n = 3e-14 ;s
 #sigma_p = 2e-15 ;s
@@ -71,19 +71,21 @@ sigma_p = 1.0E-14
 
 [Fei_d]
 ; Taken from Qscell6 
-;Fe (int. donor), dominant in n-Si, and p-Si silicon under illumination
+; Fe (int. donor), dominant in n-Si, and p-Si silicon under illumination
 ; Istratov et al. Appl. Phys. A: Mater. Sci. Process. vol 69 p. 13 (1999),  and Macdonald et al. J. Appl. Phys. 103, 073710 (2008).
-Et = -0.18234484
+Et = -0.182
 sigma_n = 1.3E-14
 sigma_p = 7.0E-17
+doi: 10.1007/s003390050968, 10.1063/1.2903895,
 
 [FeB_a]
 ; Taken from Qscell6 
 ; FeB (acceptor), dominant in p-Si in the dark	
 ; Macdonald et al., Appl. Phys. Lett. 89, 142107(2006)
-Et = 0.30230116
+Et = 0.302
 sigma_n = 5.0E-15
 sigma_p = 3.0E-15
+doi: 10.1063/1.2358126
 
 [FeGa_d]
 ; Taken from Qscell6 

@@ -101,3 +101,39 @@ class BandGapNarrowing(HelperFunctions):
         plt.ylabel('Bandgap narrowing (K)')
 
         plt.legend(loc=0)
+
+
+def check_Schenk(fig, ax):
+    '''compared to values taken from XXX'''
+    BGN = BandGapNarrowing(matterial='Si', author='Schenk1988fer')
+
+    folder = os.path.join(
+        os.path.dirname(__file__), 'Si', r'check data')
+
+    fnames = ['BGN_Schenk_asN-dn-1e14.csv']
+    min_car_den = 1e14
+
+
+    ax.set_color_cycle(['c', 'c', 'm', 'm', 'b', 'b', 'r',  'r', 'g',  'g'])
+
+    for f_name in fnames:
+        data = np.genfromtxt(os.path.join(folder, f_name),
+                             names=True,
+                             delimiter=',',
+                             skip_header=1)
+        ND = np.zeros(data.shape)
+        for temp in data.dtype.names[1::2]:
+            bgn = BGN.update_BGN(data['N'], ND, min_car_den, temp=float(temp))
+            ax.plot(data['N'], bgn,
+                    '.')
+            ax.plot(data['N'], data[temp],
+                    '--',
+                    label=temp)
+
+
+        ax.legend(loc=0, title='Temperature (K)')
+
+    ax.set_title('BGN comparison to PV-lighthouse: $\Delta$n=1e14:')
+    ax.set_ylabel('Bang gap narrowing (eV)')
+    ax.set_xlabel('Ionised Doping (cm$^{-3}$)')
+    ax.semilogx()
