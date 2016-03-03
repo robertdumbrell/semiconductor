@@ -4,9 +4,9 @@ import numpy as np
 
 
 
-def Roosbroeck(vals, min_car_den, doping, temp = None, B=None):
+def Roosbroeck(vals, min_car_den, Nh_0, Ne_0,  temp = None, B=None):
 
-    B = Roosbroeck_B(vals, B)
+    # B = Roosbroeck_B(vals, B)
 
     Nh = Nh_0 + min_car_den
     Ne = Ne_0 + min_car_den
@@ -40,15 +40,15 @@ def Roosbroeck_with_screening_B(vals, min_car_den, doping, temp, Blow):
     return B
 
 
-def Roosbroeck_with_screening(vals, min_car_den, doping, temp, B):
+def Roosbroeck_with_screening(vals, min_car_den, Nh_0, Ne_0, temp, B):
     """
     This is the roosbroeck model that accounts for many things
     It needs temperature, min_car_den, doping and blow to be defined
     """
 
-    Roosbroeck_with_screening_B(vals, min_car_den, doping, temp, B)
+    Roosbroeck_with_screening_B(vals, min_car_den, np.amax(Nh_0, Ne_0), temp, B)
 
-    return Roosbroeck(min_car_den, doping, B)
+    return Roosbroeck(min_car_den, Nh_0, Ne_0, B)
 
 
 def cubic_loglog_parm(vals, temp):

@@ -65,7 +65,7 @@ kh = 0.19
 qe = 0.75 ;3/4
 qh = 0.25 ;1/4
 dopant = phosphorous
-notes: To be used with Fermi direct statics
+notes: To be used with Fermi direct statics, and only for phosphorous
 
 [Schenk1988_reparamitisation_Yan2013]
 model = BGN

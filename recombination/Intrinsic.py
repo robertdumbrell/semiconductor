@@ -54,10 +54,10 @@ class Radiative(HelperFunctions):
         if 'blow_model' in self.vals.keys():
             B = getattr(radmdls, self.blow_model)(self.vals, temp)
         else:
-            B = self.vals['B']
+            B = self.vals['b']
 
         doping = np.amax([Na, Nd])
-        return getattr(radmdls, self.model)(self.vals, min_car_den, doping, temp, B=B)
+        return getattr(radmdls, self.model)(self.vals, min_car_den, self.Nh_0, self.Ne_0, temp, B=B)
 #
 
     def itau(self, min_car_den, Na, Nd, temp=None):
