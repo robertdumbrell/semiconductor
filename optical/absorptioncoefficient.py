@@ -5,13 +5,14 @@ import ConfigParser
 import os
 import sys
 
-import Si.opticalproperties as opticalproperties
+# import Si.opticalproperties as opticalproperties
 
-#constaints the stuff for tabulated data
-OP = opticalproperties.OpticalProperties()
+# constaints the stuff for tabulated data
+# OP = opticalproperties.OpticalProperties()
 
 sys.path.append(
     os.path.abspath(os.path.join(os.getcwd(), os.pardir, os.pardir)))
+
 from semiconductor.helper.helper import HelperFunctions
 
 
@@ -34,7 +35,6 @@ class absorptioncoefficient(HelperFunctions):
         self.Models.read(constants_file)
 
         self.vals, self.model = self.change_model(author)
-
 
     def update_absorptioncoefficients(self, f=None, Input=None):
         '''
@@ -183,7 +183,7 @@ class absorptioncoefficient(HelperFunctions):
         alpha = np.zeros(self.f.shape)
         T = 300.
         for Eg, Ap in zip(Egi_list, Ap_list):
-            for Ep, C in zip(Ep_list,  C_list):
+            for Ep, C in zip(Ep_list, C_list):
 
                 alpha += self.alpha_p_absorption(Eg, Ep, Ap * C, T)
                 alpha += self.alpha_p_emission(Eg, Ep, Ap * C, T)
@@ -211,7 +211,7 @@ class absorptioncoefficient(HelperFunctions):
         alpha = np.zeros(self.f.shape)
         T = 300.
         for Eg, Ap in zip(Egi_list, Ap_list):
-            for Ep, C in zip(Ep_list,  C_list):
+            for Ep, C in zip(Ep_list, C_list):
                 alpha += self.alpha_p_absorption(Eg, Ep, Ap * C, T)
                 alpha += self.alpha_p_emission(Eg, Ep, Ap * C, T)
 
@@ -224,4 +224,148 @@ class absorptioncoefficient(HelperFunctions):
         return alpha
 
 
+class OpticalProperties(HelperFunctions):
 
+    """
+    A class containg the optical constants of silicon
+    These are temperature dependence.
+    """
+    Temp = 300.
+    file_for_models = r'tabulatedabsorptioncoefficient.const'
+
+    def __init__(self, matterial='Si', alpha_author=None, n_author='Green2008'):
+        print 'Does not currently take matterial inputs'
+        self.alpha_author = alpha_author
+        self.n_author = n_author
+        self.matterial = matterial
+
+        self.Models = ConfigParser.ConfigParser()
+
+        constants_file = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            matterial,
+            self.file_for_models)
+
+        print constants_file
+
+        self.Models.read(constants_file)
+
+        self.alpha_vals, self.alpha_file = self.change_model(
+            alpha_author, self.Models)
+        self.n_vals, self.n_file = self.change_model(n_author, self.Models)
+
+        self.initalise_optical_constants()
+
+    def available_models(self, matterial=None):
+
+        if matterial is None:
+            matterial = self.matterial
+        Files = [i.replace(os.path.join(os.path.dirname(__file__), matterial + '_'), '')
+                 for i in glob(os.path.join(os.path.dirname(__file__), matterial + '_*'))]
+
+        return Files
+
+    # something else
+    def initalise_optical_constants(self):
+        """
+        Sets the folder to find tabularted data and loads it
+        """
+
+        self.Folder = os.path.dirname(os.path.realpath(__file__))
+        self.load_optical_properties()
+
+    def alphaBB_at_wls(self, wavelength):
+        return np.interp(wavelength,
+                         self.wavelength,
+                         self.alpha_BB)
+
+    def _check_wavelength(self, wavelength):
+        if wavelength is None:
+            wavelength = self.wavelength
+        return wavelength
+
+    def _wavelength2energy(self, wavelength=None, ev=True):
+        wavelength = self._check_wavelength(wavelength)
+
+        E = Const.c / wavelength * Const.h * 1e9
+        if ev:
+            E /= Const.e
+        return E
+
+    def n_at_wls(self, wavelength):
+        '''
+        returns the loaded n's
+        and the supplied wavelengths
+
+        inputs:
+            wavelength (array)
+        output:
+            n (array)
+        '''
+        return np.interp(wavelength,
+                         self.wavelength,
+                         self.n)
+
+    def change_models(self, alpha_author=False, n_author=False):
+
+        if not alpha_author:
+            alpha_author = self.alpha_author
+        else:
+            self.alpha_author = alpha_author
+
+        if not n_author:
+            n_author = self.n_author
+        else:
+            self.n_author = n_author
+
+        self.alpha_vals, self.alpha_file = self.change_model(
+            alpha_author, self.Models)
+        self.n_vals, self.n_file = self.change_model(n_author, self.Models)
+
+        self.load_optical_properties()
+
+    def load_optical_properties(self):
+        """
+        Loads alpha and n
+        from the provided or from self. the name
+        """
+
+        # Getting Alpha
+        data = np.genfromtxt(os.path.join(self.Folder, self.matterial, self.alpha_file),
+                             names=True, delimiter=',')
+
+        # need something here to get temp dependance
+        self.wavelength, self.energy = data[
+            'wavelength'], data['energy']
+        try:
+            self.alpha_BB = data['alpha']
+        except:
+            # this happens when there are several alpha values, so lets try a
+            # specif temp
+            name = 'alpha_{0:.0f}K'.format(self.Temp)
+            if name in data.dtype.names:
+                self.alpha_BB = data[name]
+            else:
+                # if doesn't work just use the stipulated default
+                print 'Warning:'
+                print '\t Tabulated data at', self.Temp, 'K does not exist.',
+                print 'The value for', self.alpha_vals['default_temp'],
+                print 'K is used'
+                name = 'alpha_{0:.0f}K'.format(self.alpha_vals['default_temp'])
+                self.alpha_BB = data[name]
+
+        try:
+            self.U = data['U']
+
+        except:
+            pass
+
+        # Get n
+        data = np.genfromtxt(os.path.join(self.Folder, self.matterial, self.n_file),
+                             names=True, delimiter=',')
+        # adjust n to the same wavelength as, what ever alpha is at, and then
+        # save it
+        self.n = np.interp(
+            self.wavelength, data['wavelength'], data['n'])
+        # self.k = np.interp(
+        #     self.wavelength, data['wavelength'], data['k'])
