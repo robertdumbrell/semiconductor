@@ -1,0 +1,54 @@
+[default]
+model: Schinke2015
+
+[Schinke2015]
+model: Si_Schinke2015 
+temp: 295
+notes: determined from the combination of ellipometry, spectral luminescence, 
+    and spectral response measurements all measured specifcally for this project.
+    The uncertainty in the absorption coefficienct was also caculated
+
+[Schinke2014]
+; Ap1, and Ap2 for phonon emission and absorption
+model: Si_Schinke2014 
+doi: 10.1063/1.4866916
+temp: 295
+notes: a relative measured determined from spectral luminescence measurements
+
+[Nguyen2014]
+model: Si_Nguyen2014 
+temp: 78 to 363 K
+default_temp: 300
+doi: 10.1063/1.4862912
+notes: determined the absorptance from spectral luminescence at a range of different temperatures.
+    However this measurement was done at a the high injection level of 1e17, meaning band gap naorrowing is
+    ofccuring.
+
+[Green2008]
+model: Si_Green2008 
+temp: 300
+doi: 10.1016/j.solmat.2008.06.009
+notes: determined from the combination of published ellipometry 
+    and spectral response measurements. The Kramers–Kronig relation was enforced
+    to improve the determination of k/alpha
+
+[Grivickas2003]
+model = Si_Grivickas2003
+temp: 297
+doi:10.1103/PhysRevLett.91.246401
+notes: determined from the carrier distribution in a wafer
+    from free carrier absorption measurements.
+
+[Green1995]
+model: Si_Green1995
+temp: 300
+doi: 10.1002/pip.4670030303
+notes: determined from the combination of published ellipometry 
+    and spectral response measurements. 
+
+[Daub1995]
+model: Si_Daub1995 
+temp: 295
+doi: http://dx.doi.org/10.1103/PhysRevLett.74.1020, 10.1109/JPHOTOV.2013.2263985
+notes: a relative measured determined from spectral luminesecnece measurements. Data taken from
+    Fig 4. The tabulated data was obtained by Schinke and made publically avilable

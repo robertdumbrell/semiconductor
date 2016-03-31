@@ -13,14 +13,15 @@ To do:
 
 class HelperFunctions():
 
-    def change_model(self, author=None):
+    def change_model(self, author=None, Models=None):
+        Models = Models or self.Models
 
         if author is None:
             self.author = self.Models.get('default', 'model')
+
         else:
             # Need a check to make sure craNhcan't be passed
             self.author = author
-        # print self.author
         model = self.Models.get(self.author, 'model')
 
         vals = dict(self.Models.items(self.author))
