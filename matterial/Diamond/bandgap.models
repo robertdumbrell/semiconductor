@@ -1,0 +1,13 @@
+[default] 
+model: Passler2002
+ 
+
+[Passler2002]
+model: Passler
+E0: ??
+alpha: 5.0
+theta: 1335
+delta: 0.11
+notes: Temperature range 103 to 660 k. Uses as dispersion related model
+	An intrinsics band gap is needed
+	 taken from Passler2002 10.1063/1.362447

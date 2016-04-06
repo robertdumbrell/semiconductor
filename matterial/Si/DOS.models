@@ -13,9 +13,8 @@ Bc: 6.7523e-7
 Cc: -1.312e-5
 Dc: 1.094
 doi: 10.1063/1.4867776 
-notes: Fit at low temperature to well measured data. Then uses decription of
-	change in band gap to determine the change in the effective masses of the carriers
-	which intern describes the change in density of states. 
+notes: This parameterisation is obtained from a fit of ni to Eg where Nv and Nc are fitted. 
+	The fit is performed by varying the effective mass in the conductance and valance band changes with  temperature, a cubic relation is assumed.  
 
 [Green1990_full]
 model:Green_full
@@ -34,7 +33,7 @@ i: 0.1727481e-8
 doi:10.1063/1.345414
 Egi_author: Green1990
 notes: measurements taken at low temp from cyclon resonance. Then using a fit to
-	the energy bandgap with temp to determine the change in the masses with temp
+	the energy band-gap with temp to determine the change in the masses with temp
 	to provide the finial change in the DOS. Valid up to 400 K.
 
 [Green1990_param]

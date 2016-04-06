@@ -10,7 +10,10 @@ E0: 1.17
 alpha: 3.23e-4
 theta: 446.
 delta: 0.51
-notes: Temperature range 2-415 k
+notes: Temperature range 2-415 k. Uses as dispersion related model
+    fitted to differential of the absorption spectrum [10.1063/1.1663501] and
+    transmission data [10.1063/1.362447]. The excitonic gap shift is also 
+    fitted from [10.1063/1.362447] and a conference paper.
 
 
 [Thurmond1975]

@@ -38,7 +38,7 @@ class DOS(HelperFunctions):
 
     def update(self, temp=None, author=None):
         '''
-        a function to update the denity of states
+        a function to update the density of states
 
         inputs:
             temperature: (optional)
@@ -92,7 +92,7 @@ class DOS(HelperFunctions):
         Nc, = ax.plot(np.inf, np.inf, 'k--', label='Nc')
         Nv, = ax.plot(np.inf, np.inf, 'k.', label='Nv')
 
-        plt.legend([Nc, Nv],['Nc','Nv'], loc=4, title='Line legend')
+        plt.legend([Nc, Nv], ['Nc', 'Nv'], loc=4, title='Line legend')
         plt.gca().add_artist(leg1)
 
         ax.set_xlabel('Temperature (K)')
