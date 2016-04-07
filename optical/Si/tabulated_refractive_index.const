@@ -1,0 +1,21 @@
+[default]
+model: Green2008
+
+
+[Green2008]
+model: Si_Green2008 
+temp: 300
+doi: 10.1016/j.solmat.2008.06.009
+TempCof: True
+notes: determined from the combination of published ellipometry 
+    and spectral response measurements. The Kramers–Kronig relation was enforced
+    to improve the determination of k/alpha
+
+
+[Green1995]
+model: Si_Green1995
+temp: 300
+doi: 10.1002/pip.4670030303
+notes: determined from the combination of published ellipometry 
+    and spectral response measurements. 
+
