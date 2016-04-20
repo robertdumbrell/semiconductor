@@ -25,7 +25,7 @@ class BandGap():
         self.iEg.plot_all_models()
         self.iEg.plot_all_models()
 
-    def caculate_Eg(self, temp, doping, min_car_den=None, dopant=None):
+    def caculate_Eg(self, temp, doping, nxc=None, dopant=None):
         '''
         Calculates the band gap
         '''
@@ -39,9 +39,9 @@ class BandGap():
             print 'You have the incorrect model for your dopant'
 
         # print 'The band gaps are:', self.iEg.update_Eg(temp),
-        # self.BGN.update_BGN(doping, min_car_den)
+        # self.BGN.update_BGN(doping, nxc)
         Eg = self.iEg.update_iEg(
-            temp) - self.BGN.update_BGN(doping, min_car_den)
+            temp) - self.BGN.update_BGN(doping, nxc)
         return Eg
 
     def check_models(self):

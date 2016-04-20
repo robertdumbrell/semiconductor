@@ -39,7 +39,7 @@ class BandGapNarrowing(HelperFunctions):
         self.Models.read(constants_file)
         self.vals, self.model = self.change_model(author)
 
-    def update_BGN(self, Na, Nd, min_car_den=None, author=None, temp=300, ni_author=None):
+    def update_BGN(self, Na, Nd, nxc=None, author=None, temp=300, ni_author=None):
         '''
         Calculates the band gap narrowing
 
@@ -53,7 +53,7 @@ class BandGapNarrowing(HelperFunctions):
         # this should be change an outside function alter
         ne, nh = GF.get_carriers(Na,
                                  Nd,
-                                 min_car_den,
+                                 nxc,
                                  temp=temp)
 
         doping = np.abs(Na - Nd)
@@ -78,7 +78,7 @@ class BandGapNarrowing(HelperFunctions):
         temp = 300
 
         for author in self.available_models():
-            BGN = self.update_BGN(Na=Na, Nd=Nd, min_car_den=dn,
+            BGN = self.update_BGN(Na=Na, Nd=Nd, nxc=dn,
                                   author=author,
                                   temp=temp)
 
@@ -111,7 +111,7 @@ def check_Schenk(fig, ax):
         os.path.dirname(__file__), 'Si', r'check data')
 
     fnames = ['BGN_Schenk_asN-dn-1e14.csv']
-    min_car_den = 1e14
+    nxc = 1e14
 
     ax.set_color_cycle(['c', 'c', 'm', 'm', 'b', 'b', 'r', 'r', 'g', 'g'])
 
@@ -122,7 +122,7 @@ def check_Schenk(fig, ax):
                              skip_header=1)
         ND = np.zeros(data.shape)
         for temp in data.dtype.names[1::2]:
-            bgn = BGN.update_BGN(data['N'], ND, min_car_den, temp=float(temp))
+            bgn = BGN.update_BGN(data['N'], ND, nxc, temp=float(temp))
             ax.plot(data['N'], bgn,
                     '.')
             ax.plot(data['N'], data[temp],

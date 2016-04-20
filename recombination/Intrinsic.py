@@ -17,10 +17,10 @@ class Intrinsic():
         self.Radiative = Radiative(matterial, rad_author, **kwargs)
         self.Auger = Auger(matterial, aug_author, **kwargs)
 
-    def intrisic_carrier_lifetime(self, min_car_den, Na, Nd, inverse=False):
+    def intrisic_carrier_lifetime(self, nxc, Na, Nd, inverse=False):
         itau = 1. / \
-            self.Radiative.tau(min_car_den, Na, Nd) + 1. / \
-            self.Auger.tau(min_car_den, Na, Nd)
+            self.Radiative.tau(nxc, Na, Nd) + 1. / \
+            self.Auger.tau(nxc, Na, Nd)
         if inverse is False:
             itau = 1. / itau
         return itau
@@ -48,7 +48,7 @@ class Radiative(HelperFunctions):
         'This is ni not the effective ni'
         self.ni = ni
 
-    def tau(self, min_car_den, Na, Nd, temp=None):
+    def tau(self, nxc, Na, Nd, temp=None):
         self.Nh_0, self.Ne_0 = self.check_doping(Na, Nd)
 
         if 'blow_model' in self.vals.keys():
@@ -57,13 +57,13 @@ class Radiative(HelperFunctions):
             B = self.vals['b']
 
         doping = np.amax([Na, Nd])
-        return getattr(radmdls, self.model)(self.vals, min_car_den, self.Nh_0, self.Ne_0, temp, B=B)
+        return getattr(radmdls, self.model)(self.vals, nxc, self.Nh_0, self.Ne_0, temp, B=B)
 #
 
-    def itau(self, min_car_den, Na, Nd, temp=None):
-        return 1. / self.tau(min_car_den, Na, Nd, temp)
+    def itau(self, nxc, Na, Nd, temp=None):
+        return 1. / self.tau(nxc, Na, Nd, temp)
 
-    def B(self, min_car_den, doping, temp):
+    def B(self, nxc, doping, temp):
         if 'blow_model' in self.vals.keys():
             vals, model = self.change_model(self.vals['blow_model'])
             B = getattr(radmdls, model)(vals, temp)
@@ -77,7 +77,7 @@ class Radiative(HelperFunctions):
             plt.plot()
             # print np.vstack((B, temp)).T
             B = getattr(
-                radmdls, self.model + '_B')(self.vals, min_car_den, doping, temp, B)
+                radmdls, self.model + '_B')(self.vals, nxc, doping, temp, B)
             # print B.shape
         else:
             B = self.vals['B']
@@ -104,15 +104,15 @@ class Auger(HelperFunctions):
         self.temp = temp
         self.ni = ni
 
-    def tau(self, min_car_den, Na, Nd, temp=300):
+    def tau(self, nxc, Na, Nd, temp=300):
 
         ne0, nh0 = get_carriers(
-            Na, Nd, min_car_den=0, ni_author=None, temp=temp)
+            Na, Nd, nxc=0, ni_author=None, temp=temp)
         print self.vals
-        return getattr(augmdls, self.model)(self.vals, min_car_den, ne0, nh0)
+        return getattr(augmdls, self.model)(self.vals, nxc, ne0, nh0)
 
-    def itau_aug(self, min_car_den, Na, Nd):
-        return 1 / self.tau(min_car_den, Na, Nd)
+    def itau_aug(self, nxc, Na, Nd):
+        return 1 / self.tau(nxc, Na, Nd)
 
     def check(self, author):
         fig, ax = plt.subplots(1)

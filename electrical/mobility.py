@@ -28,24 +28,24 @@ class Mobility(HelperFunctions):
 
         self.vals, self.model = self.change_model(author)
 
-    def electron_mobility(self, min_car_den, Na, Nd, **kwargs):
+    def electron_mobility(self, nxc, Na, Nd, **kwargs):
 
         self.Nh_0, self.Ne_0 = self.check_doping(Na, Nd)
 
         return getattr(model, self.model)(
-            self.vals, Na, Nd, min_car_den, carrier='electron', **kwargs)
+            self.vals, Na, Nd, nxc, carrier='electron', **kwargs)
 
-    def hole_mobility(self, min_car_den, Na, Nd, **kwargs):
+    def hole_mobility(self, nxc, Na, Nd, **kwargs):
 
         self.Nh_0, self.Ne_0 = self.check_doping(Na, Nd)
 
         return getattr(model, self.model)(
-            self.vals, Na, Nd, min_car_den, carrier='hole', **kwargs)
+            self.vals, Na, Nd, nxc, carrier='hole', **kwargs)
 
-    def mobility_sum(self, min_car_den, Na, Nd, **kwargs):
+    def mobility_sum(self, nxc, Na, Nd, **kwargs):
 
-        return self.hole_mobility(min_car_den, Na, Nd, **kwargs) +\
-            self.electron_mobility(min_car_den, Na, Nd, **kwargs)
+        return self.hole_mobility(nxc, Na, Nd, **kwargs) +\
+            self.electron_mobility(nxc, Na, Nd, **kwargs)
 
     def check_models(self):
         check_klaassen()

@@ -14,7 +14,7 @@ def add_mobilities(self, mobility_list):
     return 1. / imobility
 
 
-def CaugheyThomas(vals, Na, Nd, min_car_den, **kwargs):
+def CaugheyThomas(vals, Na, Nd, nxc, **kwargs):
     '''
     emperical form for one temperature taken from:
     D. M. Caughey and R. E. Thomas, Proc. U.E.E., pp. 2192,
@@ -35,7 +35,7 @@ def CaugheyThomas(vals, Na, Nd, min_car_den, **kwargs):
     return mu
 
 
-def dorkel(vals, Na, Nd, min_car_den, temp, carrier, **kwargs):
+def dorkel(vals, Na, Nd, nxc, temp, carrier, **kwargs):
     '''
     not consistent with PVlihthouse at high injection
 
@@ -53,15 +53,15 @@ def dorkel(vals, Na, Nd, min_car_den, temp, carrier, **kwargs):
 
     ne, nh = GF.get_carriers(Na,
                              Nd,
-                             min_car_den,
+                             nxc,
                              temp=temp)
 
     if np.all(nh < ne):
-        min_car_den = nh
+        nxc = nh
         maj_car_den = ne
     else:
         maj_car_den = nh
-        min_car_den = ne
+        nxc = ne
 
     # this relatves the carrier to the extension in the variable name
     if carrier == 'electron':
@@ -75,7 +75,7 @@ def dorkel(vals, Na, Nd, min_car_den, temp, carrier, **kwargs):
 
     # determine both carrier scattering mobilities
     mu_css = carrier_scattering_mobility(
-        vals, min_car_den, maj_car_den, temp)
+        vals, nxc, maj_car_den, temp)
 
     # determine sudo function
     X = np.sqrt(6. * mu_L * (mu_i + mu_css) / (mu_i * mu_css))
@@ -116,14 +116,14 @@ def impurity_neutral():
     pass
 
 
-def carrier_scattering_mobility(vals, min_car_den, maj_car_den, temp):
+def carrier_scattering_mobility(vals, nxc, maj_car_den, temp):
     '''
     The coefficient in B is 2e17 (equation 3) and not 2e7 (Equation 7) as presented in the paper
 
     '''
 
-    A = np.log(1. + 8.28e8 * temp**2 / (min_car_den * maj_car_den)**(1. / 3))
-    B = 2e17 * temp**(3. / 2) / np.sqrt(min_car_den * maj_car_den)
+    A = np.log(1. + 8.28e8 * temp**2 / (nxc * maj_car_den)**(1. / 3))
+    B = 2e17 * temp**(3. / 2) / np.sqrt(nxc * maj_car_den)
     mu_css = B / A
     return mu_css
 
@@ -131,7 +131,7 @@ def carrier_scattering_mobility(vals, min_car_den, maj_car_den, temp):
 # below this are the functions for klaassen's model
 
 
-def unified_mobility(vals, Na, Nd, min_car_den, temp, carrier):
+def unified_mobility(vals, Na, Nd, nxc, temp, carrier):
     """
     Thaken from: 
 
@@ -176,7 +176,7 @@ def unified_mobility(vals, Na, Nd, min_car_den, temp, carrier):
 
     ne, nh = GF.get_carriers(Na,
                              Nd,
-                             min_car_den,
+                             nxc,
                              temp=temp)
 
     return 1. / (

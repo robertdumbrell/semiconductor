@@ -24,8 +24,8 @@ model.
     Na = 0.
     Nd = np.logspace(16, 20)
     # Set the excess carriers to zero
-    min_car_den = 0
-    bgn_yan = BGN_class.update_BGN(Na, Nd, min_car_den)
+    nxc = 0
+    bgn_yan = BGN_class.update_BGN(Na, Nd, nxc)
 ```
 
 If a different band gap narrowing model is desired, 
@@ -50,7 +50,7 @@ an input for temperature. This is just passed to the update function, which pass
 it to the appropriate places.  
 ```python
     temp = 300
-    bgn_sch = BGN_class.update_BGN(Na, Nd, min_car_den, temp=300, author='Schenk1988fer')
+    bgn_sch = BGN_class.update_BGN(Na, Nd, nxc, temp=300, author='Schenk1988fer')
 ```
 
 Finally we can plot, and compare the differences in the models.
