@@ -40,7 +40,7 @@ class Radiative(HelperFunctions):
 
         self.Models.read(constants_file)
 
-        self.vals, self.model = self.change_model(author)
+        self.change_model(author)
 
         'sets the temp for the thing'
         self.temp = temp
@@ -65,7 +65,7 @@ class Radiative(HelperFunctions):
 
     def B(self, nxc, doping, temp):
         if 'blow_model' in self.vals.keys():
-            vals, model = self.change_model(self.vals['blow_model'])
+            self.change_model(self.vals['blow_model'])
             B = getattr(radmdls, model)(vals, temp)
             temp_tt = np.array([77, 90, 112, 170, 195, 249, 300])
             plt.figure()
@@ -75,10 +75,10 @@ class Radiative(HelperFunctions):
             plt.plot(temp_tt, B_tt, 'o')
             plt.plot(temp, B)
             plt.plot()
-            # print np.vstack((B, temp)).T
+
             B = getattr(
                 radmdls, self.model + '_B')(self.vals, nxc, doping, temp, B)
-            # print B.shape
+
         else:
             B = self.vals['B']
 
@@ -100,7 +100,7 @@ class Auger(HelperFunctions):
 
         self.Models.read(constants_file)
 
-        self.vals, self.model = self.change_model(author)
+        self.change_model(author, self.Models)
         self.temp = temp
         self.ni = ni
 
@@ -108,7 +108,6 @@ class Auger(HelperFunctions):
 
         ne0, nh0 = get_carriers(
             Na, Nd, nxc=0, ni_author=None, temp=temp)
-        print self.vals
         return getattr(augmdls, self.model)(self.vals, nxc, ne0, nh0)
 
     def itau_aug(self, nxc, Na, Nd):
@@ -116,9 +115,10 @@ class Auger(HelperFunctions):
 
     def check(self, author):
         fig, ax = plt.subplots(1)
-        vals, model = self.change_model(author)
+        self.change_model(author, self.Models)
+        print self.vals
         func = getattr(augmdls, self.model)
 
-        getattr(augmdls, author + '_check')(vals, func, fig, ax)
+        getattr(augmdls, author + '_check')(self.vals, func, fig, ax)
 
 

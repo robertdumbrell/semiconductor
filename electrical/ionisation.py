@@ -32,7 +32,7 @@ class Ionisation(HelperFunctions):
             self.author_list)
 
         self.Models.read(constants_file)
-        self.vals, self.model = self.change_model(author)
+        self.change_model(author)
         self.temp = temp
 
     def update(self, N_imp, ne, nh, impurity, temp=None, author=None):
@@ -61,7 +61,7 @@ class Ionisation(HelperFunctions):
 
         # a check to make sure the model hasn't changed
         if author is not None:
-            self.vals, self.model = self.change_model(author)
+            self.change_model(author)
         # this should be change an outside function alter
 
         # checks if and get the required density of states model
@@ -94,7 +94,7 @@ class Ionisation(HelperFunctions):
             temp = self.temp
 
         if author is not None:
-            self.vals, self.model = self.change_model(author)
+            self.change_model(author)
 
         iN_dop = N_dop
 
