@@ -37,8 +37,6 @@ def CaugheyThomas(vals, Na, Nd, nxc, **kwargs):
 
 def dorkel(vals, Na, Nd, nxc, temp, carrier, **kwargs):
     '''
-    not consistent with PVlihthouse at high injection
-
     inputs:
         impurty: the number of impurities (cm^-3)
         min_carr_den: the number of minoirty carrier densities (cm^-3)
@@ -55,19 +53,24 @@ def dorkel(vals, Na, Nd, nxc, temp, carrier, **kwargs):
                              Nd,
                              nxc,
                              temp=temp)
+    print Na, Nd, nxc, temp
 
     if np.all(nh < ne):
         nxc = nh
         maj_car_den = ne
-    else:
+    elif np.all(nh >= ne):
         maj_car_den = nh
         nxc = ne
+    else:
+        sys.exit("Mixed doping types not permitted")
 
-    # this relatves the carrier to the extension in the variable name
+    # this relates the carrier to the extension in the variable name
     if carrier == 'electron':
         carrier = 'e'
     elif carrier == 'hole':
         carrier = 'h'
+    else:
+        sys.exit("inappropriate values for carrier passed")
 
     # determine hole dependent carrier partial mobilities
     mu_L = lattice_mobility(vals, temp, carrier)

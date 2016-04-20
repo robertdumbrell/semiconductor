@@ -34,7 +34,7 @@ class absorptioncoefficient(HelperFunctions):
 
         self.Models.read(constants_file)
 
-        self.vals, self.model = self.change_model(author)
+        self.change_model(author)
 
     def update_absorptioncoefficients(self, f=None, Input=None):
         '''

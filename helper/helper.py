@@ -10,37 +10,39 @@ To do:
     Need to fix the check_doping function
 """
 
+def change_model( Models, author=None):
+
+    author = author or Models.get('default', 'model')
+
+    model = Models.get(author, 'model')
+
+    vals = dict(Models.items(author))
+
+    del vals['model']
+
+    for k, v in vals.iteritems():
+
+        # checks if float or list
+        try:
+            vals[k] = float(v)
+
+        except:
+            try:
+                vals[k] = [float(i) for i in v.split(';')]
+                # print self.vals[k]
+            except:
+                pass
+
+    return vals, model
+
 
 class HelperFunctions():
 
-    def change_model(self, author=None, Models=None):
+    def change_model(self, author, Models=None):
+
         Models = Models or self.Models
 
-        if author is None:
-            self.author = self.Models.get('default', 'model')
-
-        else:
-            # Need a check to make sure craNhcan't be passed
-            self.author = author
-        model = self.Models.get(self.author, 'model')
-
-        vals = dict(self.Models.items(self.author))
-        # List.remove('model')
-        del vals['model']
-
-        for k, v in vals.iteritems():
-
-            # checks if float or list
-            try:
-                vals[k] = float(v)
-
-            except:
-                try:
-                    vals[k] = [float(i) for i in v.split(';')]
-                    # print self.vals[k]
-                except:
-                    pass
-        return vals, model
+        self.vals, self.model = change_model(Models, author)
 
     def plot_all_models(self, update_function, xvalues=None, **kwargs):
         '''

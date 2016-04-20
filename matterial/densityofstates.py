@@ -33,7 +33,7 @@ class DOS(HelperFunctions):
 
         self.Models.read(constants_file)
 
-        self.vals, self.model = self.change_model(author)
+        self.change_model(author)
         self.temp = temp
 
     def update(self, temp=None, author=None):
@@ -57,7 +57,7 @@ class DOS(HelperFunctions):
 
         # a check to make sure the model hasn't changed
         if author is not None:
-            self.vals, self.model = self.change_model(author)
+            self.change_model(author)
 
         if 'egi_author' in self.vals.keys():
 

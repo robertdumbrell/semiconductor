@@ -86,29 +86,29 @@ class TabulatedAbsorptionCoefficient(HelperFunctions):
         author = author or self.author
         temp = temp or self.temp
 
-        vals, file = self.change_model(author, self.Models)
+        self.change_model(author)
 
         # Getting the absorption coefficient from a file
         data = np.genfromtxt(os.path.join(os.path.dirname(__file__),
                                           self.matterial,
-                                          file),
+                                          self.model),
                              names=True, delimiter=',')
 
         # need something here to get temp dependence
         self.wavelength, self.energy = data[
             'wavelength'], data['energy']
 
-        if type(vals['temp']) is float:
+        if type(self.vals['temp']) is float:
             self.abs_cof_bb = data['alpha']
-            if temp != vals['temp']:
+            if temp != self.vals['temp']:
                 try:
                     self.abs_cof_bb = _temp_power_law(
-                        self.abs_cof_bb, data['C_ka'], temp, vals['temp'])
+                        self.abs_cof_bb, data['C_ka'], temp, self.vals['temp'])
                 except:
                     print 'Temp Warning:'
                     print '\tNo tabulated data, or temp cofs for {0:.0f} K'.format(temp)
                     print '\tfor the author {0}'.format(author)
-                    print '\tusing data for temperature {0:.0f} K.'.format(vals['temp'])
+                    print '\tusing data for temperature {0:.0f} K.'.format(self.vals['temp'])
 
         else:
             # this happens when there are several alpha values, so lets try a
@@ -121,9 +121,9 @@ class TabulatedAbsorptionCoefficient(HelperFunctions):
                 print 'Temp Warning:'
                 print '\tTabulated data at', temp, 'K does not exist.'
                 print '\tfor the author {0}'.format(author)
-                print '\tThe value for', vals['default_temp'],
+                print '\tThe value for', self.vals['default_temp'],
                 print 'K is used'
-                name = 'alpha_{0:.0f}K'.format(vals['default_temp'])
+                name = 'alpha_{0:.0f}K'.format(self.vals['default_temp'])
                 self.abs_cof_bb = data[name]
 
         try:
@@ -177,7 +177,7 @@ class TabulatedRefractiveIndex(HelperFunctions):
         temp = temp or self.temp
 
         # Get the dets
-        vals, file = self.change_model(author, self.Models)
+        self.change_model(author)
 
         # To do
         # need to make a check if there is a temp value
@@ -188,21 +188,21 @@ class TabulatedRefractiveIndex(HelperFunctions):
         # Get n
         data = np.genfromtxt(os.path.join(os.path.dirname(__file__),
                                           self.matterial,
-                                          file),
+                                          self.model),
                              names=True, delimiter=',')
 
         self.wavelength, self.ref_ind, self.energy = data[
             'wavelength'], data['n'], data['energy']
 
-        if temp != vals['temp']:
+        if temp != self.vals['temp']:
             try:
                 self.ref_ind = _temp_power_law(
-                    self.ref_ind, data['C_n'], temp, vals['temp'])
+                    self.ref_ind, data['C_n'], temp, self.vals['temp'])
             except:
                 print 'Temp Warning:'
                 print '\tNo tabulated data, or temp cofs for {0:.0f} K'.format(temp)
                 print '\tfor the author {0}'.format(author)
-                print '\tusing data for temperature {0:.0f} K.'.format(vals['temp'])
+                print '\tusing data for temperature {0:.0f} K.'.format(self.vals['temp'])
 
     def ref_ind_at_wls(self, wavelength):
         '''

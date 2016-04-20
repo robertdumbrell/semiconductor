@@ -19,13 +19,12 @@ class SpontaneousRadiativeMeission(object):
     Currents it takes in silicons properties by defult_QF_split
     """
 
-    
     defult_QF_split = .1 * Const.e
 
     def __init__(self, matterial='Si',
                  optical_properties=None,
                  intrinsic_carrier_concentration=None,
-                 temp = None):
+                 temp=None):
         """
         Can provide a specific instance of:
             A material. then it will attempt to look up the optical constants
@@ -38,11 +37,10 @@ class SpontaneousRadiativeMeission(object):
         self.matterial = matterial
 
         if optical_properties is None:
-            self.optics = opticalproperties.TabulatedOpticalProperties(self.matterial)
+            self.optics = opticalproperties.TabulatedOpticalProperties(
+                self.matterial)
         else:
             self.optics = optical_properties
-
-
 
         if intrinsic_carrier_concentration is None:
             self.ni = ni.IntrinsicCarrierDensity(self.matterial)
@@ -98,7 +96,8 @@ class SpontaneousRadiativeMeission(object):
         BB = self.blackbody_photon_per_wavelength(temp=temp)
 
         # The PL spectrum with no QF splitting
-        self.rsp_thermal = (BB * self.optics.abs_cof_bb) / self.optics.ref_ind**2
+        self.rsp_thermal = (
+            BB * self.optics.abs_cof_bb) / self.optics.ref_ind**2
 
         if np is None:
             self.rsp = self.rsp_thermal
@@ -167,7 +166,6 @@ class Simulated_PL_emission(SpontaneousRadiativeMeission):
     # Given a deltan V x profile  provides the PL out the system
     # Currently can not adjust for dector
 
-
     # Dictionaries
     wafer_optics_dic = {'polished': 'double_side_polished',
                         'textured': 'double_side_lambertian'}
@@ -178,12 +176,11 @@ class Simulated_PL_emission(SpontaneousRadiativeMeission):
 
     alpha_version = 'Schinke2015'
 
-    def __init__(self, matterial='Si', optical_constants=None, excess_carriers_array=None, width = None):
+    def __init__(self, matterial='Si', optical_constants=None, excess_carriers_array=None, width=None):
         super(Simulated_PL_emission, self).__init__()
 
         if width is None:
             width = 0.018  # in cm
-
 
         if excess_carriers_array is None:
             self.x = np.linspace(0, width, 100)  # cm
@@ -208,20 +205,21 @@ class Simulated_PL_emission(SpontaneousRadiativeMeission):
 
         self.np = self.doping * deltan
 
-    def initalise_EmittedPL(self, temp=None):
+    def initalise_EmittedPL(self, temp=None, wl_min=None, wl_max=None):
         """
         Used for obtained the basic values required for this caculation
         i.e. optical cosntants, ni, an escape fraction
         """
 
-        self.optics.initalise_optical_constants()
+        self.optics.load()
 
-        # index = self.wavelength > 800
-        # index *= self.wavelength < 1400
+        index = self.optics.wavelength > wl_min
+        index *= self.optics.wavelength < wl_max
 
-        # self.wavelength = self.wavelength[index]
-        # self.optics_abs_cof_bb = self.optics_abs_cof_bb[index]
-        # self.optics.ref_ind = self.optics.ref_ind[index]
+        self.optics.wavelength = self.optics.wavelength[index]
+        self.optics.abs_cof_bb = self.optics.abs_cof_bb[index]
+        self.optics.ref_ind = self.optics.ref_ind[index]
+
         self.ni.update_ni(temp)
 
         # The wafter thickiness is taken as the last value in the x-direction
@@ -250,7 +248,7 @@ class Simulated_PL_emission(SpontaneousRadiativeMeission):
 
     def update_escape(self):
         """
-        Can be used to udpate the escape fraction, no inputs
+        Can be used to update the escape fraction, no inputs
         """
 
         self.Esc.optics = self.optics
@@ -270,7 +268,8 @@ class Simulated_PL_emission(SpontaneousRadiativeMeission):
 
         if self.np.shape == self.x.shape:
             # print self.np[0], self.ni
-#            print self.rsp.shape, self.escapeprob.shape, self.ni.ni, self.np.shape, '\n\n'
+# print self.rsp.shape, self.escapeprob.shape, self.ni.ni, self.np.shape,
+# '\n\n'
             self.Spectral_PL = numpy.trapz((self.rsp * self.escapeprob).T
                                            * self.np / self.ni.ni**2,
                                            self.x,
@@ -387,12 +386,12 @@ if __name__ == "__main__":
     a.initalise_EmittedPL()
     a.caculate_spectral_PL()
     a.update_escape()
-    plt.plot(a.optics.wavelength, a.Spectral_PL/ np.amax(a.Spectral_PL))
+    plt.plot(a.optics.wavelength, a.Spectral_PL / np.amax(a.Spectral_PL))
 
     a.wafer_opitcs = 'textured'
     a.update_escape()
     a.caculate_spectral_PL()
-    plt.plot(a.optics.wavelength, a.Spectral_PL/ np.amax(a.Spectral_PL))
+    plt.plot(a.optics.wavelength, a.Spectral_PL / np.amax(a.Spectral_PL))
     # plt.plot(a.optics.wavelength, a.optics.abs_cof_bb)
 
     a.genralised_planks_PerWavelength()

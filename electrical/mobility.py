@@ -26,7 +26,7 @@ class Mobility(HelperFunctions):
 
         self.Models.read(constants_file)
 
-        self.vals, self.model = self.change_model(author)
+        self.change_model(author)
 
     def electron_mobility(self, nxc, Na, Nd, **kwargs):
 
@@ -50,7 +50,6 @@ class Mobility(HelperFunctions):
     def check_models(self):
         check_klaassen()
         check_dorkel()
-
 
 def check_klaassen():
     '''compares to values taken from www.PVlighthouse.com.au'''
@@ -96,7 +95,7 @@ def check_dorkel():
     '''compares to values taken from www.PVlighthouse.com.au'''
 
     a = Mobility('Si')
-    a.change_model('dorkel1981')
+    a.change_model(author='dorkel1981')
 
     dn = np.logspace(10, 20)
     # dn = np.array([1e14])
@@ -105,21 +104,24 @@ def check_dorkel():
 
     folder = os.path.join(
         os.path.dirname(__file__), 'Si', 'test_mobility_files')
-    fnames = ['dorkel_1e14_carriers.dat',
-              'dorkel_1e14_temp-450.dat']
+    # file name and temp its at
+    compare = [
+        ['dorkel_1e14_carriers.dat', 300],
+        ['dorkel_1e14_temp-450.dat', 450],
+    ]
 
-    for temp, f_name in zip([300, 450], fnames):
+    for comp in compare:
 
-        plt.figure('Mobility - Dorkel: Deltan at ' + str(temp))
+        plt.figure('Mobility - Dorkel: Deltan at ' + str(comp[1]))
 
-        plt.plot(dn, a.hole_mobility(dn, Na, Nd, temp=temp),
+        plt.plot(dn, a.hole_mobility(dn, Na, Nd, temp=comp[1]),
                  'r-',
                  label='hole-here')
-        plt.plot(dn, a.electron_mobility(dn, Na, Nd, temp=temp),
+        plt.plot(dn, a.electron_mobility(dn, Na, Nd, temp=comp[1]),
                  'b-',
                  label='electron-here')
 
-        data = np.genfromtxt(os.path.join(folder, f_name), names=True)
+        data = np.genfromtxt(os.path.join(folder, comp[0]), names=True)
 
         plt.plot(data['deltan'], data['uh'], 'b--',
                  label='hole - PV-lighthouse')
