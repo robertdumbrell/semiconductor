@@ -6,7 +6,7 @@ import scipy.constants as Const
 
 sys.path.append('./Si')
 
-import semiconductor.optical.Si.opticalproperties as opticalproperties
+import semiconductor.optical.opticalproperties as opticalproperties
 
 
 
@@ -29,7 +29,7 @@ class EscapeProbability():
         self.matterial = matterial
 
         if optical_constants is None:
-            self.optics = opticalproperties.OpticalProperties(self.matterial)
+            self.optics = opticalproperties.TabulatedOpticalProperties(matterial=self.matterial)
         else:
             self.optics = optical_constants
 
@@ -38,9 +38,6 @@ class EscapeProbability():
         else:
             self.x = x
 
-        self.optics.initalise_optical_constants()
-
-        self.optics.initalise_optical_constants()
 
     def width_from_xlegnth(self):
         # print self.x
@@ -67,16 +64,16 @@ class EscapeProbability():
         a = 1. / self.optics.n**2
         b = 1. / \
             (1. - (1 - a)**2 *
-             np.exp(-4 * self.optics.alpha_BB * self.Width))
-        c = (1. - a) * np.exp(-4 * self.Width * self.optics.alpha_BB)
+             np.exp(-4 * self.optics.abs_cof_bb * self.Width))
+        c = (1. - a) * np.exp(-4 * self.Width * self.optics.abs_cof_bb)
 
         # Now cac both ways
-        xd_W = 2 * self.optics.alpha_BB * \
-            ((np.ones([self.x.shape[0], self.optics.alpha_BB.shape[0]]).T)
+        xd_W = 2 * self.optics.abs_cof_bb * \
+            ((np.ones([self.x.shape[0], self.optics.abs_cof_bb.shape[0]]).T)
              * (self.Width - self.x)).T
 
-        xd = 2 * self.optics.alpha_BB * \
-            (np.ones([self.x.shape[0], self.optics.alpha_BB.shape[0]]).T *
+        xd = 2 * self.optics.abs_cof_bb * \
+            (np.ones([self.x.shape[0], self.optics.abs_cof_bb.shape[0]]).T *
              self.x).T
 
         # Calc both methods
@@ -95,7 +92,7 @@ class EscapeProbability():
             ax.plot(self.x,  (c * np.exp(xd)), 'b')
             ax.plot(self.x,  self.Escape_front, 'g')
 
-            # ax.plot(self.wavelength_emission, self.optics.alpha_BB)
+            # ax.plot(self.wavelength_emission, self.optics.abs_cof_bb)
             # ax.plot(self.wavelength_emission, self.optics.n)
 
     def double_side_polished(self, Reflection_front=-1, Reflection_rear=-1):
@@ -112,18 +109,18 @@ class EscapeProbability():
         if Reflection_rear == -1:
             Reflection_rear = self.Reflection_rear
 
-        xd_rear = self.optics.alpha_BB * \
-            ((np.ones([self.x.shape[0], self.optics.alpha_BB.shape[0]]).T)
+        xd_rear = self.optics.abs_cof_bb * \
+            ((np.ones([self.x.shape[0], self.optics.abs_cof_bb.shape[0]]).T)
              * (self.Width - self.x)).T
 
         b_rear = Reflection_front * \
-            np.exp(-2 * self.optics.alpha_BB * self.Width)
+            np.exp(-2 * self.optics.abs_cof_bb * self.Width)
 
-        xd_frot = self.optics.alpha_BB * \
-            (np.ones([self.x.shape[0], self.optics.alpha_BB.shape[0]]).T *
+        xd_frot = self.optics.abs_cof_bb * \
+            (np.ones([self.x.shape[0], self.optics.abs_cof_bb.shape[0]]).T *
              self.x).T
         b_frot = Reflection_rear * \
-            np.exp(-2 * self.optics.alpha_BB * self.Width)
+            np.exp(-2 * self.optics.abs_cof_bb * self.Width)
 
         self.Escape_rear = (
             np.exp(-xd_rear) + b_rear * np.exp(xd_rear)
@@ -133,7 +130,7 @@ class EscapeProbability():
             np.exp(-xd_frot) + b_frot * np.exp(xd_frot)
         ) / (1 - b_frot * Reflection_front)
 
-        # self.optics.alpha_BB*=cos(self.theta*np.pi/180)
+        # self.optics.abs_cof_bb*=cos(self.theta*np.pi/180)
 
     def general_form(self):
         """
@@ -157,7 +154,7 @@ class EscapeProbability():
         thetan = np.pi / 3 * 0
 
         # these are defined as exp{-alpha W / cos(theta_x))}
-        T1 = np.exp(-self.optics.alpha_BB * self.Width / np.cos(theta1))
+        T1 = np.exp(-self.optics.abs_cof_bb * self.Width / np.cos(theta1))
         # print T1
         # experimentally this is taken as the average of T1 and Tn.
         # T2 =  (Lambda * Rbd Tn + (1- Lambda) Rbs T1)/(Lambda * Rbn + (1+
@@ -165,8 +162,8 @@ class EscapeProbability():
         # where:
         # Rbd is the rear surface reflection for lambertian reflected light a
         # Rbs is the rear surface reflectance for specular reflected light
-        T2 = np.exp(-self.optics.alpha_BB * self.Width / np.cos(theta2))
-        Tn = np.exp(-self.optics.alpha_BB * self.Width / np.cos(thetan))
+        T2 = np.exp(-self.optics.abs_cof_bb * self.Width / np.cos(theta2))
+        Tn = np.exp(-self.optics.abs_cof_bb * self.Width / np.cos(thetan))
 
         Rb1 = 0.0
 
@@ -196,12 +193,12 @@ class EscapeProbability():
 
         print A, B, C, D
 
-        xd_W =  self.optics.alpha_BB * \
-            ((np.ones([self.x.shape[0], self.optics.alpha_BB.shape[0]]).T)
+        xd_W =  self.optics.abs_cof_bb * \
+            ((np.ones([self.x.shape[0], self.optics.abs_cof_bb.shape[0]]).T)
              * (self.Width - self.x)).T
 
-        xd = self.optics.alpha_BB * \
-            (np.ones([self.x.shape[0], self.optics.alpha_BB.shape[0]]).T *
+        xd = self.optics.abs_cof_bb * \
+            (np.ones([self.x.shape[0], self.optics.abs_cof_bb.shape[0]]).T *
              self.x).T
 
         self.Escape_front = scale * (

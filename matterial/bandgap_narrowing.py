@@ -113,8 +113,7 @@ def check_Schenk(fig, ax):
     fnames = ['BGN_Schenk_asN-dn-1e14.csv']
     min_car_den = 1e14
 
-
-    ax.set_color_cycle(['c', 'c', 'm', 'm', 'b', 'b', 'r',  'r', 'g',  'g'])
+    ax.set_color_cycle(['c', 'c', 'm', 'm', 'b', 'b', 'r', 'r', 'g', 'g'])
 
     for f_name in fnames:
         data = np.genfromtxt(os.path.join(folder, f_name),
@@ -129,7 +128,6 @@ def check_Schenk(fig, ax):
             ax.plot(data['N'], data[temp],
                     '--',
                     label=temp)
-
 
         ax.legend(loc=0, title='Temperature (K)')
 

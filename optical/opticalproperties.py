@@ -15,7 +15,6 @@ class TabulatedOpticalProperties():
 
     def __init__(self, matterial='Si', abs_author=None, ref_author=None, temp=None):
         self.temp = temp or self.temp
-
         self.tac = TabulatedAbsorptionCoefficient(matterial, abs_author, temp)
         self.tri = TabulatedRefractiveIndex(matterial, ref_author, temp)
         self.load()

@@ -8,7 +8,7 @@ sys.path.append('../matterial')
 sys.path.append('./Si')
 
 import semiconductor.matterial.ni as ni
-import semiconductor.optical.Si.opticalproperties as opticalproperties
+import semiconductor.optical.opticalproperties as opticalproperties
 import semiconductor.optical.absorptance as absorptance
 
 
@@ -38,14 +38,15 @@ class SpontaneousRadiativeMeission(object):
         self.matterial = matterial
 
         if optical_properties is None:
-            self.optics = opticalproperties.OpticalProperties(self.matterial)
+            self.optics = opticalproperties.TabulatedOpticalProperties(self.matterial)
         else:
             self.optics = optical_properties
 
-        self.optics.initalise_optical_constants()
+
 
         if intrinsic_carrier_concentration is None:
             self.ni = ni.IntrinsicCarrierDensity(self.matterial)
+            self.ni.update_ni()
         else:
             self.ni = intrinsic_carrier_concentration
 
@@ -54,7 +55,7 @@ class SpontaneousRadiativeMeission(object):
         else:
             self.temp = temp
 
-        self.optics.initalise_optical_constants()
+        self.optics.load(temp=temp)
 
     def blackbody_photon_per_wavelength(self, emn_wavelegnth=None, temp=None):
         """
@@ -71,7 +72,7 @@ class SpontaneousRadiativeMeission(object):
         """
 
         if emn_wavelegnth is None:
-            emn_wavelegnth = self.optics.wavelength_emission
+            emn_wavelegnth = self.optics.wavelength
         emn_wavelegnth = emn_wavelegnth * 1e-9
 
         if temp is None:
@@ -97,7 +98,7 @@ class SpontaneousRadiativeMeission(object):
         BB = self.blackbody_photon_per_wavelength(temp=temp)
 
         # The PL spectrum with no QF splitting
-        self.rsp_thermal = (BB * self.optics.alpha_BB) / self.optics.n**2
+        self.rsp_thermal = (BB * self.optics.abs_cof_bb) / self.optics.ref_ind**2
 
         if np is None:
             self.rsp = self.rsp_thermal
@@ -114,24 +115,24 @@ class SpontaneousRadiativeMeission(object):
         if temp is None:
             temp = self.temp
 
-        E = Const.h * Const.c / (self.optics.wavelength_emission * 1e-9)
+        E = Const.h * Const.c / (self.optics.wavelength * 1e-9)
 
         if not QF_split:
             QF_split = self.defult_QF_split
 
         # speed of light in medium
-        c = Const.c / self.optics.n
+        c = Const.c / self.optics.ref_ind
 
         # Density of state of phtons
         D = E**2 / c**3 * 2**2 * Const.pi / Const.h**3
 
         # A note that in Gesikers phd he droped from the denumerator
         # The spectrum with QF=0 splitting
-        self.rsp_thermal = self.optics.alpha_BB * c * D / (
+        self.rsp_thermal = self.optics.abs_cof_bb * c * D / (
             numpy.exp(E / Const.k / self.temp) - 1)
 
         # The spectrum with QF splitting
-        self.rsp = self.optics.alpha_BB * c * D / (
+        self.rsp = self.optics.abs_cof_bb * c * D / (
             numpy.exp(E / Const.k / self.temp) *
             numpy.exp(-QF_split / Const.k / self.temp) - 1
         )
@@ -147,7 +148,7 @@ class SpontaneousRadiativeMeission(object):
 
         # we just need to multip the per energy by the derivative below
 
-        dEdwl = Const.h * Const.c / (self.optics.wavelength_emission * 1e-9)**2
+        dEdwl = Const.h * Const.c / (self.optics.wavelength * 1e-9)**2
 
         self.genralised_planks_PerEnergy(QF_split)
 
@@ -177,7 +178,7 @@ class Simulated_PL_emission(SpontaneousRadiativeMeission):
 
     alpha_version = 'Schinke2015'
 
-    def __init__(self, matterial=None, optical_constants=None, excess_carriers_array=None, width = None):
+    def __init__(self, matterial='Si', optical_constants=None, excess_carriers_array=None, width = None):
         super(Simulated_PL_emission, self).__init__()
 
         if width is None:
@@ -215,12 +216,12 @@ class Simulated_PL_emission(SpontaneousRadiativeMeission):
 
         self.optics.initalise_optical_constants()
 
-        # index = self.wavelength_emission > 800
-        # index *= self.wavelength_emission < 1400
+        # index = self.wavelength > 800
+        # index *= self.wavelength < 1400
 
-        # self.wavelength_emission = self.wavelength_emission[index]
-        # self.optics_alpha_BB = self.optics_alpha_BB[index]
-        # self.optics.n = self.optics.n[index]
+        # self.wavelength = self.wavelength[index]
+        # self.optics_abs_cof_bb = self.optics_abs_cof_bb[index]
+        # self.optics.ref_ind = self.optics.ref_ind[index]
         self.ni.update_ni(temp)
 
         # The wafter thickiness is taken as the last value in the x-direction
@@ -268,7 +269,7 @@ class Simulated_PL_emission(SpontaneousRadiativeMeission):
         # Normalised to deltan = 1, so we can just multi this by deltan
 
         if self.np.shape == self.x.shape:
-            print self.np[0], self.ni.ni
+            # print self.np[0], self.ni
 #            print self.rsp.shape, self.escapeprob.shape, self.ni.ni, self.np.shape, '\n\n'
             self.Spectral_PL = numpy.trapz((self.rsp * self.escapeprob).T
                                            * self.np / self.ni.ni**2,
@@ -328,9 +329,9 @@ class Alpha_from_PL():
             self.known_wavelength, self.wavelength_measured, self.PLnBB)
 
         # Find the proportionality in PL for the known alpha
-        self.wavelength_emission = np.array(
+        self.wavelength = np.array(
             (self.known_wavelength, self.known_wavelength))
-        self.optics_alpha_BB = np.array((self.known_alpha, self.known_alpha))
+        self.optics_abs_cof_bb = np.array((self.known_alpha, self.known_alpha))
         self.update_escape()
 
         # For checking the escape probability
@@ -369,8 +370,8 @@ class Alpha_from_PL():
 
         for i in range(n):
             # print i
-            self.wavelength_emission = self.wavelength_measured
-            self.optics_alpha_BB = self.PL_alpha
+            self.wavelength = self.wavelength_measured
+            self.optics_abs_cof_bb = self.PL_alpha
 
             self.update_escape()
             # print self.PLnBB.shape, self.PL.shape, numpy.trapz(self.np*self.escapeprob.T,
@@ -386,24 +387,24 @@ if __name__ == "__main__":
     a.initalise_EmittedPL()
     a.caculate_spectral_PL()
     a.update_escape()
-    plt.plot(a.optics.wavelength_emission, a.Spectral_PL/ np.amax(a.Spectral_PL))
+    plt.plot(a.optics.wavelength, a.Spectral_PL/ np.amax(a.Spectral_PL))
 
     a.wafer_opitcs = 'textured'
     a.update_escape()
     a.caculate_spectral_PL()
-    plt.plot(a.optics.wavelength_emission, a.Spectral_PL/ np.amax(a.Spectral_PL))
-    # plt.plot(a.optics.wavelength_emission, a.optics.alpha_BB)
+    plt.plot(a.optics.wavelength, a.Spectral_PL/ np.amax(a.Spectral_PL))
+    # plt.plot(a.optics.wavelength, a.optics.abs_cof_bb)
 
     a.genralised_planks_PerWavelength()
-    plt.plot(a.optics.wavelength_emission, a.rsp / np.amax(a.rsp), '--')
+    plt.plot(a.optics.wavelength, a.rsp / np.amax(a.rsp), '--')
 
     a.genralised_planks_PerEnergy()
-    plt.plot(a.optics.wavelength_emission, a.rsp / np.amax(a.rsp), '--')
+    plt.plot(a.optics.wavelength, a.rsp / np.amax(a.rsp), '--')
 
     a.genralised_planks_PerWavelength_Carriers()
-    plt.plot(a.optics.wavelength_emission, a.rsp / np.amax(a.rsp), ':')
+    plt.plot(a.optics.wavelength, a.rsp / np.amax(a.rsp), ':')
 
-    # plt.plot(a.optics.wavelength_emission,
+    # plt.plot(a.optics.wavelength,
     #          a.blackbody_photon_per_wavelength(
     #          ) / np.amax(a.blackbody_photon_per_wavelength()),
     #          '--')

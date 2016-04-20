@@ -12,7 +12,7 @@ def Passler(vals, temp):
 
     1. The model applies to all physically relevant
     regimes of dispersion comprising the whole interval
-    from the Bose–Einstein limit Delta -> 0 up to sufficiently
+    from the Bose-Einstein limit Delta -> 0 up to sufficiently
     large magnitudes of the dispersion coefficient i.e., the
     experimentally relevant range of 0 < Delta < 3/4, at least!.
 
