@@ -11,7 +11,6 @@ To do:
     Need to fix the check_doping function
 """
 
-
 def change_model(Models, author=None):
 
     author = author or Models.get('default', 'model')

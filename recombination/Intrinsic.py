@@ -108,6 +108,7 @@ class Auger(HelperFunctions):
 
         ne0, nh0 = get_carriers(
             Na, Nd, nxc=0, ni_author=None, temp=temp)
+
         return getattr(augmdls, self.model)(self.vals, nxc, ne0, nh0, temp)
 
     def itau_aug(self, nxc, Na, Nd):
