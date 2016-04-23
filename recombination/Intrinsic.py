@@ -108,17 +108,17 @@ class Auger(HelperFunctions):
 
         ne0, nh0 = get_carriers(
             Na, Nd, nxc=0, ni_author=None, temp=temp)
-        return getattr(augmdls, self.model)(self.vals, nxc, ne0, nh0)
+        return getattr(augmdls, self.model)(self.vals, nxc, ne0, nh0, temp)
 
     def itau_aug(self, nxc, Na, Nd):
         return 1 / self.tau(nxc, Na, Nd)
 
-    def check(self, author):
-        fig, ax = plt.subplots(1)
+    def check(self, author, fig=None, ax=None):
+        if ax is None:
+            fig, ax = plt.subplots(1)
         self.change_model(author, self.Models)
-        print self.vals
+
         func = getattr(augmdls, self.model)
 
         getattr(augmdls, author + '_check')(self.vals, func, fig, ax)
-
-
+        ax.set_xlim(left=1e13)

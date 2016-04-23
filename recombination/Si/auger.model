@@ -3,27 +3,8 @@
 [default]
 model = Richter2012
 
-[Kerr2002]
-# Incorrect delta value
-model= coulomb_enhanced_auger
-K_n= 2.8e-31
-K_p= 9.9e-32
-K_Delta= 3.79e-29
-delta= .92
-L_eeh= 44
-N_eeh= .29
-K_eeh= 2e16
-P_ehh= .29
-L_ehh= 44
-K_ehh= 2e16
-notes: Reinterpretation of data, introduced new parameterisation 
-
-[Altermatt1997]
-model = not_implimented
-notes: missing
-
 [Richter2012]
-model= coulomb_enhanced_auger
+model= coulomb_enhanced_auger_Richter
 K_n= 2.5e-31
 K_p= 8.5e-32
 K_Delta= 3.0e-29
@@ -36,6 +17,67 @@ L_ehh= 7.5
 K_ehh= 7e17
 doi: 10.1103/PhysRevB.86.165202
 notes: Based on lifetime measurements (photoluminescence and photoconductance). Values taken from Table II. Only valid for 300K. Check values are taken from Fig 9. The names of the vairables are renamed to match the existing model.
+
+[Kerr2002_simple]
+model= coulomb_enhanced_auger_Kerrsimple
+K_n= 1.8e-24
+p_n = .65
+K_h = 6e-25
+p_h = 0.65
+K_nxc = 3.e-27
+p_nxc = 0.8
+notes: Reinterpretation of data, introduced new parameterisation. for the 300 K
+
+[Kerr2002_complex]
+model= coulomb_enhanced_auger_Kerr
+K_n= 2.8e-31
+K_h= 9.9e-32
+L_eeh= 44
+N_eeh= .29
+K_eeh= 2e16
+P_ehh= .29
+L_ehh= 44
+K_ehh= 2e16
+K_nxc= 3.79e-31
+N_nxc = 3.8e17
+D_nxc = 6e16
+notes: Reinterpretation of data, introduced new parameterisation. for the 300 K
+
+[Glunz1999]
+model= coulomb_enhanced_auger_Glunz
+K_n= 2.8e-31
+K_h= 9.9e-32
+K_a = 1.66e-30
+N_eeh= .34
+K_eeh= 5e16
+P_ehh= .29
+K_ehh= 5e16
+k_gmaxn = 235548
+p_gmaxn = -1.5013
+k_gmaxh = 564812
+p_gmaxh = -1.6545
+K_nxc= 3.79e-31
+N_nxc = 3.8e17
+D_nxc = 6e16
+notes: Reinterpretation of data, introduced new parameterisation. This is for the 300 K
+
+[Altermatt1997]
+model= coulomb_enhanced_auger_Altermatt
+K_n= 2.8e-31
+K_h= 9.9e-32
+N_eeh= .34
+K_eeh= 5e16
+P_ehh= .29
+K_ehh= 5e16
+k_gmaxn = 235548
+p_gmaxn = -1.5013
+k_gmaxh = 564812
+p_gmaxh = -1.6545
+k_h0 = 7.91e-32
+k_h1 = -4.13e-35
+k_h2 = 3.59e-37
+notes: This is for the temperature range
+		70-400 K. Limited to low injection only
 
 [SchroderTextbook]
 model= auger
@@ -53,7 +95,7 @@ ced = 9.9e-32 ;electron dopant constant
 model = auger_dopants
 cn = 2.8e-31  ;for doping 6e18-1e20
 cp = .99e-31  ;for doping 5e18 - 1e20
-notes: Based on photoluminescence measurements
+notes: Based on photoluminescence measurements at 300 K
 
 [Beck1973]
 model = auger_dopants
@@ -61,13 +103,17 @@ cn = 1.7e-31 ;for doping 2e18-2e19
 cp = 1.2e-31 ;for doping 2e18-3e19
 notes : Based on photoluminescence measurements
 
+
+
+
+
+
 [DelAlamo1984]
 model = not_implimented
 cn = 1.8e-31 ;for doping 6e18-6e19
 notes: Not implemented
 
 [Wang1984]
-# Done with transient photoconductance
 model = not_implimented
 cn = 2.22e-31 ;for doping 2.5e19-8e19
 notes: Not implemented, Based on transient photoconductance measurements

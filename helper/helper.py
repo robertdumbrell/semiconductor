@@ -3,6 +3,7 @@
 
 import matplotlib.pylab as plt
 import numpy as np
+import json
 
 """
 To do:
@@ -10,7 +11,8 @@ To do:
     Need to fix the check_doping function
 """
 
-def change_model( Models, author=None):
+
+def change_model(Models, author=None):
 
     author = author or Models.get('default', 'model')
 
@@ -166,3 +168,34 @@ class HelperFunctions():
                 print dict(self.Models.items(mdl))['notes']
             except:
                 print 'No notes'
+
+
+class Webplotdig_JSONreader:
+    '''
+    A class to handel the JSON output from 
+        http://arohatgi.info/WebPlotDigitizer/
+    It is taken from here
+        https://github.com/ankitrohatgi/wpd-python
+    '''
+
+    def __init__(self, filename):
+        with open(filename) as data_file:
+            self.data = json.load(data_file)
+
+    def getDatasetCount(self):
+        return len(self.data['wpd']['dataSeries'])
+
+    def getDatasetByIndex(self, index):
+        return self.data['wpd']['dataSeries'][index]
+
+    def getDatasetByName(self, name):
+        return [x for x in self.data['wpd']['dataSeries'] if x['name'] == name][0]
+
+    def getDatasetNames(self):
+        return [x['name'] for x in self.data['wpd']['dataSeries']]
+
+    def getDatasetValues(self, dataset):
+        values = []
+        for val in dataset['data']:
+            values.append(val['value'])
+        return np.array(values)
