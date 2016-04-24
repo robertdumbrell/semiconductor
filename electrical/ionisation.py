@@ -71,7 +71,7 @@ class Ionisation(HelperFunctions):
         else:
             Nc, Nv = 0, 0
 
-        # 
+        #
         if impurity in self.vals.keys():
             iN_imp = getattr(IIm, self.model)(
                 self.vals, N_imp, ne, nh, temp, Nc, Nv, self.vals[impurity])
@@ -83,11 +83,25 @@ class Ionisation(HelperFunctions):
 
         return iN_imp
 
-    def update_dopant_ionisation(self, N_dop, dn, impurity,
+    def update_dopant_ionisation(self, N_dop, nxc, impurity,
                                  temp=None, author=None):
         '''
-        This is a special function used to determine the number of ionised dopants
-        given a number of excess carriers, and a single dopant type.    
+        This is a special function used to determine the number of
+        ionised dopants given a number of excess carriers, and a
+        single dopant type.
+
+        inputs:
+            N_dop: (float; cm^-3)
+                The dopant density
+            nxc: (float; cm^-3)
+                The excess carrier density
+            impurity: (str)
+                The name of the dopant used e.g. boron, phosphorous. The
+                dopants available depend on the model used
+
+        output:
+            N_idop: (float cm^-2)
+                The number of ionised dopants
         '''
 
         if temp is None:
@@ -96,25 +110,27 @@ class Ionisation(HelperFunctions):
         if author is not None:
             self.change_model(author)
 
-        iN_dop = N_dop
+        N_idop = N_dop
 
         if impurity in self.vals.keys():
             # TO DO, change this from just running 10 times to a proper check
             for i in range(10):
                 if self.vals['tpe_' + self.vals[impurity]] == 'donor':
-                    Nd = iN_dop
+                    Nd = N_idop
                     Na = 0
                 elif self.vals['tpe_' + self.vals[impurity]] == 'acceptor':
-                    Na = iN_dop
+                    Na = N_idop
                     Nd = 0
 
-                ne, nh = CF.get_carriers(Na, Nd, dn, temp=temp, matterial='Si')
+                ne, nh = CF.get_carriers(
+                    Na, Nd, nxc, temp=temp, matterial='Si')
 
-                iN_dop = self.update(
+                N_idop = self.update(
                     N_dop, ne, nh, impurity, temp=temp, author=None)
         else:
-            print 'Not a valid impurity'
-        return iN_dop
+            print r'Not a valid impurity, returning 100% ionisation'
+
+        return N_idop
 
     def check_models(self):
         '''

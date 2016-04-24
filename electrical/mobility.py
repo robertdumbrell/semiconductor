@@ -38,7 +38,6 @@ class Mobility(HelperFunctions):
     def hole_mobility(self, nxc, Na, Nd, **kwargs):
 
         self.Nh_0, self.Ne_0 = self.check_doping(Na, Nd)
-
         return getattr(model, self.model)(
             self.vals, Na, Nd, nxc, carrier='hole', **kwargs)
 
@@ -51,11 +50,15 @@ class Mobility(HelperFunctions):
         check_klaassen()
         check_dorkel()
 
+
 def check_klaassen():
     '''compares to values taken from www.PVlighthouse.com.au'''
-
     a = Mobility('Si')
     a.change_model('klaassen1992')
+
+    print ('''The model disagrees at low tempeature owing to dopant ionisation'''
+           '''I am unsure if mobility should take ionisated dopants or non ionisaed'''
+           '''most likley it should take both, currently it only takes one''')
 
     dn = np.logspace(10, 20)
     # dn = np.array([1e14])

@@ -134,7 +134,7 @@ def carrier_scattering_mobility(vals, nxc, maj_car_den, temp):
 # below this are the functions for klaassen's model
 
 
-def unified_mobility(vals, Na, Nd, nxc, temp, carrier):
+def unified_mobility(vals, Na, Nd, nxc, temp, carrier, **kwargs):
     """
     Thaken from: 
 
@@ -156,7 +156,6 @@ def unified_mobility(vals, Na, Nd, nxc, temp, carrier):
     Klaassen's mobility model fits reasonably with experimental data over an estimated temperature range of 100 - 450 K.
     Its accuracy is greatest at 300 K (see [1,2]).
     """
-
     # these are the values for phosphorous and boron respectively.
 
     # Original value
@@ -164,6 +163,7 @@ def unified_mobility(vals, Na, Nd, nxc, temp, carrier):
 
     # a switch used for different types
     # change to hle and electron for clarity
+
     type_dic = {'hole': 'h', 'electron': 'e'}
 
     if carrier in type_dic:
