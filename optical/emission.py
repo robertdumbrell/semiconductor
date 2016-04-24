@@ -44,7 +44,7 @@ class SpontaneousRadiativeMeission(object):
 
         if intrinsic_carrier_concentration is None:
             self.ni = ni.IntrinsicCarrierDensity(self.matterial)
-            self.ni.update_ni()
+            self.ni.update()
         else:
             self.ni = intrinsic_carrier_concentration
 
@@ -102,7 +102,7 @@ class SpontaneousRadiativeMeission(object):
         if np is None:
             self.rsp = self.rsp_thermal
         else:
-            self.rsp = self.rsp_thermal * (np) / self.ni.update_ni()**2
+            self.rsp = self.rsp_thermal * (np) / self.ni.update()**2
         # The spectrum with QF splitting
 
     def genralised_planks_PerEnergy(self, QF_split=False, temp=None):
@@ -220,7 +220,7 @@ class Simulated_PL_emission(SpontaneousRadiativeMeission):
         self.optics.abs_cof_bb = self.optics.abs_cof_bb[index]
         self.optics.ref_ind = self.optics.ref_ind[index]
 
-        self.ni.update_ni(temp)
+        self.ni.update(temp = temp)
 
         # The wafter thickiness is taken as the last value in the x-direction
         self.update_escape()
@@ -243,7 +243,7 @@ class Simulated_PL_emission(SpontaneousRadiativeMeission):
 
         self.optics.change_temp_Green2008(temp)
         self.Esc.optics = self.optics
-        self.ni.update_ni()
+        self.ni.update()
         self.update_escape()
 
     def update_escape(self):

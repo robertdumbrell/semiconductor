@@ -14,23 +14,35 @@ class IntrinsicBandGap(HelperFunctions):
         it changes as a result of:
              different effective carrier mass (band strucutre)
     '''
+    cal_dts = {
+        'matterial': 'Si',
+        'temp': 300.,
+        'author': None,
+        'multiplier' : 1.,
+    }
+    author_list = 'bandgap.models'
 
-    model_file = 'bandgap.models'
+    def __init__(self, **kwargs):
 
-    def __init__(self, matterial='Si', author=None):
-        self.Models = ConfigParser.ConfigParser()
-        self.matterial = matterial
+        # update any values in cal_dts
+        # that are passed
+        temp = locals().copy()
+        del temp['self']
+        self._update_dts(**temp)
 
-        constants_file = os.path.join(
+        # get the address of the authors list
+        author_file = os.path.join(
             os.path.dirname(os.path.realpath(__file__)),
-            matterial,
-            self.model_file)
+            self.cal_dts['matterial'],
+            self.author_list)
 
-        self.Models.read(constants_file)
+        # get the models ready
+        self._int_model(author_file)
 
-        self.change_model(author)
+        # initiate the first model
+        self.change_model(self.cal_dts['author'])
 
-    def update_iEg(self, temp=None, author=None, multiplier=1.01):
+    def update(self, **kwargs):
         '''
         a function to update the intrinsic BandGap
 
@@ -46,14 +58,13 @@ class IntrinsicBandGap(HelperFunctions):
             the intrinsic bandgap in eV
         '''
 
-        if temp is None:
-            temp = self.temp
-        if author is not None:
-            self.change_model(author)
+        self._update_dts(**kwargs)
 
-        Eg = getattr(iBg, self.model)(self.vals, temp)
-        
-        return Eg * multiplier
+        if 'author' in kwargs.keys():
+            self.change_model(self.cal_dts['author'])
+        Eg = getattr(iBg, self.model)(self.vals, temp=self.cal_dts['temp'])
+
+        return Eg * self.cal_dts['multiplier']
 
     def check_models(self):
         '''
@@ -65,7 +76,7 @@ class IntrinsicBandGap(HelperFunctions):
 
         for author in self.available_models():
 
-            Eg = self.update_iEg(t, author=author, multiplier=1.0)
+            Eg = self.update(temp=t, author=author, multiplier=1.0)
             plt.plot(t, Eg, label=author)
 
         test_file = os.path.join(
@@ -82,4 +93,4 @@ class IntrinsicBandGap(HelperFunctions):
         plt.ylabel('Intrinsic Bandgap (eV)')
 
         plt.legend(loc=0)
-        self.update_iEg(0, author=author, multiplier=1.01)
+        self.update(temp=0, author=author, multiplier=1.01)

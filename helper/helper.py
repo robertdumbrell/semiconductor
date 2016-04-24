@@ -4,12 +4,14 @@
 import matplotlib.pylab as plt
 import numpy as np
 import json
+import ConfigParser
 
 """
 To do:
 
     Need to fix the check_doping function
 """
+
 
 def change_model(Models, author=None):
 
@@ -38,6 +40,21 @@ def change_model(Models, author=None):
 
 
 class HelperFunctions():
+
+    def _int_model(self, fname):
+        self.Models = ConfigParser.ConfigParser()
+        self.Models.read(fname)
+
+    def _update_dts(self, **kwargs):
+        '''
+        assignes the inputted values that are requrired,
+        befor calling a function to pass it to the downstream
+        classes
+        '''
+
+        items = [i for i in kwargs.keys() if i in self.cal_dts.keys()]
+        for item in items:
+            self.cal_dts[item] = kwargs[item]
 
     def change_model(self, author, Models=None):
 

@@ -24,7 +24,7 @@ def get_carriers(Na, Nd, nxc,
 
     '''
     if ni is None:
-        ni = NI(matterial=matterial).update_ni(author=ni_author, temp=temp)
+        ni = NI(matterial=matterial).update(author=ni_author, temp=temp)
     
     # Calculated on the assumption that at thermal equilibrium in the 
     # dark n0p0 = ni**2, and that charge neutrality holds. Usually 

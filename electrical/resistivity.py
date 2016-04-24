@@ -6,9 +6,10 @@ from semiconductor.general_functions.carrierfunctions import get_carriers
 from semiconductor.matterial.ni import IntrinsicCarrierDensity as ni
 from mobility import Mobility as Mob
 from ionisation import Ionisation as Ion
+from semiconductor.helper.helper import HelperFunctions
 
 
-class Resistivity():
+class Resistivity(HelperFunctions):
     cal_dts = {
         'matterial': 'Si',
         'temp': 300,
@@ -18,18 +19,6 @@ class Resistivity():
         'dopant': 'boron',
     }
 
-    def _update_dts(self, **kwargs):
-        '''
-        assignes the inputted values that are requrired,
-        befor calling a function to pass it to the downstream
-        classes
-        '''
-
-        items = [i for i in kwargs.keys() if i in self.cal_dts.keys()]
-        for item in items:
-            self.cal_dts[item] = kwargs[item]
-
-        self._update_links()
 
     def __init__(self, matterial='Si', mob_author=None,
                  nieff_author=None, ionis_author=None, temp=300,
@@ -91,6 +80,7 @@ class Resistivity():
         '''
 
         self._update_dts(**kwargs)
+        self._update_links()
         res = 1. / self._conductivity(Na, Nd, nxc, **kwargs)
 
         return res

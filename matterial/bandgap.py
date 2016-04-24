@@ -17,8 +17,8 @@ class BandGap():
                  iEg_author=None, BNG_author=None,
                  dopant=None):
 
-        self.iEg = IntrinsicBandGap(matterial, author=iEg_author)
-        self.BGN = BandGapNarrowing(matterial, author=BNG_author)
+        self.iEg = IntrinsicBandGap(matterial=matterial, author=iEg_author)
+        self.BGN = BandGapNarrowing(matterial=matterial, author=BNG_author)
         self.dopant = dopant
 
     def plot_all_models(self):
@@ -38,10 +38,7 @@ class BandGap():
         if self.BGN.model not in dopant_model_list:
             print 'You have the incorrect model for your dopant'
 
-        # print 'The band gaps are:', self.iEg.update_Eg(temp),
-        # self.BGN.update_BGN(doping, nxc)
-        Eg = self.iEg.update_iEg(
-            temp) - self.BGN.update_BGN(doping, nxc)
+        Eg = self.iEg.update(temp=temp) - self.BGN.update(doping, nxc)
         return Eg
 
     def check_models(self):

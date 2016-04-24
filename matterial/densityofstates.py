@@ -19,22 +19,32 @@ class DOS(HelperFunctions):
     number of free states for electrons and holes in the conduction
     and valance band
     '''
-
+    cal_dts = {
+        'matterial': 'Si',
+        'temp': 300.,
+        'author': None,
+    }
     author_list = 'DOS.models'
 
-    def __init__(self, matterial='Si', author=None, temp=300.):
-        self.Models = ConfigParser.ConfigParser()
-        self.matterial = matterial
+    def __init__(self, **kwargs):
 
-        constants_file = os.path.join(
+        # update any values in cal_dts
+        # that are passed
+        temp = locals().copy()
+        del temp['self']
+        self._update_dts(**temp)
+
+        # get the address of the authors list
+        author_file = os.path.join(
             os.path.dirname(os.path.realpath(__file__)),
-            matterial,
+            self.cal_dts['matterial'],
             self.author_list)
 
-        self.Models.read(constants_file)
+        # get the models ready
+        self._int_model(author_file)
 
-        self.change_model(author)
-        self.temp = temp
+        # initiate the first model
+        self.change_model(self.cal_dts['author'])
 
     def update(self, temp=None, author=None):
         '''
@@ -51,19 +61,17 @@ class DOS(HelperFunctions):
             the density of states of the valance band
             the density of states of the conduction band
         '''
-        # able to input a temperature to change
-        if temp is None:
-            temp = self.temp
+        self._update_dts(**kwargs)
 
         # a check to make sure the model hasn't changed
-        if author is not None:
-            self.change_model(author)
+        if 'author' in kwargs.keys():
+            self.change_model(self.cal_dts['author'])
 
         if 'egi_author' in self.vals.keys():
 
-            Eg0 = Egi(matterial=self.matterial).update_iEg(
+            Eg0 = Egi(matterial=self.matterial).update(
                 temp=0, author=self.vals['egi_author'])
-            Egratio = Eg0 / Egi(matterial=self.matterial).update_iEg(
+            Egratio = Eg0 / Egi(matterial=self.matterial).update(
                 temp=temp, author=self.vals['egi_author'])
         else:
             Egratio = None

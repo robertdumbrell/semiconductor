@@ -24,22 +24,35 @@ class BandGapNarrowing(HelperFunctions):
     Note: I currently believed that the impact of dopants
         is much larger than the impact of the carrier distribution
     '''
+    cal_dts = {
+        'matterial': 'Si',
+        'temp': 300.,
+        'author': None,
+    }
 
     author_list = 'bandgap_narrowing.models'
 
-    def __init__(self, matterial='Si', author=None, ni_author=None):
-        self.Models = ConfigParser.ConfigParser()
-        self.matterial = matterial
+    def __init__(self, **kwargs):
 
-        constants_file = os.path.join(
+        # update any values in cal_dts
+        # that are passed
+        temp = locals().copy()
+        del temp['self']
+        self._update_dts(**temp)
+
+        # get the address of the authors list
+        author_file = os.path.join(
             os.path.dirname(os.path.realpath(__file__)),
-            matterial,
+            self.cal_dts['matterial'],
             self.author_list)
 
-        self.Models.read(constants_file)
-        self.change_model(author)
+        # get the models ready
+        self._int_model(author_file)
 
-    def update_BGN(self, Na, Nd, nxc=None, author=None, temp=300, ni_author=None):
+        # initiate the first model
+        self.change_model(self.cal_dts['author'])
+
+    def update(self, Na, Nd, nxc=None, **kwargs):
         '''
         Calculates the band gap narrowing
 
@@ -50,16 +63,19 @@ class BandGapNarrowing(HelperFunctions):
             band gap narrowing in eV
         '''
 
+        self._update_dts(**kwargs)
+
+        # a check to make sure the model hasn't changed
+        if 'author' in kwargs.keys():
+            self.change_model(self.cal_dts['author'])
+
         # this should be change an outside function alter
         ne, nh = GF.get_carriers(Na,
                                  Nd,
                                  nxc,
-                                 temp=temp)
+                                 temp=self.cal_dts['temp'])
 
         doping = np.abs(Na - Nd)
-
-        if author is not None:
-            self.change_model(author)
 
         return getattr(Bgn, self.model)(
             self.vals,
@@ -67,7 +83,7 @@ class BandGapNarrowing(HelperFunctions):
             Nd=np.copy(Nd),
             ne=ne,
             nh=nh,
-            temp=temp,
+            temp=self.cal_dts['temp'],
             doping=doping)
 
     def check_models(self):
@@ -75,12 +91,12 @@ class BandGapNarrowing(HelperFunctions):
         Na = np.logspace(12, 20)
         Nd = 0
         dn = 1e14
-        temp = 300
+        temp = 300.
 
         for author in self.available_models():
-            BGN = self.update_BGN(Na=Na, Nd=Nd, nxc=dn,
-                                  author=author,
-                                  temp=temp)
+            BGN = self.update(Na=Na, Nd=Nd, nxc=dn,
+                              author=author,
+                              temp=temp)
 
             if not np.all(BGN == 0):
                 plt.plot(Na, BGN, label=author)
@@ -122,7 +138,7 @@ def check_Schenk(fig, ax):
                              skip_header=1)
         ND = np.zeros(data.shape)
         for temp in data.dtype.names[1::2]:
-            bgn = BGN.update_BGN(data['N'], ND, nxc, temp=float(temp))
+            bgn = BGN.update(data['N'], ND, nxc, temp=float(temp))
             ax.plot(data['N'], bgn,
                     '.')
             ax.plot(data['N'], data[temp],
