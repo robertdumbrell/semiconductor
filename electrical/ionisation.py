@@ -66,7 +66,7 @@ class Ionisation(HelperFunctions):
 
         # checks if and get the required density of states model
         if 'dos_author' in self.vals.keys():
-            Nc, Nv = DOS.DOS('Si').update(
+            Nc, Nv = DOS.DOS(matterial='Si').update(
                 temp=temp, author=self.vals['dos_author'])
         else:
             Nc, Nv = 0, 0

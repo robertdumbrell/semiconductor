@@ -10,6 +10,7 @@ from semiconductor.helper.helper import HelperFunctions
 
 
 class Resistivity(HelperFunctions):
+
     cal_dts = {
         'matterial': 'Si',
         'temp': 300,
@@ -20,14 +21,9 @@ class Resistivity(HelperFunctions):
     }
 
 
-    def __init__(self, matterial='Si', mob_author=None,
-                 nieff_author=None, ionis_author=None, temp=300,
-                 **kwargs):
-
-        temp = locals().copy()
-        del temp['self']
-
-        self._update_dts(**temp)
+    def __init__(self, **kwargs):
+        self._update_dts(**kwargs)
+        self._update_links()
 
     def _update_links(self):
 
@@ -70,7 +66,7 @@ class Resistivity(HelperFunctions):
         mob_h = self.Mob.hole_mobility(nxc, Na, Nd,
                                        temp=self.cal_dts['temp'])
 
-        print mob_h, mob_e, Na
+        # print mob_h, mob_e, Na
 
         return const.e * (mob_e * ne + mob_h * nh)
 

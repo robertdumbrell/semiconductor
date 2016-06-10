@@ -46,7 +46,7 @@ class DOS(HelperFunctions):
         # initiate the first model
         self.change_model(self.cal_dts['author'])
 
-    def update(self, temp=None, author=None):
+    def update(self, **kwargs):
         '''
         a function to update the density of states
 
@@ -69,15 +69,15 @@ class DOS(HelperFunctions):
 
         if 'egi_author' in self.vals.keys():
 
-            Eg0 = Egi(matterial=self.matterial).update(
+            Eg0 = Egi(matterial=self.cal_dts['matterial']).update(
                 temp=0, author=self.vals['egi_author'])
-            Egratio = Eg0 / Egi(matterial=self.matterial).update(
-                temp=temp, author=self.vals['egi_author'])
+            Egratio = Eg0 / Egi(matterial=self.cal_dts['matterial']).update(
+                temp=self.cal_dts['temp'], author=self.vals['egi_author'])
         else:
             Egratio = None
 
         self.Nc, self.Nv = getattr(dos_models, self.model)(
-            self.vals, temp=temp, Egratio=Egratio)
+            self.vals, temp=self.cal_dts['temp'], Egratio=Egratio)
 
         return self.Nc, self.Nv
 
